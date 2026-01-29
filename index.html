@@ -53,19 +53,23 @@
             --spacing-md: 16px;
             --spacing-lg: 24px;
             --spacing-xl: 32px;
+            --spacing-2xl: 48px;
             
             /* Border Radius */
             --radius-sm: 4px;
             --radius: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
+            --radius-xl: 20px;
             
             /* Shadows */
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             
             /* Transitions */
             --transition: 0.2s ease;
+            --transition-slow: 0.3s ease;
             
             /* Layout */
             --sidebar-width: 280px;
@@ -331,6 +335,165 @@
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
+        }
+
+        .apps-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            min-width: 100px;
+        }
+
+        .apps-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .apps-btn i {
+            font-size: 1.1rem;
+        }
+
+        .apps-popup {
+            position: absolute;
+            top: 100%;
+            right: 50%;
+            transform: translateX(50%);
+            margin-top: var(--spacing-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            width: 500px;
+            max-width: 90vw;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .apps-popup.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(50%) translateY(0);
+            }
+        }
+
+        .apps-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .apps-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .apps-search {
+            position: relative;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .apps-search input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) var(--spacing-xl);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .apps-search i {
+            position: absolute;
+            left: var(--spacing);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg) var(--spacing);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition);
+            text-align: center;
+        }
+
+        .app-item:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .app-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .app-desc {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        .apps-footer {
+            padding: var(--spacing) var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
         }
 
         .status-selector {
@@ -1110,6 +1273,28 @@
                 width: 36px;
                 justify-content: center;
             }
+            .apps-btn span {
+                display: none;
+            }
+            .apps-btn {
+                min-width: auto;
+                width: 36px;
+                justify-content: center;
+            }
+            .apps-popup {
+                width: 90vw;
+                right: 5%;
+                transform: translateX(0);
+            }
+            .apps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Utility Classes */
@@ -1192,6 +1377,23 @@
         <!-- Notification Container -->
         <div id="notificationContainer"></div>
 
+        <!-- Apps Popup -->
+        <div class="apps-popup" id="appsPopup">
+            <div class="apps-header">
+                <div class="apps-title">Enterprise Apps</div>
+                <div class="apps-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="appsSearch" placeholder="Search apps...">
+                </div>
+            </div>
+            <div class="apps-grid" id="appsGrid">
+                <!-- Apps will be loaded here -->
+            </div>
+            <div class="apps-footer">
+                Click any app to open in a new tab
+            </div>
+        </div>
+
         <!-- Header -->
         <header class="header">
             <div class="brand">
@@ -1202,6 +1404,14 @@
             </div>
             
             <div class="header-controls">
+                <!-- Apps Button -->
+                <div class="apps-selector">
+                    <button class="apps-btn" id="appsBtn">
+                        <i class="fas fa-th-large"></i>
+                        <span>Apps</span>
+                    </button>
+                </div>
+                
                 <!-- Status Selector -->
                 <div class="status-selector">
                     <button class="status-btn" id="statusBtn">
@@ -1429,8 +1639,60 @@
             storage: null,
             messageListeners: new Map(),
             userStatus: 'available',
-            currentTheme: 'navy'
+            currentTheme: 'navy',
+            enterpriseApps: []
         };
+
+        // ============================
+        // ENTERPRISE APPS DATABASE
+        // ============================
+        const ENTERPRISE_APPS = [
+            {
+                id: 'esh',
+                name: 'Sales Hub',
+                description: 'Enterprise Sales Management',
+                icon: 'https://i.postimg.cc/BbZ5c1Tv/20260119_1500_Image_Generation_remix_01kfb1znpceyc8d9dztq9ea0y3_1_removebg_preview(1).png',
+                link: 'efh.html',
+                category: 'Sales',
+                color: '#3b82f6'
+            },
+            {
+                id: 'erh',
+                name: 'Resource Hub',
+                description: 'Enterprise Resource Management',
+                icon: 'https://i.postimg.cc/3rFrpW8P/20260112_1839_Image_Generation_remix_01kesdpw6ce8s88amr0e92g276_removebg_preview_removebg_preview.png',
+                link: 'erh.html',
+                category: 'Resources',
+                color: '#10b981'
+            },
+            {
+                id: 'efh',
+                name: 'Finance Hub',
+                description: 'Enterprise Financial Management',
+                icon: 'https://i.postimg.cc/nLkCKS3J/20260119_1502_Image_Generation_remix_01kfb24hnje88t8jgrmchg3m4w_1_removebg_preview.png',
+                link: 'efh.html',
+                category: 'Finance',
+                color: '#f59e0b'
+            },
+            {
+                id: 'efs',
+                name: 'Fleet Hub',
+                description: 'Enterprise Fleet Management',
+                icon: 'https://i.postimg.cc/MTYB3K5P/20260119_1531_Image_Generation_remix_01kfb3rnfzfzxt9rhe0336w04w_1_removebg_preview.png',
+                link: 'efs.html',
+                category: 'Operations',
+                color: '#ef4444'
+            },
+            {
+                id: 'eth',
+                name: 'Talent Hub',
+                description: 'Enterprise Talent Management',
+                icon: 'https://i.postimg.cc/wvFVykC1/20260119_1539_Image_Generation_remix_01kfb488qbfhz9a354vdfwrwva_1_removebg_preview.png',
+                link: 'eth.html',
+                category: 'HR',
+                color: '#8b5cf6'
+            }
+        ];
 
         // ============================
         // USER DATABASE
@@ -1552,6 +1814,87 @@
         }
 
         // ============================
+        // APPS MANAGEMENT
+        // ============================
+        function initializeApps() {
+            // Set apps data
+            appState.enterpriseApps = ENTERPRISE_APPS;
+            
+            // Render apps grid
+            renderAppsGrid(appState.enterpriseApps);
+        }
+
+        function renderAppsGrid(apps) {
+            const container = document.getElementById('appsGrid');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            apps.forEach(app => {
+                const appElement = document.createElement('div');
+                appElement.className = 'app-item';
+                appElement.dataset.appId = app.id;
+                appElement.title = `Open ${app.name}`;
+                
+                appElement.innerHTML = `
+                    <div class="app-icon">
+                        <img src="${app.icon}" alt="${app.name}" onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"${app.color.replace('#', '%23')}\"/><text x=\"50\" y=\"50\" font-family=\"Arial\" font-size=\"40\" fill=\"white\" text-anchor=\"middle\" dy=\".3em\">${app.name.charAt(0)}</text></svg>'">
+                    </div>
+                    <div class="app-name">${app.name}</div>
+                    <div class="app-desc">${app.description}</div>
+                `;
+                
+                // Add click handler to open app in new tab
+                appElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openApp(app);
+                });
+                
+                container.appendChild(appElement);
+            });
+        }
+
+        function openApp(app) {
+            // Open app in new tab
+            window.open(app.link, '_blank');
+            
+            // Close apps popup
+            document.getElementById('appsPopup').classList.remove('active');
+            
+            // Show notification
+            showNotification('App Launched', `${app.name} opened in new tab`, 'success');
+            
+            // Track app usage in Firebase
+            if (appState.currentUser && appState.db) {
+                try {
+                    appState.db.ref(`appUsage/${appState.currentUser.uid}/${Date.now()}`).set({
+                        appId: app.id,
+                        appName: app.name,
+                        timestamp: Date.now(),
+                        user: appState.currentUser.name
+                    });
+                } catch (error) {
+                    console.error('Error tracking app usage:', error);
+                }
+            }
+        }
+
+        function filterApps(searchTerm) {
+            if (!searchTerm) {
+                renderAppsGrid(appState.enterpriseApps);
+                return;
+            }
+            
+            const filteredApps = appState.enterpriseApps.filter(app => 
+                app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                app.category.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            renderAppsGrid(filteredApps);
+        }
+
+        // ============================
         // THEME MANAGEMENT
         // ============================
         function initializeTheme() {
@@ -1628,6 +1971,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize theme first
             initializeTheme();
+            
+            // Initialize apps
+            initializeApps();
             
             // Set up event listeners for UI
             setupEventListeners();
@@ -2269,6 +2615,25 @@
                 });
             }
             
+            // Apps button
+            const appsBtn = document.getElementById('appsBtn');
+            const appsPopup = document.getElementById('appsPopup');
+            
+            if (appsBtn && appsPopup) {
+                appsBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    appsPopup.classList.toggle('active');
+                });
+            }
+            
+            // Apps search
+            const appsSearch = document.getElementById('appsSearch');
+            if (appsSearch) {
+                appsSearch.addEventListener('input', (e) => {
+                    filterApps(e.target.value);
+                });
+            }
+            
             // Status selector
             const statusBtn = document.getElementById('statusBtn');
             const statusDropdown = document.getElementById('statusDropdown');
@@ -2312,6 +2677,7 @@
             
             // Close dropdowns when clicking outside
             document.addEventListener('click', () => {
+                if (appsPopup) appsPopup.classList.remove('active');
                 if (statusDropdown) statusDropdown.classList.remove('active');
                 if (themeDropdown) themeDropdown.classList.remove('active');
             });
