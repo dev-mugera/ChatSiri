@@ -1002,6 +1002,7 @@
             cursor: pointer;
             transition: var(--transition);
             border: 1px solid transparent;
+            position: relative;
         }
 
         .chat-item:hover {
@@ -1050,6 +1051,45 @@
         .chat-time {
             font-size: 0.75rem;
             color: var(--text-tertiary);
+        }
+
+        .chat-actions {
+            position: absolute;
+            right: var(--spacing);
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+            gap: var(--spacing-xs);
+        }
+
+        .chat-item:hover .chat-actions {
+            display: flex;
+        }
+
+        .chat-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .chat-action-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .chat-action-btn.delete:hover {
+            background: var(--color-danger);
+            color: white;
+            border-color: var(--color-danger);
         }
 
         /* Main Chat Area */
@@ -1337,6 +1377,185 @@
             cursor: not-allowed;
         }
 
+        /* Homepage Styles */
+        .homepage {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: var(--spacing-xl);
+        }
+
+        .homepage-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .homepage-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .homepage-subtitle {
+            color: var(--text-tertiary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .recent-chats-section {
+            flex: 1;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .clear-all-btn {
+            padding: var(--spacing-sm) var(--spacing);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .clear-all-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .recent-chats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing);
+        }
+
+        .recent-chat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing);
+            position: relative;
+        }
+
+        .recent-chat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .recent-chat-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .recent-chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .recent-chat-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recent-chat-last-message {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recent-chat-time {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            text-align: right;
+        }
+
+        .recent-chat-card-actions {
+            position: absolute;
+            right: var(--spacing);
+            top: var(--spacing);
+            display: none;
+            gap: var(--spacing-xs);
+        }
+
+        .recent-chat-card:hover .recent-chat-card-actions {
+            display: flex;
+        }
+
+        .recent-chat-action-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.7rem;
+        }
+
+        .recent-chat-action-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .recent-chat-action-btn.delete:hover {
+            background: var(--color-danger);
+            color: white;
+            border-color: var(--color-danger);
+        }
+
+        .no-chats-message {
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing);
+            color: var(--text-tertiary);
+        }
+
+        .no-chats-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing);
+            color: var(--text-tertiary);
+        }
+
         /* Notifications */
         .notification {
             position: fixed;
@@ -1435,6 +1654,9 @@
             .app-icon {
                 width: 60px;
                 height: 60px;
+            }
+            .recent-chats-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1698,8 +1920,39 @@
             </aside>
 
             <!-- Main Chat Area -->
-            <main class="chat-area">
-                <div class="chat-header" id="chatHeader">
+            <main class="chat-area" id="chatArea">
+                <!-- Homepage (shown by default) -->
+                <div class="homepage" id="homepage">
+                    <div class="homepage-header">
+                        <h1 class="homepage-title">Enterprise Chat</h1>
+                        <p class="homepage-subtitle">Connect with your team, share ideas, and collaborate in real-time. Start a new conversation or continue existing ones.</p>
+                    </div>
+                    
+                    <div class="recent-chats-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Recent Conversations</h2>
+                            <button class="clear-all-btn" id="clearAllChatsBtn">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Clear All</span>
+                            </button>
+                        </div>
+                        
+                        <div class="recent-chats-grid" id="recentChatsGrid">
+                            <!-- Recent chats will be loaded here -->
+                        </div>
+                        
+                        <div class="no-chats-message" id="noChatsMessage" style="display: none;">
+                            <div class="no-chats-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3>No conversations yet</h3>
+                            <p class="text-muted">Start your first conversation by clicking "New Chat" in the sidebar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Header (hidden by default) -->
+                <div class="chat-header" id="chatHeader" style="display: none;">
                     <div class="chat-header-info">
                         <div class="chat-header-avatar" id="chatHeaderAvatar">
                             <i class="fas fa-users"></i>
@@ -1709,21 +1962,24 @@
                             <p id="chatStatus">Click on a user to start chatting</p>
                         </div>
                     </div>
-                    <div class="chat-actions" id="chatActions" style="display: none;">
+                    <div class="chat-actions" id="chatActions">
+                        <button class="chat-action-btn" id="backToHomeBtn" title="Back to Home">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
                         <button class="chat-action-btn" title="Call">
                             <i class="fas fa-phone"></i>
                         </button>
                         <button class="chat-action-btn" title="Video">
                             <i class="fas fa-video"></i>
                         </button>
-                        <button class="chat-action-btn" title="Info">
-                            <i class="fas fa-info-circle"></i>
+                        <button class="chat-action-btn" id="clearChatBtn" title="Clear Chat">
+                            <i class="fas fa-trash-alt"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- Messages Container -->
-                <div class="messages-container" id="messagesContainer">
+                <div class="messages-container" id="messagesContainer" style="display: none;">
                     <div class="p-4 text-center">
                         <div class="mb-2">
                             <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
@@ -1889,7 +2145,6 @@
     }
 
     function getColorForUser(userId) {
-        // Generate a consistent color based on user ID
         let hash = 0;
         for (let i = 0; i < userId.length; i++) {
             hash = userId.charCodeAt(i) + ((hash << 5) - hash);
@@ -1918,7 +2173,6 @@
         
         container.appendChild(notification);
         
-        // Auto remove after 5 seconds
         setTimeout(() => {
             notification.style.opacity = '0';
             notification.style.transform = 'translateX(100%)';
@@ -1936,9 +2190,9 @@
         const now = new Date();
         const diff = now - date;
         
-        if (diff < 86400000) { // Less than 24 hours
+        if (diff < 86400000) {
             return 'Today';
-        } else if (diff < 172800000) { // Less than 48 hours
+        } else if (diff < 172800000) {
             return 'Yesterday';
         } else {
             return date.toLocaleDateString();
@@ -1951,6 +2205,35 @@
             textarea.style.height = 'auto';
             textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
         }
+    }
+
+    // ============================
+    // VIEW MANAGEMENT
+    // ============================
+    function showHomepage() {
+        document.getElementById('homepage').style.display = 'flex';
+        document.getElementById('chatHeader').style.display = 'none';
+        document.getElementById('messagesContainer').style.display = 'none';
+        document.getElementById('messageInputContainer').style.display = 'none';
+        
+        // Clear current chat
+        if (appState.currentChat) {
+            // Stop listening to messages
+            if (appState.messageListeners.has(appState.currentChat.chatId)) {
+                appState.messageListeners.get(appState.currentChat.chatId)();
+            }
+            appState.currentChat = null;
+        }
+        
+        // Update recent chats
+        updateRecentChats();
+    }
+
+    function showChatView() {
+        document.getElementById('homepage').style.display = 'none';
+        document.getElementById('chatHeader').style.display = 'flex';
+        document.getElementById('messagesContainer').style.display = 'flex';
+        document.getElementById('messageInputContainer').style.display = 'block';
     }
 
     // ============================
@@ -1983,14 +2266,11 @@
         container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
         
         try {
-            // Load users from Firebase
             const snapshot = await appState.db.ref('users').once('value');
             const users = snapshot.val() || {};
             
-            // Clear current users
             appState.allUsers.clear();
             
-            // Add users to state (excluding current user)
             Object.entries(users).forEach(([uid, user]) => {
                 if (uid !== appState.currentUser?.uid) {
                     appState.allUsers.set(uid, {
@@ -2020,14 +2300,11 @@
         
         container.innerHTML = '';
         
-        // Convert to array and sort
         const sortedUsers = Array.from(appState.allUsers.values()).sort((a, b) => {
-            // Online users first
             const aOnline = appState.onlineUsers.has(a.uid) ? 0 : 1;
             const bOnline = appState.onlineUsers.has(b.uid) ? 0 : 1;
             if (aOnline !== bOnline) return aOnline - bOnline;
             
-            // Then sort by name
             return (a.name || '').localeCompare(b.name || '');
         });
         
@@ -2096,164 +2373,78 @@
     }
 
     // ============================
-    // APPS MANAGEMENT
+    // RECENT CHATS MANAGEMENT
     // ============================
-    function initializeApps() {
-        // Set apps data
-        appState.enterpriseApps = ENTERPRISE_APPS;
+    function updateRecentChats() {
+        const container = document.getElementById('recentChatsGrid');
+        const noChatsMessage = document.getElementById('noChatsMessage');
         
-        // Render apps grid
-        renderAppsGrid(appState.enterpriseApps);
-    }
-
-    function renderAppsGrid(apps) {
-        const container = document.getElementById('appsGrid');
         if (!container) return;
         
         container.innerHTML = '';
         
-        apps.forEach(app => {
-            const appElement = document.createElement('div');
-            appElement.className = 'app-item';
-            appElement.dataset.appId = app.id;
-            appElement.title = `Open ${app.name}`;
-            
-            // Clean up icon URL
-            let iconUrl = app.icon;
-            iconUrl = iconUrl.replace(/\(/g, '%28').replace(/\)/g, '%29');
-            
-            appElement.innerHTML = `
-                <div class="app-icon">
-                    <img src="${iconUrl}" alt="${app.name}" onerror="handleIconError(this, '${app.color}', '${app.name}')">
-                </div>
-                <div class="app-name">${app.name}</div>
-                <div class="app-desc">${app.description}</div>
-            `;
-            
-            appElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openApp(app);
-            });
-            
-            container.appendChild(appElement);
-        });
-    }
-
-    function handleIconError(imgElement, color, name) {
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-            <rect width="100" height="100" fill="${color}" rx="12"/>
-            <text x="50" y="55" font-family="Arial, sans-serif" font-size="36" 
-                  fill="white" text-anchor="middle" font-weight="bold">
-                ${name.charAt(0)}
-            </text>
-        </svg>`;
-        
-        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-        const svgUrl = URL.createObjectURL(svgBlob);
-        imgElement.src = svgUrl;
-    }
-
-    function openApp(app) {
-        window.open(app.link, '_blank');
-        toggleAppsPopup(false);
-        showNotification('App Launched', `${app.name} opened in new tab`, 'success');
-    }
-
-    function filterApps(searchTerm) {
-        if (!searchTerm) {
-            renderAppsGrid(appState.enterpriseApps);
+        if (appState.conversations.size === 0) {
+            noChatsMessage.style.display = 'block';
             return;
         }
         
-        const filteredApps = appState.enterpriseApps.filter(app => 
-            app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            app.category.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        noChatsMessage.style.display = 'none';
         
-        renderAppsGrid(filteredApps);
-    }
-
-    function toggleAppsPopup(show) {
-        const appsPopup = document.getElementById('appsPopup');
-        if (!appsPopup) return;
+        const sortedConversations = Array.from(appState.conversations.entries())
+            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
+            .slice(0, 12); // Show max 12 recent chats
         
-        if (show === undefined) {
-            appState.isAppsPopupOpen = !appState.isAppsPopupOpen;
-        } else {
-            appState.isAppsPopupOpen = show;
-        }
-        
-        if (appState.isAppsPopupOpen) {
-            appsPopup.classList.add('active');
-        } else {
-            appsPopup.classList.remove('active');
-        }
-    }
-
-    // ============================
-    // THEME MANAGEMENT
-    // ============================
-    function initializeTheme() {
-        const savedTheme = localStorage.getItem('workspace-theme');
-        if (savedTheme) {
-            appState.currentTheme = savedTheme;
-        } else {
-            appState.currentTheme = 'navy';
-            localStorage.setItem('workspace-theme', 'navy');
-        }
-        
-        applyTheme(appState.currentTheme);
-    }
-
-    function applyTheme(theme) {
-        appState.currentTheme = theme;
-        document.body.setAttribute('data-theme', theme);
-        
-        document.querySelectorAll('.theme-option').forEach(option => {
-            option.classList.remove('active');
-            if (option.dataset.theme === theme) {
-                option.classList.add('active');
-            }
+        sortedConversations.forEach(([chatId, data]) => {
+            const otherParticipantId = Object.keys(data.participants || {})
+                .find(id => id !== appState.currentUser.uid);
+            
+            if (!otherParticipantId) return;
+            
+            const user = appState.allUsers.get(otherParticipantId) || {
+                name: 'Unknown User',
+                color: getColorForUser(otherParticipantId)
+            };
+            
+            const card = document.createElement('div');
+            card.className = 'recent-chat-card';
+            card.dataset.chatId = chatId;
+            card.dataset.userId = otherParticipantId;
+            card.innerHTML = `
+                <div class="recent-chat-avatar" style="background: ${user.color}">
+                    ${getInitials(user.name)}
+                </div>
+                <div class="recent-chat-info">
+                    <div class="recent-chat-name">${user.name}</div>
+                    <div class="recent-chat-last-message">${data.lastMessage || 'No messages yet'}</div>
+                </div>
+                <div class="recent-chat-time">${data.lastMessageTime ? formatTime(data.lastMessageTime) : ''}</div>
+                <div class="recent-chat-card-actions">
+                    <button class="recent-chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            `;
+            
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.recent-chat-action-btn')) {
+                    if (appState.allUsers.has(otherParticipantId)) {
+                        startChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
+                    }
+                }
+            });
+            
+            const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteChat(chatId, otherParticipantId);
+            });
+            
+            container.appendChild(card);
         });
-        
-        localStorage.setItem('workspace-theme', theme);
     }
 
     // ============================
-    // STATUS MANAGEMENT
-    // ============================
-    function updateUserStatus(status) {
-        if (!appState.currentUser || !appState.db) return;
-        
-        appState.userStatus = status;
-        const config = STATUS_CONFIG[status];
-        
-        // Update UI
-        const statusIndicator = document.getElementById('statusIndicator');
-        const statusText = document.getElementById('statusText');
-        
-        if (statusIndicator) {
-            statusIndicator.className = `status-indicator ${config.colorClass}`;
-        }
-        if (statusText) {
-            statusText.textContent = config.text;
-        }
-        
-        // Update in Firebase
-        const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
-        userRef.update({
-            status: status,
-            statusText: config.text,
-            lastSeen: Date.now()
-        });
-        
-        document.getElementById('statusDropdown').classList.remove('active');
-        showNotification('Status Updated', `You are now ${config.text.toLowerCase()}`, 'success');
-    }
-
-    // ============================
-    // CHAT FUNCTIONALITY
+    // CHAT MANAGEMENT
     // ============================
     async function startChat(userId, userData) {
         try {
@@ -2272,11 +2463,7 @@
             
             // Update UI
             updateChatHeader(userData);
-            
-            // Show chat interface
-            document.getElementById('messageInputContainer').style.display = 'block';
-            document.getElementById('chatActions').style.display = 'flex';
-            document.getElementById('messageInput').focus();
+            showChatView();
             
             // Load messages
             await loadMessages(chatId);
@@ -2298,6 +2485,7 @@
                     }
                 });
                 updateConversationsList();
+                updateRecentChats();
             }
             
         } catch (error) {
@@ -2329,6 +2517,124 @@
         }
     }
 
+    async function deleteChat(chatId, userId) {
+        if (!confirm('Are you sure you want to delete this chat? This will remove all messages and cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            // Remove from Firebase
+            await appState.db.ref(`conversations/${chatId}`).remove();
+            await appState.db.ref(`messages/${chatId}`).remove();
+            
+            // Remove from local state
+            appState.conversations.delete(chatId);
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            // If this was the current chat, go back to homepage
+            if (appState.currentChat && appState.currentChat.chatId === chatId) {
+                showHomepage();
+            }
+            
+            showNotification('Chat Deleted', 'Chat has been successfully deleted', 'success');
+            
+        } catch (error) {
+            console.error('Error deleting chat:', error);
+            showNotification('Error', 'Failed to delete chat', 'error');
+        }
+    }
+
+    async function clearAllChats() {
+        if (!confirm('Are you sure you want to clear all chats? This will remove all conversations and cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            // Clear all conversations for current user
+            const deletePromises = [];
+            
+            for (const [chatId, conversation] of appState.conversations) {
+                if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
+                    deletePromises.push(appState.db.ref(`conversations/${chatId}`).remove());
+                    deletePromises.push(appState.db.ref(`messages/${chatId}`).remove());
+                }
+            }
+            
+            await Promise.all(deletePromises);
+            
+            // Clear local state
+            appState.conversations.clear();
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            // Go back to homepage if in chat view
+            showHomepage();
+            
+            showNotification('All Chats Cleared', 'All conversations have been cleared', 'success');
+            
+        } catch (error) {
+            console.error('Error clearing all chats:', error);
+            showNotification('Error', 'Failed to clear all chats', 'error');
+        }
+    }
+
+    async function clearCurrentChat() {
+        if (!appState.currentChat) return;
+        
+        if (!confirm('Are you sure you want to clear this chat? This will remove all messages and cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const chatId = appState.currentChat.chatId;
+            
+            // Remove messages from Firebase
+            await appState.db.ref(`messages/${chatId}`).remove();
+            
+            // Update conversation
+            await appState.db.ref(`conversations/${chatId}`).update({
+                lastMessage: 'Chat cleared',
+                lastMessageTime: Date.now()
+            });
+            
+            // Update local state
+            const conversation = appState.conversations.get(chatId);
+            if (conversation) {
+                conversation.lastMessage = 'Chat cleared';
+                conversation.lastMessageTime = Date.now();
+            }
+            
+            // Clear messages display
+            document.getElementById('messagesContainer').innerHTML = `
+                <div class="p-4 text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
+                    </div>
+                    <h3 class="mb-2">Chat cleared</h3>
+                    <p class="text-muted">Start a new conversation!</p>
+                </div>
+            `;
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            showNotification('Chat Cleared', 'Chat messages have been cleared', 'success');
+            
+        } catch (error) {
+            console.error('Error clearing chat:', error);
+            showNotification('Error', 'Failed to clear chat', 'error');
+        }
+    }
+
+    // ============================
+    // MESSAGES MANAGEMENT
+    // ============================
     async function loadMessages(chatId) {
         try {
             const snapshot = await appState.db.ref(`messages/${chatId}`)
@@ -2533,6 +2839,7 @@
         conversation.lastMessageTime = timestamp;
         appState.conversations.set(chatId, conversation);
         updateConversationsList();
+        updateRecentChats();
     }
 
     async function markConversationAsRead(chatId) {
@@ -2567,6 +2874,7 @@
             
             // Update UI
             updateConversationsList();
+            updateRecentChats();
             
         } catch (error) {
             console.error('Error loading conversations:', error);
@@ -2589,18 +2897,15 @@
             return;
         }
         
-        // Convert to array and sort by last message time
         const sortedConversations = Array.from(appState.conversations.entries())
             .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
         
         sortedConversations.forEach(([chatId, data]) => {
-            // Find the other participant
             const otherParticipantId = Object.keys(data.participants || {})
                 .find(id => id !== appState.currentUser.uid);
             
             if (!otherParticipantId) return;
             
-            // Get user data from all users
             const user = appState.allUsers.get(otherParticipantId) || {
                 name: 'Unknown User',
                 color: getColorForUser(otherParticipantId)
@@ -2619,18 +2924,182 @@
                     <div class="chat-last-message">${data.lastMessage || 'No messages yet'}</div>
                 </div>
                 <div class="chat-time">${data.lastMessageTime ? formatTime(data.lastMessageTime) : ''}</div>
+                <div class="chat-actions">
+                    <button class="chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
             `;
             
-            // Add click handler
-            div.addEventListener('click', () => {
-                const userId = div.dataset.userId;
-                if (appState.allUsers.has(userId)) {
-                    startChat(userId, appState.allUsers.get(userId));
+            div.addEventListener('click', (e) => {
+                if (!e.target.closest('.chat-action-btn')) {
+                    if (appState.allUsers.has(otherParticipantId)) {
+                        startChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
+                    }
                 }
+            });
+            
+            const deleteBtn = div.querySelector('.chat-action-btn.delete');
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteChat(chatId, otherParticipantId);
             });
             
             container.appendChild(div);
         });
+    }
+
+    // ============================
+    // APPS MANAGEMENT
+    // ============================
+    function initializeApps() {
+        appState.enterpriseApps = ENTERPRISE_APPS;
+        renderAppsGrid(appState.enterpriseApps);
+    }
+
+    function renderAppsGrid(apps) {
+        const container = document.getElementById('appsGrid');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        apps.forEach(app => {
+            const appElement = document.createElement('div');
+            appElement.className = 'app-item';
+            appElement.dataset.appId = app.id;
+            appElement.title = `Open ${app.name}`;
+            
+            let iconUrl = app.icon;
+            iconUrl = iconUrl.replace(/\(/g, '%28').replace(/\)/g, '%29');
+            
+            appElement.innerHTML = `
+                <div class="app-icon">
+                    <img src="${iconUrl}" alt="${app.name}" onerror="handleIconError(this, '${app.color}', '${app.name}')">
+                </div>
+                <div class="app-name">${app.name}</div>
+                <div class="app-desc">${app.description}</div>
+            `;
+            
+            appElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openApp(app);
+            });
+            
+            container.appendChild(appElement);
+        });
+    }
+
+    function handleIconError(imgElement, color, name) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect width="100" height="100" fill="${color}" rx="12"/>
+            <text x="50" y="55" font-family="Arial, sans-serif" font-size="36" 
+                  fill="white" text-anchor="middle" font-weight="bold">
+                ${name.charAt(0)}
+            </text>
+        </svg>`;
+        
+        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        imgElement.src = svgUrl;
+    }
+
+    function openApp(app) {
+        window.open(app.link, '_blank');
+        toggleAppsPopup(false);
+        showNotification('App Launched', `${app.name} opened in new tab`, 'success');
+    }
+
+    function filterApps(searchTerm) {
+        if (!searchTerm) {
+            renderAppsGrid(appState.enterpriseApps);
+            return;
+        }
+        
+        const filteredApps = appState.enterpriseApps.filter(app => 
+            app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.category.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        renderAppsGrid(filteredApps);
+    }
+
+    function toggleAppsPopup(show) {
+        const appsPopup = document.getElementById('appsPopup');
+        if (!appsPopup) return;
+        
+        if (show === undefined) {
+            appState.isAppsPopupOpen = !appState.isAppsPopupOpen;
+        } else {
+            appState.isAppsPopupOpen = show;
+        }
+        
+        if (appState.isAppsPopupOpen) {
+            appsPopup.classList.add('active');
+        } else {
+            appsPopup.classList.remove('active');
+        }
+    }
+
+    // ============================
+    // THEME MANAGEMENT
+    // ============================
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('workspace-theme');
+        if (savedTheme) {
+            appState.currentTheme = savedTheme;
+        } else {
+            appState.currentTheme = 'navy';
+            localStorage.setItem('workspace-theme', 'navy');
+        }
+        
+        applyTheme(appState.currentTheme);
+    }
+
+    function applyTheme(theme) {
+        appState.currentTheme = theme;
+        document.body.setAttribute('data-theme', theme);
+        
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.theme === theme) {
+                option.classList.add('active');
+            }
+        });
+        
+        localStorage.setItem('workspace-theme', theme);
+    }
+
+    // ============================
+    // STATUS MANAGEMENT
+    // ============================
+    function updateUserStatus(status) {
+        if (!appState.currentUser || !appState.db) return;
+        
+        appState.userStatus = status;
+        const config = STATUS_CONFIG[status];
+        
+        // Update UI
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        
+        if (statusIndicator) {
+            statusIndicator.className = `status-indicator ${config.colorClass}`;
+        }
+        if (statusText) {
+            statusText.textContent = config.text;
+        }
+        
+        // Update in Firebase
+        const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
+        userRef.update({
+            status: status,
+            statusText: config.text,
+            lastSeen: Date.now()
+        });
+        
+        document.getElementById('statusDropdown').classList.remove('active');
+        showNotification('Status Updated', `You are now ${config.text.toLowerCase()}`, 'success');
     }
 
     // ============================
@@ -2643,14 +3112,12 @@
             if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
                 appState.onlineUsers.set(snapshot.key, user);
                 
-                // Update current chat status if active
                 if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
                     updateChatHeader(user);
                 }
             } else if (user.status === 'offline') {
                 appState.onlineUsers.delete(snapshot.key);
                 
-                // Update current chat status if active
                 if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
                     const offlineUser = appState.allUsers.get(snapshot.key) || user;
                     updateChatHeader(offlineUser);
@@ -2677,6 +3144,7 @@
             if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
                 appState.conversations.set(snapshot.key, conversation);
                 updateConversationsList();
+                updateRecentChats();
             }
         });
         
@@ -2686,7 +3154,15 @@
             if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
                 appState.conversations.set(snapshot.key, conversation);
                 updateConversationsList();
+                updateRecentChats();
             }
+        });
+        
+        // Conversations removed
+        appState.db.ref('conversations').on('child_removed', (snapshot) => {
+            appState.conversations.delete(snapshot.key);
+            updateConversationsList();
+            updateRecentChats();
         });
     }
 
@@ -3078,7 +3554,6 @@
                 
                 // Handle section switching
                 if (section === 'chat') {
-                    // Team Chat is already active by default
                     showNotification('Team Chat', 'Team chat functionality is enabled', 'info');
                 } else if (section === 'tasks') {
                     showNotification('Tasks', 'Task management coming soon', 'info');
@@ -3087,7 +3562,22 @@
                 }
             });
         });
+        
+        // Back to home button
+        document.getElementById('backToHomeBtn')?.addEventListener('click', () => {
+            showHomepage();
+        });
+        
+        // Clear current chat button
+        document.getElementById('clearChatBtn')?.addEventListener('click', () => {
+            clearCurrentChat();
+        });
+        
+        // Clear all chats button
+        document.getElementById('clearAllChatsBtn')?.addEventListener('click', () => {
+            clearAllChats();
+        });
     }
-</script>
+    </script>
 </body>
 </html>
