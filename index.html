@@ -709,6 +709,331 @@
             background: var(--bg-secondary);
         }
 
+        /* New Channel Modal */
+        .new-channel-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: var(--spacing-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-slow);
+        }
+
+        .new-channel-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .new-channel-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform var(--transition-slow);
+        }
+
+        .new-channel-modal.active .new-channel-content {
+            transform: translateY(0);
+        }
+
+        .new-channel-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .new-channel-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .new-channel-form {
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            padding: var(--spacing) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: var(--bg-card);
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .channel-members {
+            margin-top: var(--spacing);
+        }
+
+        .members-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing);
+        }
+
+        .members-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            max-height: 200px;
+            overflow-y: auto;
+            padding: var(--spacing);
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .member-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .member-item.selected {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .member-checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .member-item.selected .member-checkbox {
+            background: white;
+            border-color: white;
+        }
+
+        .member-item.selected .member-checkbox i {
+            color: var(--color-primary);
+            font-size: 0.7rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing);
+            margin-top: var(--spacing-lg);
+        }
+
+        .form-btn {
+            flex: 1;
+            padding: var(--spacing) var(--spacing-md);
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        .form-btn.primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .form-btn.primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .form-btn.secondary {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .form-btn.secondary:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .form-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Channel Selection Modal */
+        .channel-selection-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: var(--spacing-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-slow);
+        }
+
+        .channel-selection-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .channel-selection-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform var(--transition-slow);
+        }
+
+        .channel-selection-modal.active .channel-selection-content {
+            transform: translateY(0);
+        }
+
+        .channel-selection-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .channel-selection-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: var(--spacing);
+        }
+
+        .channel-selection-subtitle {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .channel-selection-options {
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing);
+        }
+
+        .channel-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing);
+            padding: var(--spacing-lg);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .channel-option:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .channel-option-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .channel-option-info {
+            flex: 1;
+        }
+
+        .channel-option-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .channel-option-desc {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        .channel-selection-footer {
+            padding: var(--spacing) var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            background: var(--bg-secondary);
+        }
+
         .status-selector {
             position: relative;
         }
@@ -1027,6 +1352,10 @@
             font-size: 0.9rem;
         }
 
+        .chat-avatar.channel {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
         .chat-info {
             flex: 1;
             min-width: 0;
@@ -1127,6 +1456,10 @@
             color: white;
             font-weight: 600;
             font-size: 1rem;
+        }
+
+        .chat-header-avatar.channel {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
         }
 
         .chat-header-details h3 {
@@ -1280,11 +1613,22 @@
             line-height: 1.4;
         }
 
+        .message-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: var(--spacing-xs);
+        }
+
+        .message-sender {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
         .message-time {
             font-size: 0.75rem;
             color: var(--text-tertiary);
-            margin-top: var(--spacing-xs);
-            text-align: right;
         }
 
         .message.sent .message-time {
@@ -1479,6 +1823,10 @@
             flex-shrink: 0;
         }
 
+        .recent-chat-avatar.channel {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
         .recent-chat-info {
             flex: 1;
             min-width: 0;
@@ -1490,6 +1838,12 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        .recent-chat-name.channel::after {
+            content: " #";
+            color: var(--text-tertiary);
+            font-weight: normal;
         }
 
         .recent-chat-last-message {
@@ -1773,11 +2127,44 @@
             </div>
         </div>
 
-        <!-- New Chat Modal -->
+        <!-- Channel Selection Modal -->
+        <div class="channel-selection-modal" id="channelSelectionModal">
+            <div class="channel-selection-content">
+                <div class="channel-selection-header">
+                    <div class="channel-selection-title">Start New Conversation</div>
+                    <div class="channel-selection-subtitle">Choose the type of conversation you want to start</div>
+                </div>
+                <div class="channel-selection-options">
+                    <div class="channel-option" id="newMessageOption">
+                        <div class="channel-option-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="channel-option-info">
+                            <div class="channel-option-title">New Message</div>
+                            <div class="channel-option-desc">Start a private conversation with a team member</div>
+                        </div>
+                    </div>
+                    <div class="channel-option" id="newChannelOption">
+                        <div class="channel-option-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="channel-option-info">
+                            <div class="channel-option-title">New Channel</div>
+                            <div class="channel-option-desc">Create a group chat for your department or project team</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="channel-selection-footer">
+                    Select an option to continue
+                </div>
+            </div>
+        </div>
+
+        <!-- New Chat Modal (for individual messages) -->
         <div class="new-chat-modal" id="newChatModal">
             <div class="new-chat-content">
                 <div class="new-chat-header">
-                    <div class="new-chat-title">Start New Chat</div>
+                    <div class="new-chat-title">Start New Message</div>
                     <button class="close-modal" id="closeNewChatModal">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1789,7 +2176,45 @@
                     <!-- Users will be loaded here from Firebase -->
                 </div>
                 <div class="new-chat-footer">
-                    Select a user to start chatting
+                    Select a user to start private messaging
+                </div>
+            </div>
+        </div>
+
+        <!-- New Channel Modal -->
+        <div class="new-channel-modal" id="newChannelModal">
+            <div class="new-channel-content">
+                <div class="new-channel-header">
+                    <div class="new-channel-title">Create New Channel</div>
+                    <button class="close-modal" id="closeNewChannelModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="new-channel-form" id="newChannelForm">
+                    <div class="form-group">
+                        <label class="form-label" for="channelName">Channel Name</label>
+                        <input type="text" class="form-input" id="channelName" placeholder="e.g., sales-team, marketing-department" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="channelDescription">Description (Optional)</label>
+                        <textarea class="form-input form-textarea" id="channelDescription" placeholder="Describe the purpose of this channel"></textarea>
+                    </div>
+                    <div class="channel-members">
+                        <div class="members-header">
+                            <label class="form-label">Select Members</label>
+                            <span class="text-muted" id="selectedCount">0 selected</span>
+                        </div>
+                        <div class="members-list" id="membersList">
+                            <!-- Members will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="form-btn secondary" id="cancelChannelBtn">Cancel</button>
+                        <button class="form-btn primary" id="createChannelBtn" disabled>
+                            <i class="fas fa-plus"></i>
+                            <span>Create Channel</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2042,6 +2467,7 @@
         allUsers: new Map(), // All users from Firebase
         onlineUsers: new Map(), // Online users only
         conversations: new Map(),
+        channels: new Map(), // Group channels
         firebase: null,
         auth: null,
         db: null,
@@ -2051,7 +2477,10 @@
         currentTheme: 'navy',
         enterpriseApps: [],
         isAppsPopupOpen: false,
-        isNewChatModalOpen: false
+        isChannelSelectionModalOpen: false,
+        isNewChatModalOpen: false,
+        isNewChannelModalOpen: false,
+        selectedChannelMembers: new Set() // For new channel creation
     };
 
     // ============================
@@ -2136,6 +2565,19 @@
         '#8b5cf6', '#10b981'
     ];
 
+    // Department configurations
+    const DEPARTMENTS = [
+        'Sales',
+        'Marketing',
+        'Finance',
+        'Operations',
+        'HR',
+        'IT',
+        'Customer Support',
+        'Product Development',
+        'Executive'
+    ];
+
     // ============================
     // UTILITY FUNCTIONS
     // ============================
@@ -2207,6 +2649,73 @@
         }
     }
 
+    function generateChannelId() {
+        return 'channel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // ============================
+    // MODAL MANAGEMENT
+    // ============================
+    function toggleChannelSelectionModal(show) {
+        const modal = document.getElementById('channelSelectionModal');
+        if (!modal) return;
+        
+        if (show === undefined) {
+            appState.isChannelSelectionModalOpen = !appState.isChannelSelectionModalOpen;
+        } else {
+            appState.isChannelSelectionModalOpen = show;
+        }
+        
+        if (appState.isChannelSelectionModalOpen) {
+            modal.classList.add('active');
+        } else {
+            modal.classList.remove('active');
+        }
+    }
+
+    function toggleNewChatModal(show) {
+        const modal = document.getElementById('newChatModal');
+        if (!modal) return;
+        
+        if (show === undefined) {
+            appState.isNewChatModalOpen = !appState.isNewChatModalOpen;
+        } else {
+            appState.isNewChatModalOpen = show;
+        }
+        
+        if (appState.isNewChatModalOpen) {
+            modal.classList.add('active');
+            document.getElementById('newChatSearch').focus();
+            loadUsersForNewChat();
+        } else {
+            modal.classList.remove('active');
+            document.getElementById('newChatSearch').value = '';
+        }
+    }
+
+    function toggleNewChannelModal(show) {
+        const modal = document.getElementById('newChannelModal');
+        if (!modal) return;
+        
+        if (show === undefined) {
+            appState.isNewChannelModalOpen = !appState.isNewChannelModalOpen;
+        } else {
+            appState.isNewChannelModalOpen = show;
+        }
+        
+        if (appState.isNewChannelModalOpen) {
+            modal.classList.add('active');
+            document.getElementById('channelName').focus();
+            loadUsersForChannel();
+        } else {
+            modal.classList.remove('active');
+            document.getElementById('channelName').value = '';
+            document.getElementById('channelDescription').value = '';
+            appState.selectedChannelMembers.clear();
+            updateSelectedCount();
+        }
+    }
+
     // ============================
     // VIEW MANAGEMENT
     // ============================
@@ -2237,28 +2746,8 @@
     }
 
     // ============================
-    // NEW CHAT MODAL
+    // USER MANAGEMENT
     // ============================
-    function toggleNewChatModal(show) {
-        const newChatModal = document.getElementById('newChatModal');
-        if (!newChatModal) return;
-        
-        if (show === undefined) {
-            appState.isNewChatModalOpen = !appState.isNewChatModalOpen;
-        } else {
-            appState.isNewChatModalOpen = show;
-        }
-        
-        if (appState.isNewChatModalOpen) {
-            newChatModal.classList.add('active');
-            document.getElementById('newChatSearch').focus();
-            loadUsersForNewChat();
-        } else {
-            newChatModal.classList.remove('active');
-            document.getElementById('newChatSearch').value = '';
-        }
-    }
-
     async function loadUsersForNewChat() {
         const container = document.getElementById('newChatUsers');
         if (!container) return;
@@ -2341,7 +2830,7 @@
             `;
             
             userElement.addEventListener('click', () => {
-                startChat(user.uid, user);
+                startIndividualChat(user.uid, user);
                 toggleNewChatModal(false);
             });
             
@@ -2372,81 +2861,193 @@
         });
     }
 
-    // ============================
-    // RECENT CHATS MANAGEMENT
-    // ============================
-    function updateRecentChats() {
-        const container = document.getElementById('recentChatsGrid');
-        const noChatsMessage = document.getElementById('noChatsMessage');
-        
+    async function loadUsersForChannel() {
+        const container = document.getElementById('membersList');
         if (!container) return;
         
-        container.innerHTML = '';
+        container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
         
-        if (appState.conversations.size === 0) {
-            noChatsMessage.style.display = 'block';
-            return;
-        }
-        
-        noChatsMessage.style.display = 'none';
-        
-        const sortedConversations = Array.from(appState.conversations.entries())
-            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
-            .slice(0, 12); // Show max 12 recent chats
-        
-        sortedConversations.forEach(([chatId, data]) => {
-            const otherParticipantId = Object.keys(data.participants || {})
-                .find(id => id !== appState.currentUser.uid);
+        try {
+            const snapshot = await appState.db.ref('users').once('value');
+            const users = snapshot.val() || {};
             
-            if (!otherParticipantId) return;
+            // Clear current users and add them
+            appState.allUsers.clear();
+            container.innerHTML = '';
             
-            const user = appState.allUsers.get(otherParticipantId) || {
-                name: 'Unknown User',
-                color: getColorForUser(otherParticipantId)
-            };
-            
-            const card = document.createElement('div');
-            card.className = 'recent-chat-card';
-            card.dataset.chatId = chatId;
-            card.dataset.userId = otherParticipantId;
-            card.innerHTML = `
-                <div class="recent-chat-avatar" style="background: ${user.color}">
-                    ${getInitials(user.name)}
-                </div>
-                <div class="recent-chat-info">
-                    <div class="recent-chat-name">${user.name}</div>
-                    <div class="recent-chat-last-message">${data.lastMessage || 'No messages yet'}</div>
-                </div>
-                <div class="recent-chat-time">${data.lastMessageTime ? formatTime(data.lastMessageTime) : ''}</div>
-                <div class="recent-chat-card-actions">
-                    <button class="recent-chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-            `;
-            
-            card.addEventListener('click', (e) => {
-                if (!e.target.closest('.recent-chat-action-btn')) {
-                    if (appState.allUsers.has(otherParticipantId)) {
-                        startChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
-                    }
+            Object.entries(users).forEach(([uid, user]) => {
+                if (uid !== appState.currentUser?.uid) {
+                    appState.allUsers.set(uid, {
+                        uid,
+                        ...user,
+                        color: user.color || getColorForUser(uid)
+                    });
+                    
+                    // Add to members list
+                    const memberElement = document.createElement('div');
+                    memberElement.className = 'member-item';
+                    memberElement.dataset.userId = uid;
+                    memberElement.innerHTML = `
+                        <div class="member-checkbox">
+                            <i class="fas fa-check" style="display: none;"></i>
+                        </div>
+                        <div class="new-chat-user-avatar" style="background: ${user.color || getColorForUser(uid)}">
+                            ${getInitials(user.name || user.email)}
+                        </div>
+                        <div class="new-chat-user-info">
+                            <div class="new-chat-user-name">${user.name || user.email || 'Unknown User'}</div>
+                            <div class="new-chat-user-role">${user.role || 'User'}</div>
+                        </div>
+                    `;
+                    
+                    memberElement.addEventListener('click', () => {
+                        toggleChannelMemberSelection(uid, memberElement);
+                    });
+                    
+                    container.appendChild(memberElement);
                 }
             });
             
-            const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                deleteChat(chatId, otherParticipantId);
+        } catch (error) {
+            console.error('Error loading users:', error);
+            container.innerHTML = `
+                <div class="p-4 text-center text-muted">
+                    <p>Error loading users</p>
+                    <p class="text-sm">Please try again</p>
+                </div>
+            `;
+        }
+    }
+
+    function toggleChannelMemberSelection(userId, element) {
+        if (appState.selectedChannelMembers.has(userId)) {
+            appState.selectedChannelMembers.delete(userId);
+            element.classList.remove('selected');
+            element.querySelector('.member-checkbox i').style.display = 'none';
+        } else {
+            appState.selectedChannelMembers.add(userId);
+            element.classList.add('selected');
+            element.querySelector('.member-checkbox i').style.display = 'block';
+        }
+        
+        updateSelectedCount();
+        updateCreateChannelButton();
+    }
+
+    function updateSelectedCount() {
+        const countElement = document.getElementById('selectedCount');
+        if (countElement) {
+            countElement.textContent = `${appState.selectedChannelMembers.size} selected`;
+        }
+    }
+
+    function updateCreateChannelButton() {
+        const channelName = document.getElementById('channelName').value.trim();
+        const hasMembers = appState.selectedChannelMembers.size > 0;
+        const createBtn = document.getElementById('createChannelBtn');
+        
+        if (createBtn) {
+            createBtn.disabled = !channelName || !hasMembers;
+        }
+    }
+
+    // ============================
+    // CHANNEL MANAGEMENT
+    // ============================
+    async function createChannel() {
+        const channelName = document.getElementById('channelName').value.trim();
+        const description = document.getElementById('channelDescription').value.trim();
+        
+        if (!channelName || appState.selectedChannelMembers.size === 0) {
+            showNotification('Error', 'Please provide a channel name and select at least one member', 'error');
+            return;
+        }
+        
+        try {
+            const channelId = generateChannelId();
+            const channelData = {
+                id: channelId,
+                name: channelName,
+                description: description,
+                createdBy: appState.currentUser.uid,
+                createdByUser: appState.currentUser.name,
+                createdAt: Date.now(),
+                members: {
+                    [appState.currentUser.uid]: true
+                },
+                type: 'channel'
+            };
+            
+            // Add selected members
+            appState.selectedChannelMembers.forEach(userId => {
+                channelData.members[userId] = true;
             });
             
-            container.appendChild(card);
-        });
+            // Save channel to Firebase
+            await appState.db.ref(`channels/${channelId}`).set(channelData);
+            
+            // Create initial conversation
+            const conversationData = {
+                lastMessage: `Channel "${channelName}" was created`,
+                lastMessageTime: Date.now(),
+                participants: channelData.members,
+                type: 'channel',
+                channelId: channelId
+            };
+            
+            await appState.db.ref(`conversations/${channelId}`).set(conversationData);
+            
+            // Clear form and close modal
+            document.getElementById('channelName').value = '';
+            document.getElementById('channelDescription').value = '';
+            appState.selectedChannelMembers.clear();
+            updateSelectedCount();
+            
+            toggleNewChannelModal(false);
+            
+            // Add channel to local state
+            appState.channels.set(channelId, channelData);
+            appState.conversations.set(channelId, conversationData);
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            showNotification('Channel Created', `"${channelName}" channel has been created successfully`, 'success');
+            
+            // Start the channel chat
+            startChannelChat(channelId, channelData);
+            
+        } catch (error) {
+            console.error('Error creating channel:', error);
+            showNotification('Error', 'Failed to create channel', 'error');
+        }
+    }
+
+    async function loadChannels() {
+        try {
+            const snapshot = await appState.db.ref('channels').once('value');
+            const channels = snapshot.val() || {};
+            
+            // Clear current channels
+            appState.channels.clear();
+            
+            // Add channels to state where user is a member
+            Object.entries(channels).forEach(([channelId, channel]) => {
+                if (channel.members && channel.members[appState.currentUser.uid]) {
+                    appState.channels.set(channelId, channel);
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error loading channels:', error);
+        }
     }
 
     // ============================
     // CHAT MANAGEMENT
     // ============================
-    async function startChat(userId, userData) {
+    async function startIndividualChat(userId, userData) {
         try {
             // Clear previous message listener
             if (appState.messageListeners.has(appState.currentChat?.chatId)) {
@@ -2458,11 +3059,12 @@
             appState.currentChat = {
                 userId,
                 user: userData,
-                chatId
+                chatId,
+                type: 'individual'
             };
             
             // Update UI
-            updateChatHeader(userData);
+            updateChatHeader(userData, 'individual');
             showChatView();
             
             // Load messages
@@ -2482,7 +3084,8 @@
                     participants: {
                         [appState.currentUser.uid]: true,
                         [userId]: true
-                    }
+                    },
+                    type: 'individual'
                 });
                 updateConversationsList();
                 updateRecentChats();
@@ -2494,36 +3097,119 @@
         }
     }
 
-    function updateChatHeader(userData) {
+    async function startChannelChat(channelId, channelData) {
+        try {
+            // Clear previous message listener
+            if (appState.messageListeners.has(appState.currentChat?.chatId)) {
+                appState.messageListeners.get(appState.currentChat.chatId)();
+            }
+            
+            // Set current chat
+            appState.currentChat = {
+                channelId,
+                channel: channelData,
+                chatId: channelId,
+                type: 'channel'
+            };
+            
+            // Update UI
+            updateChatHeader(channelData, 'channel');
+            showChatView();
+            
+            // Load messages
+            await loadMessages(channelId);
+            
+            // Set up real-time message listener
+            setupMessageListener(channelId);
+            
+            // Mark conversation as read
+            await markConversationAsRead(channelId);
+            
+            // Add to conversations if not already there
+            if (!appState.conversations.has(channelId)) {
+                appState.conversations.set(channelId, {
+                    lastMessage: 'Channel created',
+                    lastMessageTime: Date.now(),
+                    participants: channelData.members,
+                    type: 'channel',
+                    channelId: channelId
+                });
+                updateConversationsList();
+                updateRecentChats();
+            }
+            
+        } catch (error) {
+            console.error('Error starting channel chat:', error);
+            showNotification('Error', 'Failed to start channel chat', 'error');
+        }
+    }
+
+    function updateChatHeader(data, type) {
         const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
         const chatTitle = document.getElementById('chatTitle');
         const chatStatus = document.getElementById('chatStatus');
         
-        if (chatHeaderAvatar) {
-            chatHeaderAvatar.textContent = getInitials(userData.name);
-            chatHeaderAvatar.style.background = userData.color || getColorForUser(userData.uid);
-        }
-        if (chatTitle) chatTitle.textContent = userData.name || userData.email || 'Unknown User';
-        if (chatStatus) {
-            const isOnline = appState.onlineUsers.has(userData.uid);
-            const onlineUser = appState.onlineUsers.get(userData.uid);
-            const status = isOnline ? (onlineUser?.status || 'available') : 'offline';
-            const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
-            
-            chatStatus.innerHTML = `
-                <span class="status-dot ${config.colorClass}"></span>
-                <span>${isOnline ? config.text : 'Offline'}</span>
-            `;
+        if (type === 'individual') {
+            if (chatHeaderAvatar) {
+                chatHeaderAvatar.textContent = getInitials(data.name);
+                chatHeaderAvatar.style.background = data.color || getColorForUser(data.uid);
+                chatHeaderAvatar.classList.remove('channel');
+            }
+            if (chatTitle) chatTitle.textContent = data.name || data.email || 'Unknown User';
+            if (chatStatus) {
+                const isOnline = appState.onlineUsers.has(data.uid);
+                const onlineUser = appState.onlineUsers.get(data.uid);
+                const status = isOnline ? (onlineUser?.status || 'available') : 'offline';
+                const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+                
+                chatStatus.innerHTML = `
+                    <span class="status-dot ${config.colorClass}"></span>
+                    <span>${isOnline ? config.text : 'Offline'}</span>
+                `;
+            }
+        } else if (type === 'channel') {
+            if (chatHeaderAvatar) {
+                chatHeaderAvatar.textContent = '#';
+                chatHeaderAvatar.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+                chatHeaderAvatar.classList.add('channel');
+            }
+            if (chatTitle) chatTitle.textContent = data.name;
+            if (chatStatus) {
+                const memberCount = Object.keys(data.members || {}).length;
+                chatStatus.innerHTML = `
+                    <i class="fas fa-users" style="margin-right: 4px;"></i>
+                    <span>${memberCount} members</span>
+                `;
+            }
         }
     }
 
-    async function deleteChat(chatId, userId) {
+    async function deleteChat(chatId, targetId) {
         if (!confirm('Are you sure you want to delete this chat? This will remove all messages and cannot be undone.')) {
             return;
         }
         
         try {
-            // Remove from Firebase
+            // Check if it's a channel or individual chat
+            const conversation = appState.conversations.get(chatId);
+            
+            if (conversation?.type === 'channel') {
+                // For channels, check if user is the creator
+                const channel = appState.channels.get(chatId);
+                if (channel && channel.createdBy === appState.currentUser.uid) {
+                    // Delete channel completely
+                    await appState.db.ref(`channels/${chatId}`).remove();
+                    appState.channels.delete(chatId);
+                } else {
+                    // Just remove user from channel members
+                    await appState.db.ref(`channels/${chatId}/members/${appState.currentUser.uid}`).remove();
+                    if (channel) {
+                        delete channel.members[appState.currentUser.uid];
+                    }
+                }
+            }
+            
+            // Remove conversation and messages
             await appState.db.ref(`conversations/${chatId}`).remove();
             await appState.db.ref(`messages/${chatId}`).remove();
             
@@ -2597,15 +3283,19 @@
             await appState.db.ref(`messages/${chatId}`).remove();
             
             // Update conversation
+            const lastMessage = appState.currentChat.type === 'channel' 
+                ? 'Channel messages cleared' 
+                : 'Chat cleared';
+                
             await appState.db.ref(`conversations/${chatId}`).update({
-                lastMessage: 'Chat cleared',
+                lastMessage: lastMessage,
                 lastMessageTime: Date.now()
             });
             
             // Update local state
             const conversation = appState.conversations.get(chatId);
             if (conversation) {
-                conversation.lastMessage = 'Chat cleared';
+                conversation.lastMessage = lastMessage;
                 conversation.lastMessageTime = Date.now();
             }
             
@@ -2615,7 +3305,7 @@
                     <div class="mb-2">
                         <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
                     </div>
-                    <h3 class="mb-2">Chat cleared</h3>
+                    <h3 class="mb-2">${lastMessage}</h3>
                     <p class="text-muted">Start a new conversation!</p>
                 </div>
             `;
@@ -2736,13 +3426,13 @@
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
         
-        const avatarText = isSent ? 
-            getInitials(appState.currentUser.name) : 
-            getInitials(appState.currentChat?.user?.name || 'User');
+        const senderUser = appState.allUsers.get(message.senderId) || {
+            name: message.senderName || 'Unknown User',
+            color: getColorForUser(message.senderId)
+        };
         
-        const avatarColor = isSent ? 
-            (appState.currentUser.color || getColorForUser(appState.currentUser.uid)) : 
-            (appState.currentChat?.user?.color || getColorForUser(appState.currentChat?.user?.uid));
+        const avatarText = getInitials(senderUser.name);
+        const avatarColor = senderUser.color || getColorForUser(message.senderId);
         
         messageDiv.innerHTML = `
             ${!isSent ? `
@@ -2754,7 +3444,12 @@
                 <div class="message-bubble">
                     <div class="message-text">${message.text || ''}</div>
                 </div>
-                <div class="message-time">${formatTime(message.timestamp)}</div>
+                <div class="message-info">
+                    ${!isSent && appState.currentChat?.type === 'channel' ? `
+                        <div class="message-sender">${senderUser.name}</div>
+                    ` : ''}
+                    <div class="message-time">${formatTime(message.timestamp)}</div>
+                </div>
             </div>
             ${isSent ? `
                 <div class="message-avatar" style="background: ${avatarColor}">
@@ -2789,10 +3484,7 @@
             await appState.db.ref(`conversations/${appState.currentChat.chatId}`).update({
                 lastMessage: text,
                 lastMessageTime: Date.now(),
-                participants: {
-                    [appState.currentUser.uid]: true,
-                    [appState.currentChat.userId]: true
-                }
+                lastMessageSender: appState.currentUser.name
             });
             
             // Update local conversation state
@@ -2803,8 +3495,8 @@
             document.getElementById('sendBtn').disabled = true;
             autoResizeTextarea();
             
-            // Send notification to recipient
-            await sendChatNotification(appState.currentChat.userId, text);
+            // Send notifications to recipients
+            await sendChatNotifications(text);
             
         } catch (error) {
             console.error('Error sending message:', error);
@@ -2812,31 +3504,46 @@
         }
     }
 
-    async function sendChatNotification(userId, message) {
+    async function sendChatNotifications(message) {
         try {
-            await appState.db.ref(`notifications/${userId}`).push().set({
-                type: 'message',
-                title: `New message from ${appState.currentUser.name}`,
-                message: message,
-                timestamp: Date.now(),
-                read: false,
-                senderId: appState.currentUser.uid
+            const conversation = appState.conversations.get(appState.currentChat.chatId);
+            if (!conversation || !conversation.participants) return;
+            
+            const notificationPromises = [];
+            
+            Object.keys(conversation.participants).forEach(userId => {
+                if (userId !== appState.currentUser.uid) {
+                    const notification = appState.db.ref(`notifications/${userId}`).push().set({
+                        type: appState.currentChat.type === 'channel' ? 'channel_message' : 'message',
+                        title: appState.currentChat.type === 'channel' 
+                            ? `New message in #${appState.currentChat.channel?.name || 'channel'}`
+                            : `New message from ${appState.currentUser.name}`,
+                        message: message,
+                        timestamp: Date.now(),
+                        read: false,
+                        senderId: appState.currentUser.uid,
+                        chatId: appState.currentChat.chatId
+                    });
+                    notificationPromises.push(notification);
+                }
             });
+            
+            await Promise.all(notificationPromises);
+            
         } catch (error) {
-            console.error('Error sending notification:', error);
+            console.error('Error sending notifications:', error);
         }
     }
 
     function updateConversation(chatId, lastMessage, timestamp) {
         const conversation = appState.conversations.get(chatId) || {
-            participants: {
-                [appState.currentUser.uid]: true,
-                [appState.currentChat?.userId]: true
-            }
+            participants: {},
+            type: appState.currentChat?.type || 'individual'
         };
         
         conversation.lastMessage = lastMessage;
         conversation.lastMessageTime = timestamp;
+        conversation.lastMessageSender = appState.currentUser.name;
         appState.conversations.set(chatId, conversation);
         updateConversationsList();
         updateRecentChats();
@@ -2855,22 +3562,25 @@
     // ============================
     async function loadConversations() {
         try {
-            const snapshot = await appState.db.ref('conversations')
+            const conversationsSnapshot = await appState.db.ref('conversations')
                 .orderByChild('lastMessageTime')
-                .limitToLast(20)
+                .limitToLast(50)
                 .once('value');
             
-            const conversations = snapshot.val() || {};
+            const conversations = conversationsSnapshot.val() || {};
             
             // Clear current conversations
             appState.conversations.clear();
             
-            // Add conversations to state
+            // Add conversations to state where user is a participant
             Object.entries(conversations).forEach(([chatId, data]) => {
                 if (data.participants && data.participants[appState.currentUser.uid]) {
                     appState.conversations.set(chatId, data);
                 }
             });
+            
+            // Load channels
+            await loadChannels();
             
             // Update UI
             updateConversationsList();
@@ -2898,55 +3608,226 @@
         }
         
         const sortedConversations = Array.from(appState.conversations.entries())
-            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
+            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
+            .slice(0, 20); // Show max 20 in sidebar
         
         sortedConversations.forEach(([chatId, data]) => {
-            const otherParticipantId = Object.keys(data.participants || {})
-                .find(id => id !== appState.currentUser.uid);
-            
-            if (!otherParticipantId) return;
-            
-            const user = appState.allUsers.get(otherParticipantId) || {
-                name: 'Unknown User',
-                color: getColorForUser(otherParticipantId)
-            };
-            
-            const div = document.createElement('div');
-            div.className = 'chat-item';
-            div.dataset.chatId = chatId;
-            div.dataset.userId = otherParticipantId;
-            div.innerHTML = `
-                <div class="chat-avatar" style="background: ${user.color}">
-                    ${getInitials(user.name)}
-                </div>
-                <div class="chat-info">
-                    <div class="chat-name">${user.name}</div>
-                    <div class="chat-last-message">${data.lastMessage || 'No messages yet'}</div>
-                </div>
-                <div class="chat-time">${data.lastMessageTime ? formatTime(data.lastMessageTime) : ''}</div>
-                <div class="chat-actions">
-                    <button class="chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-            `;
-            
-            div.addEventListener('click', (e) => {
-                if (!e.target.closest('.chat-action-btn')) {
-                    if (appState.allUsers.has(otherParticipantId)) {
-                        startChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
-                    }
-                }
-            });
-            
-            const deleteBtn = div.querySelector('.chat-action-btn.delete');
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                deleteChat(chatId, otherParticipantId);
-            });
-            
-            container.appendChild(div);
+            if (data.type === 'channel') {
+                const channel = appState.channels.get(chatId);
+                if (!channel) return;
+                
+                const div = createChannelListItem(chatId, channel, data);
+                container.appendChild(div);
+            } else {
+                // Individual chat
+                const otherParticipantId = Object.keys(data.participants || {})
+                    .find(id => id !== appState.currentUser.uid);
+                
+                if (!otherParticipantId) return;
+                
+                const user = appState.allUsers.get(otherParticipantId) || {
+                    name: 'Unknown User',
+                    color: getColorForUser(otherParticipantId)
+                };
+                
+                const div = createIndividualChatListItem(chatId, user, data, otherParticipantId);
+                container.appendChild(div);
+            }
         });
+    }
+
+    function createChannelListItem(chatId, channel, conversation) {
+        const div = document.createElement('div');
+        div.className = 'chat-item';
+        div.dataset.chatId = chatId;
+        div.dataset.channelId = chatId;
+        div.innerHTML = `
+            <div class="chat-avatar channel">
+                <i class="fas fa-hashtag"></i>
+            </div>
+            <div class="chat-info">
+                <div class="chat-name">${channel.name}</div>
+                <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="chat-actions">
+                <button class="chat-action-btn delete" title="Leave Channel" data-chat-id="${chatId}">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        `;
+        
+        div.addEventListener('click', (e) => {
+            if (!e.target.closest('.chat-action-btn')) {
+                startChannelChat(chatId, channel);
+            }
+        });
+        
+        const deleteBtn = div.querySelector('.chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, null);
+        });
+        
+        return div;
+    }
+
+    function createIndividualChatListItem(chatId, user, conversation, otherParticipantId) {
+        const div = document.createElement('div');
+        div.className = 'chat-item';
+        div.dataset.chatId = chatId;
+        div.dataset.userId = otherParticipantId;
+        div.innerHTML = `
+            <div class="chat-avatar" style="background: ${user.color}">
+                ${getInitials(user.name)}
+            </div>
+            <div class="chat-info">
+                <div class="chat-name">${user.name}</div>
+                <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="chat-actions">
+                <button class="chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+        
+        div.addEventListener('click', (e) => {
+            if (!e.target.closest('.chat-action-btn')) {
+                if (appState.allUsers.has(otherParticipantId)) {
+                    startIndividualChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
+                }
+            }
+        });
+        
+        const deleteBtn = div.querySelector('.chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, otherParticipantId);
+        });
+        
+        return div;
+    }
+
+    // ============================
+    // RECENT CHATS MANAGEMENT
+    // ============================
+    function updateRecentChats() {
+        const container = document.getElementById('recentChatsGrid');
+        const noChatsMessage = document.getElementById('noChatsMessage');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (appState.conversations.size === 0) {
+            noChatsMessage.style.display = 'block';
+            return;
+        }
+        
+        noChatsMessage.style.display = 'none';
+        
+        const sortedConversations = Array.from(appState.conversations.entries())
+            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
+            .slice(0, 12);
+        
+        sortedConversations.forEach(([chatId, data]) => {
+            if (data.type === 'channel') {
+                const channel = appState.channels.get(chatId);
+                if (!channel) return;
+                
+                const card = createChannelCard(chatId, channel, data);
+                container.appendChild(card);
+            } else {
+                const otherParticipantId = Object.keys(data.participants || {})
+                    .find(id => id !== appState.currentUser.uid);
+                
+                if (!otherParticipantId) return;
+                
+                const user = appState.allUsers.get(otherParticipantId) || {
+                    name: 'Unknown User',
+                    color: getColorForUser(otherParticipantId)
+                };
+                
+                const card = createIndividualChatCard(chatId, user, data, otherParticipantId);
+                container.appendChild(card);
+            }
+        });
+    }
+
+    function createChannelCard(chatId, channel, conversation) {
+        const card = document.createElement('div');
+        card.className = 'recent-chat-card';
+        card.dataset.chatId = chatId;
+        card.dataset.channelId = chatId;
+        card.innerHTML = `
+            <div class="recent-chat-avatar channel">
+                <i class="fas fa-hashtag"></i>
+            </div>
+            <div class="recent-chat-info">
+                <div class="recent-chat-name channel">${channel.name}</div>
+                <div class="recent-chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="recent-chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="recent-chat-card-actions">
+                <button class="recent-chat-action-btn delete" title="Leave Channel" data-chat-id="${chatId}">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        `;
+        
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.recent-chat-action-btn')) {
+                startChannelChat(chatId, channel);
+            }
+        });
+        
+        const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, null);
+        });
+        
+        return card;
+    }
+
+    function createIndividualChatCard(chatId, user, conversation, otherParticipantId) {
+        const card = document.createElement('div');
+        card.className = 'recent-chat-card';
+        card.dataset.chatId = chatId;
+        card.dataset.userId = otherParticipantId;
+        card.innerHTML = `
+            <div class="recent-chat-avatar" style="background: ${user.color}">
+                ${getInitials(user.name)}
+            </div>
+            <div class="recent-chat-info">
+                <div class="recent-chat-name">${user.name}</div>
+                <div class="recent-chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="recent-chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="recent-chat-card-actions">
+                <button class="recent-chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+        
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.recent-chat-action-btn')) {
+                if (appState.allUsers.has(otherParticipantId)) {
+                    startIndividualChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
+                }
+            }
+        });
+        
+        const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, otherParticipantId);
+        });
+        
+        return card;
     }
 
     // ============================
@@ -3112,15 +3993,15 @@
             if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
                 appState.onlineUsers.set(snapshot.key, user);
                 
-                if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
-                    updateChatHeader(user);
+                if (appState.currentChat && appState.currentChat.type === 'individual' && appState.currentChat.userId === snapshot.key) {
+                    updateChatHeader(user, 'individual');
                 }
             } else if (user.status === 'offline') {
                 appState.onlineUsers.delete(snapshot.key);
                 
-                if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
+                if (appState.currentChat && appState.currentChat.type === 'individual' && appState.currentChat.userId === snapshot.key) {
                     const offlineUser = appState.allUsers.get(snapshot.key) || user;
-                    updateChatHeader(offlineUser);
+                    updateChatHeader(offlineUser, 'individual');
                 }
             }
         });
@@ -3163,6 +4044,29 @@
             appState.conversations.delete(snapshot.key);
             updateConversationsList();
             updateRecentChats();
+        });
+        
+        // Channels listener
+        appState.db.ref('channels').on('child_changed', (snapshot) => {
+            const channel = snapshot.val();
+            if (channel.members && channel.members[appState.currentUser.uid]) {
+                appState.channels.set(snapshot.key, channel);
+            } else {
+                appState.channels.delete(snapshot.key);
+            }
+        });
+        
+        // New channels
+        appState.db.ref('channels').on('child_added', (snapshot) => {
+            const channel = snapshot.val();
+            if (channel.members && channel.members[appState.currentUser.uid]) {
+                appState.channels.set(snapshot.key, channel);
+            }
+        });
+        
+        // Channels removed
+        appState.db.ref('channels').on('child_removed', (snapshot) => {
+            appState.channels.delete(snapshot.key);
         });
     }
 
@@ -3246,7 +4150,7 @@
             // Set online status
             await setOnlineStatus();
             
-            // Load conversations
+            // Load conversations and channels
             await loadConversations();
             
             // Set up real-time listeners
@@ -3377,23 +4281,38 @@
             });
         }
         
-        // New Chat button
+        // New Chat button - shows channel selection modal
         const newChatBtn = document.getElementById('newChatBtn');
         if (newChatBtn) {
             newChatBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                toggleNewChatModal(true);
+                toggleChannelSelectionModal(true);
             });
         }
         
-        // Close New Chat Modal button
-        const closeNewChatModal = document.getElementById('closeNewChatModal');
-        if (closeNewChatModal) {
-            closeNewChatModal.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleNewChatModal(false);
-            });
-        }
+        // Channel selection options
+        document.getElementById('newMessageOption')?.addEventListener('click', () => {
+            toggleChannelSelectionModal(false);
+            toggleNewChatModal(true);
+        });
+        
+        document.getElementById('newChannelOption')?.addEventListener('click', () => {
+            toggleChannelSelectionModal(false);
+            toggleNewChannelModal(true);
+        });
+        
+        // Close modals
+        document.getElementById('closeNewChatModal')?.addEventListener('click', () => {
+            toggleNewChatModal(false);
+        });
+        
+        document.getElementById('closeNewChannelModal')?.addEventListener('click', () => {
+            toggleNewChannelModal(false);
+        });
+        
+        document.getElementById('cancelChannelBtn')?.addEventListener('click', () => {
+            toggleNewChannelModal(false);
+        });
         
         // New Chat search
         const newChatSearch = document.getElementById('newChatSearch');
@@ -3402,6 +4321,17 @@
                 filterNewChatUsers(e.target.value);
             });
         }
+        
+        // Channel name input
+        document.getElementById('channelName')?.addEventListener('input', () => {
+            updateCreateChannelButton();
+        });
+        
+        // Create channel button
+        document.getElementById('createChannelBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            createChannel();
+        });
         
         // Apps search
         const appsSearch = document.getElementById('appsSearch');
@@ -3464,15 +4394,35 @@
                 toggleAppsPopup(false);
             }
             
-            // Close new chat modal if clicking outside
+            // Close channel selection modal
+            const channelSelectionModal = document.getElementById('channelSelectionModal');
+            const channelSelectionContent = document.querySelector('.channel-selection-content');
+            
+            if (channelSelectionModal && channelSelectionContent && 
+                channelSelectionModal.classList.contains('active') &&
+                !channelSelectionContent.contains(e.target) &&
+                !e.target.closest('#newChatBtn')) {
+                toggleChannelSelectionModal(false);
+            }
+            
+            // Close new chat modal
             const newChatModal = document.getElementById('newChatModal');
             const newChatContent = document.querySelector('.new-chat-content');
             
             if (newChatModal && newChatContent && 
                 newChatModal.classList.contains('active') &&
-                !newChatContent.contains(e.target) &&
-                !e.target.closest('#newChatBtn')) {
+                !newChatContent.contains(e.target)) {
                 toggleNewChatModal(false);
+            }
+            
+            // Close new channel modal
+            const newChannelModal = document.getElementById('newChannelModal');
+            const newChannelContent = document.querySelector('.new-channel-content');
+            
+            if (newChannelModal && newChannelContent && 
+                newChannelModal.classList.contains('active') &&
+                !newChannelContent.contains(e.target)) {
+                toggleNewChannelModal(false);
             }
             
             // Close status dropdown
