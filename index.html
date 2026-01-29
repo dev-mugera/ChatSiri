@@ -1762,3 +1762,1332 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <script>
+    // ============================
+    // FIREBASE CONFIGURATION
+    // ============================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCOb4BqfiN3vt1Y13UTEpA_boCqNRH6rrQ",
+        authDomain: "dsog-stores-dashboard.firebaseapp.com",
+        databaseURL: "https://dsog-stores-dashboard-default-rtdb.firebaseio.com",
+        projectId: "dsog-stores-dashboard",
+        storageBucket: "dsog-stores-dashboard.firebasestorage.app",
+        messagingSenderId: "1085972125142",
+        appId: "1:1085972125142:web:9abea9ee0dd792a052c077"
+    };
+
+    // ============================
+    // APPLICATION STATE
+    // ============================
+    const appState = {
+        currentUser: null,
+        currentChat: null,
+        allUsers: new Map(), // All users from Firebase
+        onlineUsers: new Map(), // Online users only
+        conversations: new Map(),
+        firebase: null,
+        auth: null,
+        db: null,
+        storage: null,
+        messageListeners: new Map(),
+        userStatus: 'available',
+        currentTheme: 'navy',
+        enterpriseApps: [],
+        isAppsPopupOpen: false,
+        isNewChatModalOpen: false
+    };
+
+    // ============================
+    // ENTERPRISE APPS DATABASE
+    // ============================
+    const ENTERPRISE_APPS = [
+        {
+            id: 'esh',
+            name: 'Sales Hub',
+            description: 'Enterprise Sales Management',
+            icon: 'https://i.postimg.cc/BbZ5c1Tv/20260119_1500-Image-Generation-remix-01kfb1znpceyc8d9dztq9ea0y3-1-removebg-preview-1.png',
+            link: 'efh.html',
+            category: 'Sales',
+            color: '#3b82f6'
+        },
+        {
+            id: 'erh',
+            name: 'Resource Hub',
+            description: 'Enterprise Resource Management',
+            icon: 'https://i.postimg.cc/3rFrpW8P/20260112_1839-Image-Generation-remix-01kesdpw6ce8s88amr0e92g276-removebg-preview-removebg-preview.png',
+            link: 'erh.html',
+            category: 'Resources',
+            color: '#10b981'
+        },
+        {
+            id: 'efh',
+            name: 'Finance Hub',
+            description: 'Enterprise Financial Management',
+            icon: 'https://i.postimg.cc/nLkCKS3J/20260119_1502-Image-Generation-remix-01kfb24hnje88t8jgrmchg3m4w-1-removebg-preview.png',
+            link: 'efh.html',
+            category: 'Finance',
+            color: '#f59e0b'
+        },
+        {
+            id: 'efs',
+            name: 'Fleet Hub',
+            description: 'Enterprise Fleet Management',
+            icon: 'https://i.postimg.cc/MTYB3K5P/20260119_1531-Image-Generation-remix-01kfb3rnfzfzxt9rhe0336w04w-1-removebg-preview.png',
+            link: 'efs.html',
+            category: 'Operations',
+            color: '#ef4444'
+        },
+        {
+            id: 'eth',
+            name: 'Talent Hub',
+            description: 'Enterprise Talent Management',
+            icon: 'https://i.postimg.cc/wvFVykC1/20260119_1539-Image-Generation-remix-01kfb488qbfhz9a354vdfwrwva-1-removebg-preview.png',
+            link: 'eth.html',
+            category: 'HR',
+            color: '#8b5cf6'
+        }
+    ];
+
+    // Status configurations
+    const STATUS_CONFIG = {
+        available: {
+            text: 'Available',
+            colorClass: 'available',
+            indicatorColor: '#10b981'
+        },
+        away: {
+            text: 'Away',
+            colorClass: 'away',
+            indicatorColor: '#f59e0b'
+        },
+        meeting: {
+            text: 'In a Meeting',
+            colorClass: 'meeting',
+            indicatorColor: '#ef4444'
+        },
+        soon: {
+            text: 'Back Soon',
+            colorClass: 'soon',
+            indicatorColor: '#8b5cf6'
+        }
+    };
+
+    // Default colors for user avatars (fallback)
+    const USER_COLORS = [
+        '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', 
+        '#ef4444', '#8b5cf6', '#3b82f6', '#06b6d4',
+        '#8b5cf6', '#10b981'
+    ];
+
+    // ============================
+    // UTILITY FUNCTIONS
+    // ============================
+    function getInitials(name) {
+        if (!name) return '??';
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    }
+
+    function getColorForUser(userId) {
+        // Generate a consistent color based on user ID
+        let hash = 0;
+        for (let i = 0; i < userId.length; i++) {
+            hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % USER_COLORS.length;
+        return USER_COLORS[index];
+    }
+
+    function showNotification(title, message, type = 'info') {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        
+        const icon = type === 'success' ? 'check-circle' : 
+                    type === 'error' ? 'exclamation-circle' : 'info-circle';
+        
+        notification.innerHTML = `
+            <div class="notification-icon">
+                <i class="fas fa-${icon}"></i>
+            </div>
+            <div class="notification-content">
+                <div class="notification-title">${title}</div>
+                <div class="notification-message">${message}</div>
+            </div>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
+    }
+
+    function formatTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatDate(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = now - date;
+        
+        if (diff < 86400000) { // Less than 24 hours
+            return 'Today';
+        } else if (diff < 172800000) { // Less than 48 hours
+            return 'Yesterday';
+        } else {
+            return date.toLocaleDateString();
+        }
+    }
+
+    function autoResizeTextarea() {
+        const textarea = document.getElementById('messageInput');
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        }
+    }
+
+    // ============================
+    // NEW CHAT MODAL
+    // ============================
+    function toggleNewChatModal(show) {
+        const newChatModal = document.getElementById('newChatModal');
+        if (!newChatModal) return;
+        
+        if (show === undefined) {
+            appState.isNewChatModalOpen = !appState.isNewChatModalOpen;
+        } else {
+            appState.isNewChatModalOpen = show;
+        }
+        
+        if (appState.isNewChatModalOpen) {
+            newChatModal.classList.add('active');
+            document.getElementById('newChatSearch').focus();
+            loadUsersForNewChat();
+        } else {
+            newChatModal.classList.remove('active');
+            document.getElementById('newChatSearch').value = '';
+        }
+    }
+
+    async function loadUsersForNewChat() {
+        const container = document.getElementById('newChatUsers');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
+        
+        try {
+            // Load users from Firebase
+            const snapshot = await appState.db.ref('users').once('value');
+            const users = snapshot.val() || {};
+            
+            // Clear current users
+            appState.allUsers.clear();
+            
+            // Add users to state (excluding current user)
+            Object.entries(users).forEach(([uid, user]) => {
+                if (uid !== appState.currentUser?.uid) {
+                    appState.allUsers.set(uid, {
+                        uid,
+                        ...user,
+                        color: user.color || getColorForUser(uid)
+                    });
+                }
+            });
+            
+            updateNewChatUsersList();
+            
+        } catch (error) {
+            console.error('Error loading users:', error);
+            container.innerHTML = `
+                <div class="p-4 text-center text-muted">
+                    <p>Error loading users</p>
+                    <p class="text-sm">Please try again</p>
+                </div>
+            `;
+        }
+    }
+
+    function updateNewChatUsersList() {
+        const container = document.getElementById('newChatUsers');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        // Convert to array and sort
+        const sortedUsers = Array.from(appState.allUsers.values()).sort((a, b) => {
+            // Online users first
+            const aOnline = appState.onlineUsers.has(a.uid) ? 0 : 1;
+            const bOnline = appState.onlineUsers.has(b.uid) ? 0 : 1;
+            if (aOnline !== bOnline) return aOnline - bOnline;
+            
+            // Then sort by name
+            return (a.name || '').localeCompare(b.name || '');
+        });
+        
+        if (sortedUsers.length === 0) {
+            container.innerHTML = `
+                <div class="p-4 text-center text-muted">
+                    <p>No other users found</p>
+                </div>
+            `;
+            return;
+        }
+        
+        sortedUsers.forEach(user => {
+            const isOnline = appState.onlineUsers.has(user.uid);
+            const onlineUser = appState.onlineUsers.get(user.uid);
+            const status = onlineUser?.status || 'offline';
+            const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+            
+            const userElement = document.createElement('div');
+            userElement.className = 'new-chat-user';
+            userElement.dataset.userId = user.uid;
+            userElement.innerHTML = `
+                <div class="new-chat-user-avatar" style="background: ${user.color || getColorForUser(user.uid)}">
+                    ${getInitials(user.name || user.email)}
+                </div>
+                <div class="new-chat-user-info">
+                    <div class="new-chat-user-name">${user.name || user.email || 'Unknown User'}</div>
+                    <div class="new-chat-user-role">${user.role || 'User'}</div>
+                </div>
+                <div class="new-chat-user-status">
+                    <span class="status-dot-sm ${isOnline ? config.colorClass : ''}"></span>
+                    <span>${isOnline ? config.text : 'Offline'}</span>
+                </div>
+            `;
+            
+            userElement.addEventListener('click', () => {
+                startChat(user.uid, user);
+                toggleNewChatModal(false);
+            });
+            
+            container.appendChild(userElement);
+        });
+    }
+
+    function filterNewChatUsers(searchTerm) {
+        const container = document.getElementById('newChatUsers');
+        if (!container) return;
+        
+        const allUserElements = container.querySelectorAll('.new-chat-user');
+        if (!searchTerm) {
+            allUserElements.forEach(el => el.style.display = 'flex');
+            return;
+        }
+        
+        const term = searchTerm.toLowerCase();
+        allUserElements.forEach(el => {
+            const userName = el.querySelector('.new-chat-user-name').textContent.toLowerCase();
+            const userRole = el.querySelector('.new-chat-user-role').textContent.toLowerCase();
+            
+            if (userName.includes(term) || userRole.includes(term)) {
+                el.style.display = 'flex';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+    }
+
+    // ============================
+    // APPS MANAGEMENT
+    // ============================
+    function initializeApps() {
+        // Set apps data
+        appState.enterpriseApps = ENTERPRISE_APPS;
+        
+        // Render apps grid
+        renderAppsGrid(appState.enterpriseApps);
+    }
+
+    function renderAppsGrid(apps) {
+        const container = document.getElementById('appsGrid');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        apps.forEach(app => {
+            const appElement = document.createElement('div');
+            appElement.className = 'app-item';
+            appElement.dataset.appId = app.id;
+            appElement.title = `Open ${app.name}`;
+            
+            // Clean up icon URL
+            let iconUrl = app.icon;
+            iconUrl = iconUrl.replace(/\(/g, '%28').replace(/\)/g, '%29');
+            
+            appElement.innerHTML = `
+                <div class="app-icon">
+                    <img src="${iconUrl}" alt="${app.name}" onerror="handleIconError(this, '${app.color}', '${app.name}')">
+                </div>
+                <div class="app-name">${app.name}</div>
+                <div class="app-desc">${app.description}</div>
+            `;
+            
+            appElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openApp(app);
+            });
+            
+            container.appendChild(appElement);
+        });
+    }
+
+    function handleIconError(imgElement, color, name) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect width="100" height="100" fill="${color}" rx="12"/>
+            <text x="50" y="55" font-family="Arial, sans-serif" font-size="36" 
+                  fill="white" text-anchor="middle" font-weight="bold">
+                ${name.charAt(0)}
+            </text>
+        </svg>`;
+        
+        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        imgElement.src = svgUrl;
+    }
+
+    function openApp(app) {
+        window.open(app.link, '_blank');
+        toggleAppsPopup(false);
+        showNotification('App Launched', `${app.name} opened in new tab`, 'success');
+    }
+
+    function filterApps(searchTerm) {
+        if (!searchTerm) {
+            renderAppsGrid(appState.enterpriseApps);
+            return;
+        }
+        
+        const filteredApps = appState.enterpriseApps.filter(app => 
+            app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.category.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        renderAppsGrid(filteredApps);
+    }
+
+    function toggleAppsPopup(show) {
+        const appsPopup = document.getElementById('appsPopup');
+        if (!appsPopup) return;
+        
+        if (show === undefined) {
+            appState.isAppsPopupOpen = !appState.isAppsPopupOpen;
+        } else {
+            appState.isAppsPopupOpen = show;
+        }
+        
+        if (appState.isAppsPopupOpen) {
+            appsPopup.classList.add('active');
+        } else {
+            appsPopup.classList.remove('active');
+        }
+    }
+
+    // ============================
+    // THEME MANAGEMENT
+    // ============================
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('workspace-theme');
+        if (savedTheme) {
+            appState.currentTheme = savedTheme;
+        } else {
+            appState.currentTheme = 'navy';
+            localStorage.setItem('workspace-theme', 'navy');
+        }
+        
+        applyTheme(appState.currentTheme);
+    }
+
+    function applyTheme(theme) {
+        appState.currentTheme = theme;
+        document.body.setAttribute('data-theme', theme);
+        
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.theme === theme) {
+                option.classList.add('active');
+            }
+        });
+        
+        localStorage.setItem('workspace-theme', theme);
+    }
+
+    // ============================
+    // STATUS MANAGEMENT
+    // ============================
+    function updateUserStatus(status) {
+        if (!appState.currentUser || !appState.db) return;
+        
+        appState.userStatus = status;
+        const config = STATUS_CONFIG[status];
+        
+        // Update UI
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        
+        if (statusIndicator) {
+            statusIndicator.className = `status-indicator ${config.colorClass}`;
+        }
+        if (statusText) {
+            statusText.textContent = config.text;
+        }
+        
+        // Update in Firebase
+        const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
+        userRef.update({
+            status: status,
+            statusText: config.text,
+            lastSeen: Date.now()
+        });
+        
+        document.getElementById('statusDropdown').classList.remove('active');
+        showNotification('Status Updated', `You are now ${config.text.toLowerCase()}`, 'success');
+    }
+
+    // ============================
+    // CHAT FUNCTIONALITY
+    // ============================
+    async function startChat(userId, userData) {
+        try {
+            // Clear previous message listener
+            if (appState.messageListeners.has(appState.currentChat?.chatId)) {
+                appState.messageListeners.get(appState.currentChat.chatId)();
+            }
+            
+            // Set current chat
+            const chatId = [appState.currentUser.uid, userId].sort().join('_');
+            appState.currentChat = {
+                userId,
+                user: userData,
+                chatId
+            };
+            
+            // Update UI
+            updateChatHeader(userData);
+            
+            // Show chat interface
+            document.getElementById('messageInputContainer').style.display = 'block';
+            document.getElementById('chatActions').style.display = 'flex';
+            document.getElementById('messageInput').focus();
+            
+            // Load messages
+            await loadMessages(chatId);
+            
+            // Set up real-time message listener
+            setupMessageListener(chatId);
+            
+            // Mark conversation as read
+            await markConversationAsRead(chatId);
+            
+            // Add to conversations if not already there
+            if (!appState.conversations.has(chatId)) {
+                appState.conversations.set(chatId, {
+                    lastMessage: 'Start of conversation',
+                    lastMessageTime: Date.now(),
+                    participants: {
+                        [appState.currentUser.uid]: true,
+                        [userId]: true
+                    }
+                });
+                updateConversationsList();
+            }
+            
+        } catch (error) {
+            console.error('Error starting chat:', error);
+            showNotification('Error', 'Failed to start chat', 'error');
+        }
+    }
+
+    function updateChatHeader(userData) {
+        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
+        const chatTitle = document.getElementById('chatTitle');
+        const chatStatus = document.getElementById('chatStatus');
+        
+        if (chatHeaderAvatar) {
+            chatHeaderAvatar.textContent = getInitials(userData.name);
+            chatHeaderAvatar.style.background = userData.color || getColorForUser(userData.uid);
+        }
+        if (chatTitle) chatTitle.textContent = userData.name || userData.email || 'Unknown User';
+        if (chatStatus) {
+            const isOnline = appState.onlineUsers.has(userData.uid);
+            const onlineUser = appState.onlineUsers.get(userData.uid);
+            const status = isOnline ? (onlineUser?.status || 'available') : 'offline';
+            const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+            
+            chatStatus.innerHTML = `
+                <span class="status-dot ${config.colorClass}"></span>
+                <span>${isOnline ? config.text : 'Offline'}</span>
+            `;
+        }
+    }
+
+    async function loadMessages(chatId) {
+        try {
+            const snapshot = await appState.db.ref(`messages/${chatId}`)
+                .orderByChild('timestamp')
+                .limitToLast(50)
+                .once('value');
+            
+            const messages = snapshot.val() || {};
+            displayMessages(Object.values(messages));
+            
+        } catch (error) {
+            console.error('Error loading messages:', error);
+            showNotification('Error', 'Failed to load messages', 'error');
+        }
+    }
+
+    function setupMessageListener(chatId) {
+        // Remove existing listener
+        if (appState.messageListeners.has(chatId)) {
+            appState.messageListeners.get(chatId)();
+        }
+        
+        // Set up new listener
+        const listener = appState.db.ref(`messages/${chatId}`)
+            .orderByChild('timestamp')
+            .limitToLast(100)
+            .on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                addMessageToDisplay(message);
+                
+                // Scroll to bottom
+                const container = document.getElementById('messagesContainer');
+                setTimeout(() => {
+                    container.scrollTop = container.scrollHeight;
+                }, 100);
+                
+                // Update conversation
+                if (message.senderId !== appState.currentUser.uid) {
+                    updateConversation(chatId, message.text, message.timestamp);
+                }
+            });
+        
+        // Store listener for cleanup
+        appState.messageListeners.set(chatId, () => {
+            appState.db.ref(`messages/${chatId}`).off('child_added', listener);
+        });
+    }
+
+    function displayMessages(messages) {
+        const container = document.getElementById('messagesContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (messages.length === 0) {
+            container.innerHTML = `
+                <div class="p-4 text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
+                    </div>
+                    <h3 class="mb-2">No messages yet</h3>
+                    <p class="text-muted">Start the conversation!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Sort messages by timestamp
+        messages.sort((a, b) => a.timestamp - b.timestamp);
+        
+        let lastDate = null;
+        
+        messages.forEach(msg => {
+            const msgDate = new Date(msg.timestamp).toDateString();
+            
+            // Add date separator if date changed
+            if (msgDate !== lastDate) {
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'message-date';
+                dateDiv.innerHTML = `<span class="date-label">${formatDate(msg.timestamp)}</span>`;
+                container.appendChild(dateDiv);
+                lastDate = msgDate;
+            }
+            
+            addMessageToDisplay(msg);
+        });
+        
+        // Scroll to bottom
+        setTimeout(() => {
+            container.scrollTop = container.scrollHeight;
+        }, 100);
+    }
+
+    function addMessageToDisplay(message) {
+        const container = document.getElementById('messagesContainer');
+        if (!container) return;
+        
+        const isSent = message.senderId === appState.currentUser.uid;
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+        
+        const avatarText = isSent ? 
+            getInitials(appState.currentUser.name) : 
+            getInitials(appState.currentChat?.user?.name || 'User');
+        
+        const avatarColor = isSent ? 
+            (appState.currentUser.color || getColorForUser(appState.currentUser.uid)) : 
+            (appState.currentChat?.user?.color || getColorForUser(appState.currentChat?.user?.uid));
+        
+        messageDiv.innerHTML = `
+            ${!isSent ? `
+                <div class="message-avatar" style="background: ${avatarColor}">
+                    ${avatarText}
+                </div>
+            ` : ''}
+            <div class="message-content">
+                <div class="message-bubble">
+                    <div class="message-text">${message.text || ''}</div>
+                </div>
+                <div class="message-time">${formatTime(message.timestamp)}</div>
+            </div>
+            ${isSent ? `
+                <div class="message-avatar" style="background: ${avatarColor}">
+                    ${avatarText}
+                </div>
+            ` : ''}
+        `;
+        
+        container.appendChild(messageDiv);
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        
+        if (!text || !appState.currentChat) return;
+        
+        try {
+            const messageData = {
+                senderId: appState.currentUser.uid,
+                senderName: appState.currentUser.name,
+                text: text,
+                timestamp: Date.now(),
+                read: false
+            };
+            
+            // Save message to database
+            const messageRef = await appState.db.ref(`messages/${appState.currentChat.chatId}`).push();
+            await messageRef.set(messageData);
+            
+            // Update conversation
+            await appState.db.ref(`conversations/${appState.currentChat.chatId}`).update({
+                lastMessage: text,
+                lastMessageTime: Date.now(),
+                participants: {
+                    [appState.currentUser.uid]: true,
+                    [appState.currentChat.userId]: true
+                }
+            });
+            
+            // Update local conversation state
+            updateConversation(appState.currentChat.chatId, text, Date.now());
+            
+            // Clear input
+            input.value = '';
+            document.getElementById('sendBtn').disabled = true;
+            autoResizeTextarea();
+            
+            // Send notification to recipient
+            await sendChatNotification(appState.currentChat.userId, text);
+            
+        } catch (error) {
+            console.error('Error sending message:', error);
+            showNotification('Error', 'Failed to send message', 'error');
+        }
+    }
+
+    async function sendChatNotification(userId, message) {
+        try {
+            await appState.db.ref(`notifications/${userId}`).push().set({
+                type: 'message',
+                title: `New message from ${appState.currentUser.name}`,
+                message: message,
+                timestamp: Date.now(),
+                read: false,
+                senderId: appState.currentUser.uid
+            });
+        } catch (error) {
+            console.error('Error sending notification:', error);
+        }
+    }
+
+    function updateConversation(chatId, lastMessage, timestamp) {
+        const conversation = appState.conversations.get(chatId) || {
+            participants: {
+                [appState.currentUser.uid]: true,
+                [appState.currentChat?.userId]: true
+            }
+        };
+        
+        conversation.lastMessage = lastMessage;
+        conversation.lastMessageTime = timestamp;
+        appState.conversations.set(chatId, conversation);
+        updateConversationsList();
+    }
+
+    async function markConversationAsRead(chatId) {
+        try {
+            await appState.db.ref(`conversations/${chatId}/unread/${appState.currentUser.uid}`).set(0);
+        } catch (error) {
+            console.error('Error marking conversation as read:', error);
+        }
+    }
+
+    // ============================
+    // CONVERSATIONS MANAGEMENT
+    // ============================
+    async function loadConversations() {
+        try {
+            const snapshot = await appState.db.ref('conversations')
+                .orderByChild('lastMessageTime')
+                .limitToLast(20)
+                .once('value');
+            
+            const conversations = snapshot.val() || {};
+            
+            // Clear current conversations
+            appState.conversations.clear();
+            
+            // Add conversations to state
+            Object.entries(conversations).forEach(([chatId, data]) => {
+                if (data.participants && data.participants[appState.currentUser.uid]) {
+                    appState.conversations.set(chatId, data);
+                }
+            });
+            
+            // Update UI
+            updateConversationsList();
+            
+        } catch (error) {
+            console.error('Error loading conversations:', error);
+        }
+    }
+
+    function updateConversationsList() {
+        const container = document.getElementById('chatList');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (appState.conversations.size === 0) {
+            container.innerHTML = `
+                <div class="text-center p-4 text-muted">
+                    <p>No conversations yet</p>
+                    <p class="text-sm">Click "New Chat" to start a conversation</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Convert to array and sort by last message time
+        const sortedConversations = Array.from(appState.conversations.entries())
+            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
+        
+        sortedConversations.forEach(([chatId, data]) => {
+            // Find the other participant
+            const otherParticipantId = Object.keys(data.participants || {})
+                .find(id => id !== appState.currentUser.uid);
+            
+            if (!otherParticipantId) return;
+            
+            // Get user data from all users
+            const user = appState.allUsers.get(otherParticipantId) || {
+                name: 'Unknown User',
+                color: getColorForUser(otherParticipantId)
+            };
+            
+            const div = document.createElement('div');
+            div.className = 'chat-item';
+            div.dataset.chatId = chatId;
+            div.dataset.userId = otherParticipantId;
+            div.innerHTML = `
+                <div class="chat-avatar" style="background: ${user.color}">
+                    ${getInitials(user.name)}
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">${user.name}</div>
+                    <div class="chat-last-message">${data.lastMessage || 'No messages yet'}</div>
+                </div>
+                <div class="chat-time">${data.lastMessageTime ? formatTime(data.lastMessageTime) : ''}</div>
+            `;
+            
+            // Add click handler
+            div.addEventListener('click', () => {
+                const userId = div.dataset.userId;
+                if (appState.allUsers.has(userId)) {
+                    startChat(userId, appState.allUsers.get(userId));
+                }
+            });
+            
+            container.appendChild(div);
+        });
+    }
+
+    // ============================
+    // REAL-TIME LISTENERS
+    // ============================
+    function setupRealtimeListeners() {
+        // Online users listener
+        appState.db.ref('users').on('child_changed', (snapshot) => {
+            const user = snapshot.val();
+            if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
+                appState.onlineUsers.set(snapshot.key, user);
+                
+                // Update current chat status if active
+                if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
+                    updateChatHeader(user);
+                }
+            } else if (user.status === 'offline') {
+                appState.onlineUsers.delete(snapshot.key);
+                
+                // Update current chat status if active
+                if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
+                    const offlineUser = appState.allUsers.get(snapshot.key) || user;
+                    updateChatHeader(offlineUser);
+                }
+            }
+        });
+        
+        // New online users
+        appState.db.ref('users').on('child_added', (snapshot) => {
+            const user = snapshot.val();
+            if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
+                appState.onlineUsers.set(snapshot.key, user);
+            }
+        });
+        
+        // User removed
+        appState.db.ref('users').on('child_removed', (snapshot) => {
+            appState.onlineUsers.delete(snapshot.key);
+        });
+        
+        // Conversations listener
+        appState.db.ref('conversations').on('child_changed', (snapshot) => {
+            const conversation = snapshot.val();
+            if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
+                appState.conversations.set(snapshot.key, conversation);
+                updateConversationsList();
+            }
+        });
+        
+        // New conversations
+        appState.db.ref('conversations').on('child_added', (snapshot) => {
+            const conversation = snapshot.val();
+            if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
+                appState.conversations.set(snapshot.key, conversation);
+                updateConversationsList();
+            }
+        });
+    }
+
+    // ============================
+    // INITIALIZATION
+    // ============================
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeTheme();
+        initializeApps();
+        setupEventListeners();
+        checkAuthState();
+    });
+
+    async function checkAuthState() {
+        try {
+            const app = firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.database();
+            const storage = firebase.storage();
+            
+            appState.firebase = app;
+            appState.auth = auth;
+            appState.db = db;
+            appState.storage = storage;
+            
+            auth.onAuthStateChanged(handleAuthStateChange);
+            
+        } catch (error) {
+            console.error('Initialization error:', error);
+            showNotification('Error', 'Failed to initialize application', 'error');
+        }
+    }
+
+    function handleAuthStateChange(user) {
+        if (user) {
+            handleUserLogin(user);
+        } else {
+            document.getElementById('loginContainer').classList.remove('hidden');
+            document.getElementById('workspace').classList.add('hidden');
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }
+    }
+
+    async function handleUserLogin(user) {
+        try {
+            // First, check if user exists in Firebase
+            const userRef = appState.db.ref(`users/${user.uid}`);
+            const snapshot = await userRef.once('value');
+            let userData = snapshot.val();
+            
+            if (!userData) {
+                // User doesn't exist in Firebase, create basic profile
+                userData = {
+                    name: user.displayName || user.email.split('@')[0],
+                    email: user.email,
+                    role: 'User',
+                    status: 'available',
+                    statusText: 'Available',
+                    color: getColorForUser(user.uid),
+                    lastSeen: Date.now(),
+                    createdAt: Date.now()
+                };
+                
+                // Save to Firebase
+                await userRef.set(userData);
+            }
+            
+            // Update app state
+            appState.currentUser = {
+                uid: user.uid,
+                email: user.email,
+                ...userData
+            };
+            
+            // Update UI
+            updateUserInterface();
+            
+            // Load all users from Firebase
+            await loadAllUsersFromFirebase();
+            
+            // Set online status
+            await setOnlineStatus();
+            
+            // Load conversations
+            await loadConversations();
+            
+            // Set up real-time listeners
+            setupRealtimeListeners();
+            
+            // Show workspace
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('workspace').classList.remove('hidden');
+            document.getElementById('loadingScreen').classList.add('hidden');
+            
+            showNotification('Welcome Back', `Logged in as ${userData.name}`, 'success');
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            showNotification('Error', 'Failed to load user data', 'error');
+        }
+    }
+
+    async function loadAllUsersFromFirebase() {
+        try {
+            const snapshot = await appState.db.ref('users').once('value');
+            const users = snapshot.val() || {};
+            
+            // Clear current users
+            appState.allUsers.clear();
+            
+            // Add users to state (excluding current user)
+            Object.entries(users).forEach(([uid, user]) => {
+                if (uid !== appState.currentUser?.uid) {
+                    appState.allUsers.set(uid, {
+                        uid,
+                        ...user,
+                        color: user.color || getColorForUser(uid)
+                    });
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error loading users from Firebase:', error);
+        }
+    }
+
+    function updateUserInterface() {
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        
+        if (userAvatar) {
+            userAvatar.textContent = getInitials(appState.currentUser.name);
+            userAvatar.style.background = appState.currentUser.color || getColorForUser(appState.currentUser.uid);
+        }
+        if (userName) userName.textContent = appState.currentUser.name;
+        if (userRole) userRole.textContent = (appState.currentUser.role || 'USER').toUpperCase();
+    }
+
+    async function setOnlineStatus() {
+        try {
+            const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
+            const config = STATUS_CONFIG[appState.userStatus];
+            
+            await userRef.update({
+                status: appState.userStatus,
+                statusText: config.text,
+                lastSeen: Date.now()
+            });
+            
+            // Update status on disconnect
+            appState.db.ref('.info/connected').on('value', (snapshot) => {
+                if (snapshot.val() === false) {
+                    userRef.update({ status: 'offline' });
+                }
+            });
+            
+            // Clean up on page unload
+            window.addEventListener('beforeunload', () => {
+                userRef.update({ status: 'offline' });
+            });
+            
+        } catch (error) {
+            console.error('Error setting online status:', error);
+        }
+    }
+
+    // ============================
+    // EVENT LISTENERS SETUP
+    // ============================
+    function setupEventListeners() {
+        // Login form
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const errorElement = document.getElementById('loginError');
+                
+                // Show loading
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Signing in...</span>';
+                
+                try {
+                    // Sign in with Firebase
+                    const auth = firebase.auth();
+                    await auth.signInWithEmailAndPassword(email, password);
+                    
+                    // Clear form
+                    loginForm.reset();
+                    errorElement.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Login error:', error);
+                    errorElement.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Sign In</span>';
+                }
+            });
+        }
+        
+        // Apps button
+        const appsBtn = document.getElementById('appsBtn');
+        if (appsBtn) {
+            appsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleAppsPopup();
+            });
+        }
+        
+        // New Chat button
+        const newChatBtn = document.getElementById('newChatBtn');
+        if (newChatBtn) {
+            newChatBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleNewChatModal(true);
+            });
+        }
+        
+        // Close New Chat Modal button
+        const closeNewChatModal = document.getElementById('closeNewChatModal');
+        if (closeNewChatModal) {
+            closeNewChatModal.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleNewChatModal(false);
+            });
+        }
+        
+        // New Chat search
+        const newChatSearch = document.getElementById('newChatSearch');
+        if (newChatSearch) {
+            newChatSearch.addEventListener('input', (e) => {
+                filterNewChatUsers(e.target.value);
+            });
+        }
+        
+        // Apps search
+        const appsSearch = document.getElementById('appsSearch');
+        if (appsSearch) {
+            appsSearch.addEventListener('input', (e) => {
+                filterApps(e.target.value);
+            });
+        }
+        
+        // Status selector
+        const statusBtn = document.getElementById('statusBtn');
+        const statusDropdown = document.getElementById('statusDropdown');
+        
+        if (statusBtn && statusDropdown) {
+            statusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                statusDropdown.classList.toggle('active');
+            });
+            
+            // Status options
+            document.querySelectorAll('.status-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const status = option.dataset.status;
+                    updateUserStatus(status);
+                });
+            });
+        }
+        
+        // Theme selector
+        const themeBtn = document.getElementById('themeBtn');
+        const themeDropdown = document.getElementById('themeDropdown');
+        
+        if (themeBtn && themeDropdown) {
+            themeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                themeDropdown.classList.toggle('active');
+            });
+            
+            // Theme options
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const theme = option.dataset.theme;
+                    applyTheme(theme);
+                    themeDropdown.classList.remove('active');
+                });
+            });
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            // Close apps popup if clicking outside
+            const appsPopup = document.getElementById('appsPopup');
+            const appsBtn = document.getElementById('appsBtn');
+            
+            if (appsPopup && appsBtn && 
+                !appsPopup.contains(e.target) && 
+                !appsBtn.contains(e.target)) {
+                toggleAppsPopup(false);
+            }
+            
+            // Close new chat modal if clicking outside
+            const newChatModal = document.getElementById('newChatModal');
+            const newChatContent = document.querySelector('.new-chat-content');
+            
+            if (newChatModal && newChatContent && 
+                newChatModal.classList.contains('active') &&
+                !newChatContent.contains(e.target) &&
+                !e.target.closest('#newChatBtn')) {
+                toggleNewChatModal(false);
+            }
+            
+            // Close status dropdown
+            const statusDropdown = document.getElementById('statusDropdown');
+            const statusBtn = document.getElementById('statusBtn');
+            
+            if (statusDropdown && statusBtn && 
+                !statusDropdown.contains(e.target) && 
+                !statusBtn.contains(e.target)) {
+                statusDropdown.classList.remove('active');
+            }
+            
+            // Close theme dropdown
+            const themeDropdown = document.getElementById('themeDropdown');
+            const themeBtn = document.getElementById('themeBtn');
+            
+            if (themeDropdown && themeBtn && 
+                !themeDropdown.contains(e.target) && 
+                !themeBtn.contains(e.target)) {
+                themeDropdown.classList.remove('active');
+            }
+        });
+        
+        // Message input
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        if (messageInput && sendBtn) {
+            messageInput.addEventListener('input', () => {
+                sendBtn.disabled = !messageInput.value.trim();
+                autoResizeTextarea();
+            });
+            
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (messageInput.value.trim()) {
+                        sendMessage();
+                    }
+                }
+            });
+            
+            sendBtn.addEventListener('click', sendMessage);
+        }
+        
+        // File attachment
+        document.getElementById('attachFileBtn')?.addEventListener('click', () => {
+            showNotification('Info', 'File upload coming soon', 'info');
+        });
+        
+        // Image attachment
+        document.getElementById('attachImageBtn')?.addEventListener('click', () => {
+            showNotification('Info', 'Image upload coming soon', 'info');
+        });
+        
+        // User menu
+        document.getElementById('userMenu')?.addEventListener('click', () => {
+            // Sign out
+            if (confirm('Are you sure you want to sign out?')) {
+                firebase.auth().signOut().then(() => {
+                    showNotification('Signed Out', 'You have been signed out successfully', 'success');
+                }).catch(error => {
+                    console.error('Sign out error:', error);
+                    showNotification('Error', 'Failed to sign out', 'error');
+                });
+            }
+        });
+        
+        // Nav items (Team Chat, Tasks, Files)
+        document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.dataset.section;
+                
+                // Update active state
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                item.classList.add('active');
+                
+                // Handle section switching
+                if (section === 'chat') {
+                    // Team Chat is already active by default
+                    showNotification('Team Chat', 'Team chat functionality is enabled', 'info');
+                } else if (section === 'tasks') {
+                    showNotification('Tasks', 'Task management coming soon', 'info');
+                } else if (section === 'files') {
+                    showNotification('Files', 'File management coming soon', 'info');
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>
