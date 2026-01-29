@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     
-    <title>ChatSiri Workspace | Enterprise Collaboration</title>
+    <title>Enterprise Workspace</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -310,6 +310,12 @@
             transition: all var(--transition);
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
         .brand {
             display: flex;
             align-items: center;
@@ -362,17 +368,17 @@
         }
 
         .apps-popup {
-            position: absolute;
-            top: 100%;
-            right: 50%;
-            transform: translateX(50%);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
             margin-top: var(--spacing-sm);
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
             box-shadow: var(--shadow-xl);
             width: 500px;
             max-width: 90vw;
+            max-height: calc(100vh - var(--header-height) - var(--spacing-sm));
             z-index: 1000;
             display: none;
             overflow: hidden;
@@ -380,17 +386,17 @@
 
         .apps-popup.active {
             display: block;
-            animation: slideDown 0.3s ease;
+            animation: slideIn 0.3s ease;
         }
 
-        @keyframes slideDown {
+        @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateX(50%) translateY(-10px);
+                transform: translateX(-10px);
             }
             to {
                 opacity: 1;
-                transform: translateX(50%) translateY(0);
+                transform: translateX(0);
             }
         }
 
@@ -1283,8 +1289,7 @@
             }
             .apps-popup {
                 width: 90vw;
-                right: 5%;
-                transform: translateX(0);
+                border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
             }
             .apps-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1294,6 +1299,12 @@
         @media (max-width: 480px) {
             .apps-grid {
                 grid-template-columns: 1fr;
+            }
+            .brand span {
+                display: none;
+            }
+            .header-left {
+                gap: var(--spacing);
             }
         }
 
@@ -1327,7 +1338,7 @@
     <!-- Loading Screen -->
     <div class="loading-overlay" id="loadingScreen">
         <div class="spinner"></div>
-        <div class="text-muted">Loading ChatSiri Workspace...</div>
+        <div class="text-muted">Loading Enterprise Workspace...</div>
     </div>
 
     <!-- Login Page -->
@@ -1338,7 +1349,7 @@
                     <div class="login-brand-icon">
                         <i class="fas fa-comments"></i>
                     </div>
-                    <span>ChatSiri Workspace</span>
+                    <span>Enterprise Workspace</span>
                 </div>
                 <h1 class="login-title">Welcome Back</h1>
                 <p class="login-subtitle">Sign in to your workspace</p>
@@ -1396,22 +1407,23 @@
 
         <!-- Header -->
         <header class="header">
-            <div class="brand">
-                <div class="brand-icon">
-                    <i class="fas fa-comments"></i>
+            <div class="header-left">
+                <!-- Apps Button -->
+                <button class="apps-btn" id="appsBtn">
+                    <i class="fas fa-th-large"></i>
+                    <span>Apps</span>
+                </button>
+                
+                <!-- Brand -->
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span>Workspace</span>
                 </div>
-                <span>ChatSiri Workspace</span>
             </div>
             
             <div class="header-controls">
-                <!-- Apps Button -->
-                <div class="apps-selector">
-                    <button class="apps-btn" id="appsBtn">
-                        <i class="fas fa-th-large"></i>
-                        <span>Apps</span>
-                    </button>
-                </div>
-                
                 <!-- Status Selector -->
                 <div class="status-selector">
                     <button class="status-btn" id="statusBtn">
@@ -1542,7 +1554,7 @@
                         <div class="mb-2">
                             <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
                         </div>
-                        <h3 class="mb-2">Welcome to ChatSiri Workspace</h3>
+                        <h3 class="mb-2">Welcome to Enterprise Workspace</h3>
                         <p class="text-muted">Select a user from the online list to start chatting</p>
                     </div>
                 </div>
@@ -1640,7 +1652,8 @@
             messageListeners: new Map(),
             userStatus: 'available',
             currentTheme: 'navy',
-            enterpriseApps: []
+            enterpriseApps: [],
+            isAppsPopupOpen: false
         };
 
         // ============================
@@ -1859,7 +1872,7 @@
             window.open(app.link, '_blank');
             
             // Close apps popup
-            document.getElementById('appsPopup').classList.remove('active');
+            toggleAppsPopup(false);
             
             // Show notification
             showNotification('App Launched', `${app.name} opened in new tab`, 'success');
@@ -1894,18 +1907,35 @@
             renderAppsGrid(filteredApps);
         }
 
+        function toggleAppsPopup(show) {
+            const appsPopup = document.getElementById('appsPopup');
+            if (!appsPopup) return;
+            
+            if (show === undefined) {
+                appState.isAppsPopupOpen = !appState.isAppsPopupOpen;
+            } else {
+                appState.isAppsPopupOpen = show;
+            }
+            
+            if (appState.isAppsPopupOpen) {
+                appsPopup.classList.add('active');
+            } else {
+                appsPopup.classList.remove('active');
+            }
+        }
+
         // ============================
         // THEME MANAGEMENT
         // ============================
         function initializeTheme() {
             // Check for saved theme preference
-            const savedTheme = localStorage.getItem('chatsiri-theme');
+            const savedTheme = localStorage.getItem('workspace-theme');
             if (savedTheme) {
                 appState.currentTheme = savedTheme;
             } else {
                 // Default to navy blue
                 appState.currentTheme = 'navy';
-                localStorage.setItem('chatsiri-theme', 'navy');
+                localStorage.setItem('workspace-theme', 'navy');
             }
             
             applyTheme(appState.currentTheme);
@@ -1926,9 +1956,7 @@
             });
             
             // Save to localStorage
-            localStorage.setItem('chatsiri-theme', theme);
-            
-            showNotification('Theme Changed', `${theme.charAt(0).toUpperCase() + theme.slice(1)} theme applied`, 'success');
+            localStorage.setItem('workspace-theme', theme);
         }
 
         // ============================
@@ -2615,14 +2643,13 @@
                 });
             }
             
-            // Apps button
+            // Apps button - FIXED
             const appsBtn = document.getElementById('appsBtn');
-            const appsPopup = document.getElementById('appsPopup');
             
-            if (appsBtn && appsPopup) {
+            if (appsBtn) {
                 appsBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    appsPopup.classList.toggle('active');
+                    toggleAppsPopup();
                 });
             }
             
@@ -2676,10 +2703,30 @@
             }
             
             // Close dropdowns when clicking outside
-            document.addEventListener('click', () => {
-                if (appsPopup) appsPopup.classList.remove('active');
-                if (statusDropdown) statusDropdown.classList.remove('active');
-                if (themeDropdown) themeDropdown.classList.remove('active');
+            document.addEventListener('click', (e) => {
+                // Close apps popup if clicking outside
+                const appsPopup = document.getElementById('appsPopup');
+                const appsBtn = document.getElementById('appsBtn');
+                
+                if (appsPopup && appsBtn && 
+                    !appsPopup.contains(e.target) && 
+                    !appsBtn.contains(e.target)) {
+                    toggleAppsPopup(false);
+                }
+                
+                // Close status dropdown
+                if (statusDropdown && statusBtn && 
+                    !statusDropdown.contains(e.target) && 
+                    !statusBtn.contains(e.target)) {
+                    statusDropdown.classList.remove('active');
+                }
+                
+                // Close theme dropdown
+                if (themeDropdown && themeBtn && 
+                    !themeDropdown.contains(e.target) && 
+                    !themeBtn.contains(e.target)) {
+                    themeDropdown.classList.remove('active');
+                }
             });
             
             // Message input
@@ -2747,8 +2794,6 @@
                         nav.classList.remove('active');
                     });
                     item.classList.add('active');
-                    
-                    showNotification('Navigation', `Switched to ${section} section`, 'info');
                 });
             });
         }
