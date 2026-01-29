@@ -2445,2177 +2445,2177 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
     <script>
-// ============================
-// FIREBASE CONFIGURATION
-// ============================
-const firebaseConfig = {
-    apiKey: "AIzaSyCOb4BqfiN3vt1Y13UTEpA_boCqNRH6rrQ",
-    authDomain: "dsog-stores-dashboard.firebaseapp.com",
-    databaseURL: "https://dsog-stores-dashboard-default-rtdb.firebaseio.com",
-    projectId: "dsog-stores-dashboard",
-    storageBucket: "dsog-stores-dashboard.firebasestorage.app",
-    messagingSenderId: "1085972125142",
-    appId: "1:1085972125142:web:9abea9ee0dd792a052c077"
-};
-
-// ============================
-// APPLICATION STATE
-// ============================
-const appState = {
-    currentUser: null,
-    currentChat: null,
-    allUsers: new Map(),
-    onlineUsers: new Map(),
-    conversations: new Map(),
-    channels: new Map(),
-    firebase: null,
-    auth: null,
-    db: null,
-    storage: null,
-    messageListeners: new Map(),
-    userStatus: 'available',
-    currentTheme: 'navy',
-    enterpriseApps: [],
-    isAppsPopupOpen: false,
-    isChannelSelectionModalOpen: false,
-    isNewChatModalOpen: false,
-    isNewChannelModalOpen: false,
-    selectedChannelMembers: new Set()
-};
-
-// ============================
-// ENTERPRISE APPS DATABASE
-// ============================
-const ENTERPRISE_APPS = [
-    {
-        id: 'esh',
-        name: 'Sales Hub',
-        description: 'Enterprise Sales Management',
-        icon: 'https://i.postimg.cc/BbZ5c1Tv/20260119_1500-Image-Generation-remix-01kfb1znpceyc8d9dztq9ea0y3-1-removebg-preview-1.png',
-        link: 'efh.html',
-        category: 'Sales',
-        color: '#3b82f6'
-    },
-    {
-        id: 'erh',
-        name: 'Resource Hub',
-        description: 'Enterprise Resource Management',
-        icon: 'https://i.postimg.cc/3rFrpW8P/20260112_1839-Image-Generation-remix-01kesdpw6ce8s88amr0e92g276-removebg-preview-removebg-preview.png',
-        link: 'erh.html',
-        category: 'Resources',
-        color: '#10b981'
-    },
-    {
-        id: 'efh',
-        name: 'Finance Hub',
-        description: 'Enterprise Financial Management',
-        icon: 'https://i.postimg.cc/nLkCKS3J/20260119_1502-Image-Generation-remix-01kfb24hnje88t8jgrmchg3m4w-1-removebg-preview.png',
-        link: 'efh.html',
-        category: 'Finance',
-        color: '#f59e0b'
-    },
-    {
-        id: 'efs',
-        name: 'Fleet Hub',
-        description: 'Enterprise Fleet Management',
-        icon: 'https://i.postimg.cc/MTYB3K5P/20260119_1531-Image-Generation-remix-01kfb3rnfzfzxt9rhe0336w04w-1-removebg-preview.png',
-        link: 'efs.html',
-        category: 'Operations',
-        color: '#ef4444'
-    },
-    {
-        id: 'eth',
-        name: 'Talent Hub',
-        description: 'Enterprise Talent Management',
-        icon: 'https://i.postimg.cc/wvFVykC1/20260119_1539-Image-Generation-remix-01kfb488qbfhz9a354vdfwrwva-1-removebg-preview.png',
-        link: 'eth.html',
-        category: 'HR',
-        color: '#8b5cf6'
-    }
-];
-
-// Status configurations
-const STATUS_CONFIG = {
-    available: {
-        text: 'Available',
-        colorClass: 'available',
-        indicatorColor: '#10b981'
-    },
-    away: {
-        text: 'Away',
-        colorClass: 'away',
-        indicatorColor: '#f59e0b'
-    },
-    meeting: {
-        text: 'In a Meeting',
-        colorClass: 'meeting',
-        indicatorColor: '#ef4444'
-    },
-    soon: {
-        text: 'Back Soon',
-        colorClass: 'soon',
-        indicatorColor: '#8b5cf6'
-    }
-};
-
-// Default colors for user avatars
-const USER_COLORS = [
-    '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', 
-    '#ef4444', '#8b5cf6', '#3b82f6', '#06b6d4',
-    '#8b5cf6', '#10b981'
-];
-
-// ============================
-// UTILITY FUNCTIONS
-// ============================
-function getInitials(name) {
-    if (!name) return '??';
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-}
-
-function getColorForUser(userId) {
-    let hash = 0;
-    for (let i = 0; i < userId.length; i++) {
-        hash = userId.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const index = Math.abs(hash) % USER_COLORS.length;
-    return USER_COLORS[index];
-}
-
-function showNotification(title, message, type = 'info') {
-    const container = document.getElementById('notificationContainer');
-    const notification = document.createElement('div');
-    notification.className = 'notification';
+    // ============================
+    // FIREBASE CONFIGURATION
+    // ============================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCOb4BqfiN3vt1Y13UTEpA_boCqNRH6rrQ",
+        authDomain: "dsog-stores-dashboard.firebaseapp.com",
+        databaseURL: "https://dsog-stores-dashboard-default-rtdb.firebaseio.com",
+        projectId: "dsog-stores-dashboard",
+        storageBucket: "dsog-stores-dashboard.firebasestorage.app",
+        messagingSenderId: "1085972125142",
+        appId: "1:1085972125142:web:9abea9ee0dd792a052c077"
+    };
     
-    const icon = type === 'success' ? 'check-circle' : 
-                type === 'error' ? 'exclamation-circle' : 'info-circle';
+    // ============================
+    // APPLICATION STATE
+    // ============================
+    const appState = {
+        currentUser: null,
+        currentChat: null,
+        allUsers: new Map(),
+        onlineUsers: new Map(),
+        conversations: new Map(),
+        channels: new Map(),
+        firebase: null,
+        auth: null,
+        db: null,
+        storage: null,
+        messageListeners: new Map(),
+        userStatus: 'available',
+        currentTheme: 'navy',
+        enterpriseApps: [],
+        isAppsPopupOpen: false,
+        isChannelSelectionModalOpen: false,
+        isNewChatModalOpen: false,
+        isNewChannelModalOpen: false,
+        selectedChannelMembers: new Set()
+    };
     
-    notification.innerHTML = `
-        <div class="notification-icon">
-            <i class="fas fa-${icon}"></i>
-        </div>
-        <div class="notification-content">
-            <div class="notification-title">${title}</div>
-            <div class="notification-message">${message}</div>
-        </div>
-    `;
-    
-    container.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => notification.remove(), 300);
-    }, 5000);
-}
-
-function formatTime(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-function formatDate(timestamp) {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diff = now - date;
-    
-    if (diff < 86400000) {
-        return 'Today';
-    } else if (diff < 172800000) {
-        return 'Yesterday';
-    } else {
-        return date.toLocaleDateString();
-    }
-}
-
-function autoResizeTextarea() {
-    const textarea = document.getElementById('messageInput');
-    if (textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
-    }
-}
-
-function generateChannelId() {
-    return 'channel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-// ============================
-// MODAL MANAGEMENT
-// ============================
-function toggleChannelSelectionModal(show) {
-    const modal = document.getElementById('channelSelectionModal');
-    if (!modal) return;
-    
-    if (show === undefined) {
-        appState.isChannelSelectionModalOpen = !appState.isChannelSelectionModalOpen;
-    } else {
-        appState.isChannelSelectionModalOpen = show;
-    }
-    
-    if (appState.isChannelSelectionModalOpen) {
-        modal.classList.add('active');
-    } else {
-        modal.classList.remove('active');
-    }
-}
-
-function toggleNewChatModal(show) {
-    const modal = document.getElementById('newChatModal');
-    if (!modal) return;
-    
-    if (show === undefined) {
-        appState.isNewChatModalOpen = !appState.isNewChatModalOpen;
-    } else {
-        appState.isNewChatModalOpen = show;
-    }
-    
-    if (appState.isNewChatModalOpen) {
-        modal.classList.add('active');
-        document.getElementById('newChatSearch').focus();
-        loadUsersForNewChat();
-    } else {
-        modal.classList.remove('active');
-        document.getElementById('newChatSearch').value = '';
-    }
-}
-
-function toggleNewChannelModal(show) {
-    const modal = document.getElementById('newChannelModal');
-    if (!modal) return;
-    
-    if (show === undefined) {
-        appState.isNewChannelModalOpen = !appState.isNewChannelModalOpen;
-    } else {
-        appState.isNewChannelModalOpen = show;
-    }
-    
-    if (appState.isNewChannelModalOpen) {
-        modal.classList.add('active');
-        document.getElementById('channelName').focus();
-        loadUsersForChannel();
-    } else {
-        modal.classList.remove('active');
-        document.getElementById('channelName').value = '';
-        document.getElementById('channelDescription').value = '';
-        appState.selectedChannelMembers.clear();
-        updateSelectedCount();
-    }
-}
-
-// ============================
-// VIEW MANAGEMENT
-// ============================
-function showHomepage() {
-    document.getElementById('homepage').style.display = 'flex';
-    document.getElementById('chatHeader').style.display = 'none';
-    document.getElementById('messagesContainer').style.display = 'none';
-    document.getElementById('messageInputContainer').style.display = 'none';
-    
-    // Clear current chat
-    if (appState.currentChat) {
-        // Stop listening to messages
-        if (appState.messageListeners.has(appState.currentChat.chatId)) {
-            appState.messageListeners.get(appState.currentChat.chatId)();
+    // ============================
+    // ENTERPRISE APPS DATABASE
+    // ============================
+    const ENTERPRISE_APPS = [
+        {
+            id: 'esh',
+            name: 'Sales Hub',
+            description: 'Enterprise Sales Management',
+            icon: 'https://i.postimg.cc/BbZ5c1Tv/20260119_1500-Image-Generation-remix-01kfb1znpceyc8d9dztq9ea0y3-1-removebg-preview-1.png',
+            link: 'efh.html',
+            category: 'Sales',
+            color: '#3b82f6'
+        },
+        {
+            id: 'erh',
+            name: 'Resource Hub',
+            description: 'Enterprise Resource Management',
+            icon: 'https://i.postimg.cc/3rFrpW8P/20260112_1839-Image-Generation-remix-01kesdpw6ce8s88amr0e92g276-removebg-preview-removebg-preview.png',
+            link: 'erh.html',
+            category: 'Resources',
+            color: '#10b981'
+        },
+        {
+            id: 'efh',
+            name: 'Finance Hub',
+            description: 'Enterprise Financial Management',
+            icon: 'https://i.postimg.cc/nLkCKS3J/20260119_1502-Image-Generation-remix-01kfb24hnje88t8jgrmchg3m4w-1-removebg-preview.png',
+            link: 'efh.html',
+            category: 'Finance',
+            color: '#f59e0b'
+        },
+        {
+            id: 'efs',
+            name: 'Fleet Hub',
+            description: 'Enterprise Fleet Management',
+            icon: 'https://i.postimg.cc/MTYB3K5P/20260119_1531-Image-Generation-remix-01kfb3rnfzfzxt9rhe0336w04w-1-removebg-preview.png',
+            link: 'efs.html',
+            category: 'Operations',
+            color: '#ef4444'
+        },
+        {
+            id: 'eth',
+            name: 'Talent Hub',
+            description: 'Enterprise Talent Management',
+            icon: 'https://i.postimg.cc/wvFVykC1/20260119_1539-Image-Generation-remix-01kfb488qbfhz9a354vdfwrwva-1-removebg-preview.png',
+            link: 'eth.html',
+            category: 'HR',
+            color: '#8b5cf6'
         }
-        appState.currentChat = null;
+    ];
+    
+    // Status configurations
+    const STATUS_CONFIG = {
+        available: {
+            text: 'Available',
+            colorClass: 'available',
+            indicatorColor: '#10b981'
+        },
+        away: {
+            text: 'Away',
+            colorClass: 'away',
+            indicatorColor: '#f59e0b'
+        },
+        meeting: {
+            text: 'In a Meeting',
+            colorClass: 'meeting',
+            indicatorColor: '#ef4444'
+        },
+        soon: {
+            text: 'Back Soon',
+            colorClass: 'soon',
+            indicatorColor: '#8b5cf6'
+        }
+    };
+    
+    // Default colors for user avatars
+    const USER_COLORS = [
+        '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', 
+        '#ef4444', '#8b5cf6', '#3b82f6', '#06b6d4',
+        '#8b5cf6', '#10b981'
+    ];
+    
+    // ============================
+    // UTILITY FUNCTIONS
+    // ============================
+    function getInitials(name) {
+        if (!name) return '??';
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     }
     
-    // Update recent chats
-    updateRecentChats();
-}
-
-function showChatView() {
-    document.getElementById('homepage').style.display = 'none';
-    document.getElementById('chatHeader').style.display = 'flex';
-    document.getElementById('messagesContainer').style.display = 'flex';
-    document.getElementById('messageInputContainer').style.display = 'block';
-}
-
-// ============================
-// USER MANAGEMENT
-// ============================
-async function loadUsersForNewChat() {
-    const container = document.getElementById('newChatUsers');
-    if (!container) return;
-    
-    container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
-    
-    try {
-        const snapshot = await appState.db.ref('users').once('value');
-        const users = snapshot.val() || {};
-        
-        appState.allUsers.clear();
-        
-        Object.entries(users).forEach(([uid, user]) => {
-            if (uid !== appState.currentUser?.uid) {
-                appState.allUsers.set(uid, {
-                    uid,
-                    ...user,
-                    color: user.color || getColorForUser(uid)
-                });
-            }
-        });
-        
-        updateNewChatUsersList();
-        
-    } catch (error) {
-        console.error('Error loading users:', error);
-        container.innerHTML = `
-            <div class="p-4 text-center text-muted">
-                <p>Error loading users</p>
-                <p class="text-sm">Please try again</p>
-            </div>
-        `;
-    }
-}
-
-function updateNewChatUsersList() {
-    const container = document.getElementById('newChatUsers');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    const sortedUsers = Array.from(appState.allUsers.values()).sort((a, b) => {
-        const aOnline = appState.onlineUsers.has(a.uid) ? 0 : 1;
-        const bOnline = appState.onlineUsers.has(b.uid) ? 0 : 1;
-        if (aOnline !== bOnline) return aOnline - bOnline;
-        
-        return (a.name || '').localeCompare(b.name || '');
-    });
-    
-    if (sortedUsers.length === 0) {
-        container.innerHTML = `
-            <div class="p-4 text-center text-muted">
-                <p>No other users found</p>
-            </div>
-        `;
-        return;
+    function getColorForUser(userId) {
+        let hash = 0;
+        for (let i = 0; i < userId.length; i++) {
+            hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % USER_COLORS.length;
+        return USER_COLORS[index];
     }
     
-    sortedUsers.forEach(user => {
-        const isOnline = appState.onlineUsers.has(user.uid);
-        const onlineUser = appState.onlineUsers.get(user.uid);
-        const status = onlineUser?.status || 'offline';
-        const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+    function showNotification(title, message, type = 'info') {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = 'notification';
         
-        const userElement = document.createElement('div');
-        userElement.className = 'new-chat-user';
-        userElement.dataset.userId = user.uid;
-        userElement.innerHTML = `
-            <div class="new-chat-user-avatar" style="background: ${user.color || getColorForUser(user.uid)}">
-                ${getInitials(user.name || user.email)}
+        const icon = type === 'success' ? 'check-circle' : 
+                    type === 'error' ? 'exclamation-circle' : 'info-circle';
+        
+        notification.innerHTML = `
+            <div class="notification-icon">
+                <i class="fas fa-${icon}"></i>
             </div>
-            <div class="new-chat-user-info">
-                <div class="new-chat-user-name">${user.name || user.email || 'Unknown User'}</div>
-                <div class="new-chat-user-role">${user.role || 'User'}</div>
-            </div>
-            <div class="new-chat-user-status">
-                <span class="status-dot-sm ${isOnline ? config.colorClass : ''}"></span>
-                <span>${isOnline ? config.text : 'Offline'}</span>
+            <div class="notification-content">
+                <div class="notification-title">${title}</div>
+                <div class="notification-message">${message}</div>
             </div>
         `;
         
-        userElement.addEventListener('click', () => {
-            startIndividualChat(user.uid, user);
-            toggleNewChatModal(false);
-        });
+        container.appendChild(notification);
         
-        container.appendChild(userElement);
-    });
-}
-
-function filterNewChatUsers(searchTerm) {
-    const container = document.getElementById('newChatUsers');
-    if (!container) return;
-    
-    const allUserElements = container.querySelectorAll('.new-chat-user');
-    if (!searchTerm) {
-        allUserElements.forEach(el => el.style.display = 'flex');
-        return;
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
     }
     
-    const term = searchTerm.toLowerCase();
-    allUserElements.forEach(el => {
-        const userName = el.querySelector('.new-chat-user-name').textContent.toLowerCase();
-        const userRole = el.querySelector('.new-chat-user-role').textContent.toLowerCase();
+    function formatTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    
+    function formatDate(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = now - date;
         
-        if (userName.includes(term) || userRole.includes(term)) {
-            el.style.display = 'flex';
+        if (diff < 86400000) {
+            return 'Today';
+        } else if (diff < 172800000) {
+            return 'Yesterday';
         } else {
-            el.style.display = 'none';
+            return date.toLocaleDateString();
         }
-    });
-}
-
-async function loadUsersForChannel() {
-    const container = document.getElementById('membersList');
-    if (!container) return;
+    }
     
-    container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
+    function autoResizeTextarea() {
+        const textarea = document.getElementById('messageInput');
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        }
+    }
     
-    try {
-        const snapshot = await appState.db.ref('users').once('value');
-        const users = snapshot.val() || {};
+    function generateChannelId() {
+        return 'channel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+    
+    // ============================
+    // MODAL MANAGEMENT
+    // ============================
+    function toggleChannelSelectionModal(show) {
+        const modal = document.getElementById('channelSelectionModal');
+        if (!modal) return;
         
-        // Clear current users and add them
-        appState.allUsers.clear();
+        if (show === undefined) {
+            appState.isChannelSelectionModalOpen = !appState.isChannelSelectionModalOpen;
+        } else {
+            appState.isChannelSelectionModalOpen = show;
+        }
+        
+        if (appState.isChannelSelectionModalOpen) {
+            modal.classList.add('active');
+        } else {
+            modal.classList.remove('active');
+        }
+    }
+    
+    function toggleNewChatModal(show) {
+        const modal = document.getElementById('newChatModal');
+        if (!modal) return;
+        
+        if (show === undefined) {
+            appState.isNewChatModalOpen = !appState.isNewChatModalOpen;
+        } else {
+            appState.isNewChatModalOpen = show;
+        }
+        
+        if (appState.isNewChatModalOpen) {
+            modal.classList.add('active');
+            document.getElementById('newChatSearch').focus();
+            loadUsersForNewChat();
+        } else {
+            modal.classList.remove('active');
+            document.getElementById('newChatSearch').value = '';
+        }
+    }
+    
+    function toggleNewChannelModal(show) {
+        const modal = document.getElementById('newChannelModal');
+        if (!modal) return;
+        
+        if (show === undefined) {
+            appState.isNewChannelModalOpen = !appState.isNewChannelModalOpen;
+        } else {
+            appState.isNewChannelModalOpen = show;
+        }
+        
+        if (appState.isNewChannelModalOpen) {
+            modal.classList.add('active');
+            document.getElementById('channelName').focus();
+            loadUsersForChannel();
+        } else {
+            modal.classList.remove('active');
+            document.getElementById('channelName').value = '';
+            document.getElementById('channelDescription').value = '';
+            appState.selectedChannelMembers.clear();
+            updateSelectedCount();
+        }
+    }
+    
+    // ============================
+    // VIEW MANAGEMENT
+    // ============================
+    function showHomepage() {
+        document.getElementById('homepage').style.display = 'flex';
+        document.getElementById('chatHeader').style.display = 'none';
+        document.getElementById('messagesContainer').style.display = 'none';
+        document.getElementById('messageInputContainer').style.display = 'none';
+        
+        // Clear current chat
+        if (appState.currentChat) {
+            // Stop listening to messages
+            if (appState.messageListeners.has(appState.currentChat.chatId)) {
+                appState.messageListeners.get(appState.currentChat.chatId)();
+            }
+            appState.currentChat = null;
+        }
+        
+        // Update recent chats
+        updateRecentChats();
+    }
+    
+    function showChatView() {
+        document.getElementById('homepage').style.display = 'none';
+        document.getElementById('chatHeader').style.display = 'flex';
+        document.getElementById('messagesContainer').style.display = 'flex';
+        document.getElementById('messageInputContainer').style.display = 'block';
+    }
+    
+    // ============================
+    // USER MANAGEMENT
+    // ============================
+    async function loadUsersForNewChat() {
+        const container = document.getElementById('newChatUsers');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
+        
+        try {
+            const snapshot = await appState.db.ref('users').once('value');
+            const users = snapshot.val() || {};
+            
+            appState.allUsers.clear();
+            
+            Object.entries(users).forEach(([uid, user]) => {
+                if (uid !== appState.currentUser?.uid) {
+                    appState.allUsers.set(uid, {
+                        uid,
+                        ...user,
+                        color: user.color || getColorForUser(uid)
+                    });
+                }
+            });
+            
+            updateNewChatUsersList();
+            
+        } catch (error) {
+            console.error('Error loading users:', error);
+            container.innerHTML = `
+                <div class="p-4 text-center text-muted">
+                    <p>Error loading users</p>
+                    <p class="text-sm">Please try again</p>
+                </div>
+            `;
+        }
+    }
+    
+    function updateNewChatUsersList() {
+        const container = document.getElementById('newChatUsers');
+        if (!container) return;
+        
         container.innerHTML = '';
         
-        Object.entries(users).forEach(([uid, user]) => {
-            if (uid !== appState.currentUser?.uid) {
-                appState.allUsers.set(uid, {
-                    uid,
-                    ...user,
-                    color: user.color || getColorForUser(uid)
-                });
-                
-                // Add to members list
-                const memberElement = document.createElement('div');
-                memberElement.className = 'member-item';
-                memberElement.dataset.userId = uid;
-                memberElement.innerHTML = `
-                    <div class="member-checkbox">
-                        <i class="fas fa-check" style="display: none;"></i>
-                    </div>
-                    <div class="new-chat-user-avatar" style="background: ${user.color || getColorForUser(uid)}">
-                        ${getInitials(user.name || user.email)}
-                    </div>
-                    <div class="new-chat-user-info">
-                        <div class="new-chat-user-name">${user.name || user.email || 'Unknown User'}</div>
-                        <div class="new-chat-user-role">${user.role || 'User'}</div>
-                    </div>
-                `;
-                
-                memberElement.addEventListener('click', () => {
-                    toggleChannelMemberSelection(uid, memberElement);
-                });
-                
-                container.appendChild(memberElement);
-            }
+        const sortedUsers = Array.from(appState.allUsers.values()).sort((a, b) => {
+            const aOnline = appState.onlineUsers.has(a.uid) ? 0 : 1;
+            const bOnline = appState.onlineUsers.has(b.uid) ? 0 : 1;
+            if (aOnline !== bOnline) return aOnline - bOnline;
+            
+            return (a.name || '').localeCompare(b.name || '');
         });
         
-    } catch (error) {
-        console.error('Error loading users:', error);
-        container.innerHTML = `
-            <div class="p-4 text-center text-muted">
-                <p>Error loading users</p>
-                <p class="text-sm">Please try again</p>
-            </div>
-        `;
-    }
-}
-
-function toggleChannelMemberSelection(userId, element) {
-    if (appState.selectedChannelMembers.has(userId)) {
-        appState.selectedChannelMembers.delete(userId);
-        element.classList.remove('selected');
-        element.querySelector('.member-checkbox i').style.display = 'none';
-    } else {
-        appState.selectedChannelMembers.add(userId);
-        element.classList.add('selected');
-        element.querySelector('.member-checkbox i').style.display = 'block';
-    }
-    
-    updateSelectedCount();
-    updateCreateChannelButton();
-}
-
-function updateSelectedCount() {
-    const countElement = document.getElementById('selectedCount');
-    if (countElement) {
-        countElement.textContent = `${appState.selectedChannelMembers.size} selected`;
-    }
-}
-
-function updateCreateChannelButton() {
-    const channelName = document.getElementById('channelName').value.trim();
-    const hasMembers = appState.selectedChannelMembers.size > 0;
-    const createBtn = document.getElementById('createChannelBtn');
-    
-    if (createBtn) {
-        createBtn.disabled = !channelName || !hasMembers;
-    }
-}
-
-// ============================
-// CHANNEL MANAGEMENT
-// ============================
-async function createChannel() {
-    const channelName = document.getElementById('channelName').value.trim();
-    const description = document.getElementById('channelDescription').value.trim();
-    
-    if (!channelName || appState.selectedChannelMembers.size === 0) {
-        showNotification('Error', 'Please provide a channel name and select at least one member', 'error');
-        return;
-    }
-    
-    try {
-        const channelId = generateChannelId();
-        
-        // Create channel data
-        const channelData = {
-            id: channelId,
-            name: channelName,
-            description: description,
-            createdBy: appState.currentUser.uid,
-            createdByUser: appState.currentUser.name || appState.currentUser.email,
-            createdAt: Date.now(),
-            members: {},
-            type: 'channel'
-        };
-        
-        // Add current user as member
-        channelData.members[appState.currentUser.uid] = {
-            uid: appState.currentUser.uid,
-            name: appState.currentUser.name || appState.currentUser.email,
-            role: 'creator',
-            joinedAt: Date.now()
-        };
-        
-        // Add selected members
-        appState.selectedChannelMembers.forEach(userId => {
-            channelData.members[userId] = {
-                uid: userId,
-                name: appState.allUsers.get(userId)?.name || 'User',
-                role: 'member',
-                joinedAt: Date.now()
-            };
-        });
-        
-        // Save channel to Firebase
-        await appState.db.ref(`channels/${channelId}`).set(channelData);
-        
-        // Create initial conversation
-        const conversationData = {
-            id: channelId,
-            lastMessage: `Channel "${channelName}" was created`,
-            lastMessageTime: Date.now(),
-            participants: channelData.members,
-            type: 'channel',
-            channelId: channelId,
-            channelName: channelName
-        };
-        
-        await appState.db.ref(`conversations/${channelId}`).set(conversationData);
-        
-        // Create initial welcome message
-        const messageData = {
-            id: 'welcome_' + Date.now(),
-            senderId: appState.currentUser.uid,
-            senderName: appState.currentUser.name || 'System',
-            text: `Welcome to the "${channelName}" channel!`,
-            timestamp: Date.now(),
-            type: 'system'
-        };
-        
-        await appState.db.ref(`messages/${channelId}/${messageData.id}`).set(messageData);
-        
-        // Clear form and close modal
-        document.getElementById('channelName').value = '';
-        document.getElementById('channelDescription').value = '';
-        appState.selectedChannelMembers.clear();
-        updateSelectedCount();
-        
-        toggleNewChannelModal(false);
-        
-        // Add channel to local state
-        appState.channels.set(channelId, channelData);
-        appState.conversations.set(channelId, conversationData);
-        
-        // Update UI
-        updateConversationsList();
-        updateRecentChats();
-        
-        showNotification('Channel Created', `"${channelName}" channel has been created successfully`, 'success');
-        
-        // Start the channel chat
-        startChannelChat(channelId, channelData);
-        
-    } catch (error) {
-        console.error('Error creating channel:', error);
-        showNotification('Error', 'Failed to create channel: ' + error.message, 'error');
-    }
-}
-
-async function loadChannels() {
-    try {
-        const snapshot = await appState.db.ref('channels').once('value');
-        const channels = snapshot.val() || {};
-        
-        // Clear current channels
-        appState.channels.clear();
-        
-        // Add channels to state where user is a member
-        Object.entries(channels).forEach(([channelId, channel]) => {
-            if (channel.members && channel.members[appState.currentUser.uid]) {
-                appState.channels.set(channelId, channel);
-            }
-        });
-        
-    } catch (error) {
-        console.error('Error loading channels:', error);
-    }
-}
-
-// ============================
-// CHAT MANAGEMENT
-// ============================
-async function startIndividualChat(userId, userData) {
-    try {
-        // Clear previous message listener
-        if (appState.messageListeners.has(appState.currentChat?.chatId)) {
-            appState.messageListeners.get(appState.currentChat.chatId)();
+        if (sortedUsers.length === 0) {
+            container.innerHTML = `
+                <div class="p-4 text-center text-muted">
+                    <p>No other users found</p>
+                </div>
+            `;
+            return;
         }
         
-        // Generate chat ID (sorted user IDs)
-        const userIds = [appState.currentUser.uid, userId].sort();
-        const chatId = userIds.join('_');
+        sortedUsers.forEach(user => {
+            const isOnline = appState.onlineUsers.has(user.uid);
+            const onlineUser = appState.onlineUsers.get(user.uid);
+            const status = onlineUser?.status || 'offline';
+            const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+            
+            const userElement = document.createElement('div');
+            userElement.className = 'new-chat-user';
+            userElement.dataset.userId = user.uid;
+            userElement.innerHTML = `
+                <div class="new-chat-user-avatar" style="background: ${user.color || getColorForUser(user.uid)}">
+                    ${getInitials(user.name || user.email)}
+                </div>
+                <div class="new-chat-user-info">
+                    <div class="new-chat-user-name">${user.name || user.email || 'Unknown User'}</div>
+                    <div class="new-chat-user-role">${user.role || 'User'}</div>
+                </div>
+                <div class="new-chat-user-status">
+                    <span class="status-dot-sm ${isOnline ? config.colorClass : ''}"></span>
+                    <span>${isOnline ? config.text : 'Offline'}</span>
+                </div>
+            `;
+            
+            userElement.addEventListener('click', () => {
+                startIndividualChat(user.uid, user);
+                toggleNewChatModal(false);
+            });
+            
+            container.appendChild(userElement);
+        });
+    }
+    
+    function filterNewChatUsers(searchTerm) {
+        const container = document.getElementById('newChatUsers');
+        if (!container) return;
         
-        // Set current chat
-        appState.currentChat = {
-            userId,
-            user: userData,
-            chatId,
-            type: 'individual'
-        };
+        const allUserElements = container.querySelectorAll('.new-chat-user');
+        if (!searchTerm) {
+            allUserElements.forEach(el => el.style.display = 'flex');
+            return;
+        }
         
-        // Update UI
-        updateChatHeader(userData, 'individual');
-        showChatView();
+        const term = searchTerm.toLowerCase();
+        allUserElements.forEach(el => {
+            const userName = el.querySelector('.new-chat-user-name').textContent.toLowerCase();
+            const userRole = el.querySelector('.new-chat-user-role').textContent.toLowerCase();
+            
+            if (userName.includes(term) || userRole.includes(term)) {
+                el.style.display = 'flex';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+    }
+    
+    async function loadUsersForChannel() {
+        const container = document.getElementById('membersList');
+        if (!container) return;
         
-        // Load messages
-        await loadMessages(chatId);
+        container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
         
-        // Set up real-time message listener
-        setupMessageListener(chatId);
+        try {
+            const snapshot = await appState.db.ref('users').once('value');
+            const users = snapshot.val() || {};
+            
+            // Clear current users and add them
+            appState.allUsers.clear();
+            container.innerHTML = '';
+            
+            Object.entries(users).forEach(([uid, user]) => {
+                if (uid !== appState.currentUser?.uid) {
+                    appState.allUsers.set(uid, {
+                        uid,
+                        ...user,
+                        color: user.color || getColorForUser(uid)
+                    });
+                    
+                    // Add to members list
+                    const memberElement = document.createElement('div');
+                    memberElement.className = 'member-item';
+                    memberElement.dataset.userId = uid;
+                    memberElement.innerHTML = `
+                        <div class="member-checkbox">
+                            <i class="fas fa-check" style="display: none;"></i>
+                        </div>
+                        <div class="new-chat-user-avatar" style="background: ${user.color || getColorForUser(uid)}">
+                            ${getInitials(user.name || user.email)}
+                        </div>
+                        <div class="new-chat-user-info">
+                            <div class="new-chat-user-name">${user.name || user.email || 'Unknown User'}</div>
+                            <div class="new-chat-user-role">${user.role || 'User'}</div>
+                        </div>
+                    `;
+                    
+                    memberElement.addEventListener('click', () => {
+                        toggleChannelMemberSelection(uid, memberElement);
+                    });
+                    
+                    container.appendChild(memberElement);
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error loading users:', error);
+            container.innerHTML = `
+                <div class="p-4 text-center text-muted">
+                    <p>Error loading users</p>
+                    <p class="text-sm">Please try again</p>
+                </div>
+            `;
+        }
+    }
+    
+    function toggleChannelMemberSelection(userId, element) {
+        if (appState.selectedChannelMembers.has(userId)) {
+            appState.selectedChannelMembers.delete(userId);
+            element.classList.remove('selected');
+            element.querySelector('.member-checkbox i').style.display = 'none';
+        } else {
+            appState.selectedChannelMembers.add(userId);
+            element.classList.add('selected');
+            element.querySelector('.member-checkbox i').style.display = 'block';
+        }
         
-        // Mark conversation as read
-        await markConversationAsRead(chatId);
+        updateSelectedCount();
+        updateCreateChannelButton();
+    }
+    
+    function updateSelectedCount() {
+        const countElement = document.getElementById('selectedCount');
+        if (countElement) {
+            countElement.textContent = `${appState.selectedChannelMembers.size} selected`;
+        }
+    }
+    
+    function updateCreateChannelButton() {
+        const channelName = document.getElementById('channelName').value.trim();
+        const hasMembers = appState.selectedChannelMembers.size > 0;
+        const createBtn = document.getElementById('createChannelBtn');
         
-        // Check if conversation exists, create if not
-        if (!appState.conversations.has(chatId)) {
-            const conversationData = {
-                id: chatId,
-                lastMessage: 'Start of conversation',
-                lastMessageTime: Date.now(),
-                participants: {
-                    [appState.currentUser.uid]: {
-                        uid: appState.currentUser.uid,
-                        name: appState.currentUser.name || appState.currentUser.email
-                    },
-                    [userId]: {
-                        uid: userId,
-                        name: userData.name || userData.email
-                    }
-                },
-                type: 'individual'
+        if (createBtn) {
+            createBtn.disabled = !channelName || !hasMembers;
+        }
+    }
+    
+    // ============================
+    // CHANNEL MANAGEMENT
+    // ============================
+    async function createChannel() {
+        const channelName = document.getElementById('channelName').value.trim();
+        const description = document.getElementById('channelDescription').value.trim();
+        
+        if (!channelName || appState.selectedChannelMembers.size === 0) {
+            showNotification('Error', 'Please provide a channel name and select at least one member', 'error');
+            return;
+        }
+        
+        try {
+            const channelId = generateChannelId();
+            
+            // Create channel data
+            const channelData = {
+                id: channelId,
+                name: channelName,
+                description: description,
+                createdBy: appState.currentUser.uid,
+                createdByUser: appState.currentUser.name || appState.currentUser.email,
+                createdAt: Date.now(),
+                members: {},
+                type: 'channel'
             };
             
-            await appState.db.ref(`conversations/${chatId}`).set(conversationData);
-            appState.conversations.set(chatId, conversationData);
-        }
-        
-        updateConversationsList();
-        updateRecentChats();
-        
-    } catch (error) {
-        console.error('Error starting chat:', error);
-        showNotification('Error', 'Failed to start chat: ' + error.message, 'error');
-    }
-}
-
-async function startChannelChat(channelId, channelData) {
-    try {
-        // Clear previous message listener
-        if (appState.messageListeners.has(appState.currentChat?.chatId)) {
-            appState.messageListeners.get(appState.currentChat.chatId)();
-        }
-        
-        // Set current chat
-        appState.currentChat = {
-            channelId,
-            channel: channelData,
-            chatId: channelId,
-            type: 'channel'
-        };
-        
-        // Update UI
-        updateChatHeader(channelData, 'channel');
-        showChatView();
-        
-        // Load messages
-        await loadMessages(channelId);
-        
-        // Set up real-time message listener
-        setupMessageListener(channelId);
-        
-        // Mark conversation as read
-        await markConversationAsRead(channelId);
-        
-        // Check if conversation exists
-        if (!appState.conversations.has(channelId)) {
+            // Add current user as member
+            channelData.members[appState.currentUser.uid] = {
+                uid: appState.currentUser.uid,
+                name: appState.currentUser.name || appState.currentUser.email,
+                role: 'creator',
+                joinedAt: Date.now()
+            };
+            
+            // Add selected members
+            appState.selectedChannelMembers.forEach(userId => {
+                channelData.members[userId] = {
+                    uid: userId,
+                    name: appState.allUsers.get(userId)?.name || 'User',
+                    role: 'member',
+                    joinedAt: Date.now()
+                };
+            });
+            
+            // Save channel to Firebase
+            await appState.db.ref(`channels/${channelId}`).set(channelData);
+            
+            // Create initial conversation
             const conversationData = {
                 id: channelId,
-                lastMessage: 'Channel created',
+                lastMessage: `Channel "${channelName}" was created`,
                 lastMessageTime: Date.now(),
                 participants: channelData.members,
                 type: 'channel',
                 channelId: channelId,
-                channelName: channelData.name
+                channelName: channelName
             };
             
             await appState.db.ref(`conversations/${channelId}`).set(conversationData);
-            appState.conversations.set(channelId, conversationData);
-        }
-        
-        updateConversationsList();
-        updateRecentChats();
-        
-    } catch (error) {
-        console.error('Error starting channel chat:', error);
-        showNotification('Error', 'Failed to start channel chat: ' + error.message, 'error');
-    }
-}
-
-function updateChatHeader(data, type) {
-    const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
-    const chatTitle = document.getElementById('chatTitle');
-    const chatStatus = document.getElementById('chatStatus');
-    
-    if (type === 'individual') {
-        if (chatHeaderAvatar) {
-            chatHeaderAvatar.textContent = getInitials(data.name);
-            chatHeaderAvatar.style.background = data.color || getColorForUser(data.uid);
-            chatHeaderAvatar.classList.remove('channel');
-        }
-        if (chatTitle) chatTitle.textContent = data.name || data.email || 'Unknown User';
-        if (chatStatus) {
-            const isOnline = appState.onlineUsers.has(data.uid);
-            const onlineUser = appState.onlineUsers.get(data.uid);
-            const status = isOnline ? (onlineUser?.status || 'available') : 'offline';
-            const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
             
-            chatStatus.innerHTML = `
-                <span class="status-dot ${config.colorClass}"></span>
-                <span>${isOnline ? config.text : 'Offline'}</span>
-            `;
+            // Create initial welcome message
+            const messageData = {
+                id: 'welcome_' + Date.now(),
+                senderId: appState.currentUser.uid,
+                senderName: appState.currentUser.name || 'System',
+                text: `Welcome to the "${channelName}" channel!`,
+                timestamp: Date.now(),
+                type: 'system'
+            };
+            
+            await appState.db.ref(`messages/${channelId}/${messageData.id}`).set(messageData);
+            
+            // Clear form and close modal
+            document.getElementById('channelName').value = '';
+            document.getElementById('channelDescription').value = '';
+            appState.selectedChannelMembers.clear();
+            updateSelectedCount();
+            
+            toggleNewChannelModal(false);
+            
+            // Add channel to local state
+            appState.channels.set(channelId, channelData);
+            appState.conversations.set(channelId, conversationData);
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            showNotification('Channel Created', `"${channelName}" channel has been created successfully`, 'success');
+            
+            // Start the channel chat
+            startChannelChat(channelId, channelData);
+            
+        } catch (error) {
+            console.error('Error creating channel:', error);
+            showNotification('Error', 'Failed to create channel: ' + error.message, 'error');
         }
-    } else if (type === 'channel') {
-        if (chatHeaderAvatar) {
-            chatHeaderAvatar.textContent = '#';
-            chatHeaderAvatar.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
-            chatHeaderAvatar.classList.add('channel');
-        }
-        if (chatTitle) chatTitle.textContent = data.name;
-        if (chatStatus) {
-            const memberCount = Object.keys(data.members || {}).length;
-            chatStatus.innerHTML = `
-                <i class="fas fa-users" style="margin-right: 4px;"></i>
-                <span>${memberCount} members</span>
-            `;
-        }
-    }
-}
-
-async function deleteChat(chatId, targetId) {
-    if (!confirm('Are you sure you want to delete this chat? This will remove all messages and cannot be undone.')) {
-        return;
     }
     
-    try {
-        const conversation = appState.conversations.get(chatId);
+    async function loadChannels() {
+        try {
+            const snapshot = await appState.db.ref('channels').once('value');
+            const channels = snapshot.val() || {};
+            
+            // Clear current channels
+            appState.channels.clear();
+            
+            // Add channels to state where user is a member
+            Object.entries(channels).forEach(([channelId, channel]) => {
+                if (channel.members && channel.members[appState.currentUser.uid]) {
+                    appState.channels.set(channelId, channel);
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error loading channels:', error);
+        }
+    }
+    
+    // ============================
+    // CHAT MANAGEMENT
+    // ============================
+    async function startIndividualChat(userId, userData) {
+        try {
+            // Clear previous message listener
+            if (appState.messageListeners.has(appState.currentChat?.chatId)) {
+                appState.messageListeners.get(appState.currentChat.chatId)();
+            }
+            
+            // Generate chat ID (sorted user IDs)
+            const userIds = [appState.currentUser.uid, userId].sort();
+            const chatId = userIds.join('_');
+            
+            // Set current chat
+            appState.currentChat = {
+                userId,
+                user: userData,
+                chatId,
+                type: 'individual'
+            };
+            
+            // Update UI
+            updateChatHeader(userData, 'individual');
+            showChatView();
+            
+            // Load messages
+            await loadMessages(chatId);
+            
+            // Set up real-time message listener
+            setupMessageListener(chatId);
+            
+            // Mark conversation as read
+            await markConversationAsRead(chatId);
+            
+            // Check if conversation exists, create if not
+            if (!appState.conversations.has(chatId)) {
+                const conversationData = {
+                    id: chatId,
+                    lastMessage: 'Start of conversation',
+                    lastMessageTime: Date.now(),
+                    participants: {
+                        [appState.currentUser.uid]: {
+                            uid: appState.currentUser.uid,
+                            name: appState.currentUser.name || appState.currentUser.email
+                        },
+                        [userId]: {
+                            uid: userId,
+                            name: userData.name || userData.email
+                        }
+                    },
+                    type: 'individual'
+                };
+                
+                await appState.db.ref(`conversations/${chatId}`).set(conversationData);
+                appState.conversations.set(chatId, conversationData);
+            }
+            
+            updateConversationsList();
+            updateRecentChats();
+            
+        } catch (error) {
+            console.error('Error starting chat:', error);
+            showNotification('Error', 'Failed to start chat: ' + error.message, 'error');
+        }
+    }
+    
+    async function startChannelChat(channelId, channelData) {
+        try {
+            // Clear previous message listener
+            if (appState.messageListeners.has(appState.currentChat?.chatId)) {
+                appState.messageListeners.get(appState.currentChat.chatId)();
+            }
+            
+            // Set current chat
+            appState.currentChat = {
+                channelId,
+                channel: channelData,
+                chatId: channelId,
+                type: 'channel'
+            };
+            
+            // Update UI
+            updateChatHeader(channelData, 'channel');
+            showChatView();
+            
+            // Load messages
+            await loadMessages(channelId);
+            
+            // Set up real-time message listener
+            setupMessageListener(channelId);
+            
+            // Mark conversation as read
+            await markConversationAsRead(channelId);
+            
+            // Check if conversation exists
+            if (!appState.conversations.has(channelId)) {
+                const conversationData = {
+                    id: channelId,
+                    lastMessage: 'Channel created',
+                    lastMessageTime: Date.now(),
+                    participants: channelData.members,
+                    type: 'channel',
+                    channelId: channelId,
+                    channelName: channelData.name
+                };
+                
+                await appState.db.ref(`conversations/${channelId}`).set(conversationData);
+                appState.conversations.set(channelId, conversationData);
+            }
+            
+            updateConversationsList();
+            updateRecentChats();
+            
+        } catch (error) {
+            console.error('Error starting channel chat:', error);
+            showNotification('Error', 'Failed to start channel chat: ' + error.message, 'error');
+        }
+    }
+    
+    function updateChatHeader(data, type) {
+        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
+        const chatTitle = document.getElementById('chatTitle');
+        const chatStatus = document.getElementById('chatStatus');
         
-        if (conversation?.type === 'channel') {
-            // For channels, check if user is the creator
-            const channel = appState.channels.get(chatId);
-            if (channel && channel.createdBy === appState.currentUser.uid) {
-                // Delete channel completely
-                await appState.db.ref(`channels/${chatId}`).remove();
-                appState.channels.delete(chatId);
-            } else {
-                // Just remove user from channel members
-                await appState.db.ref(`channels/${chatId}/members/${appState.currentUser.uid}`).remove();
-                if (channel) {
-                    delete channel.members[appState.currentUser.uid];
+        if (type === 'individual') {
+            if (chatHeaderAvatar) {
+                chatHeaderAvatar.textContent = getInitials(data.name);
+                chatHeaderAvatar.style.background = data.color || getColorForUser(data.uid);
+                chatHeaderAvatar.classList.remove('channel');
+            }
+            if (chatTitle) chatTitle.textContent = data.name || data.email || 'Unknown User';
+            if (chatStatus) {
+                const isOnline = appState.onlineUsers.has(data.uid);
+                const onlineUser = appState.onlineUsers.get(data.uid);
+                const status = isOnline ? (onlineUser?.status || 'available') : 'offline';
+                const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+                
+                chatStatus.innerHTML = `
+                    <span class="status-dot ${config.colorClass}"></span>
+                    <span>${isOnline ? config.text : 'Offline'}</span>
+                `;
+            }
+        } else if (type === 'channel') {
+            if (chatHeaderAvatar) {
+                chatHeaderAvatar.textContent = '#';
+                chatHeaderAvatar.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+                chatHeaderAvatar.classList.add('channel');
+            }
+            if (chatTitle) chatTitle.textContent = data.name;
+            if (chatStatus) {
+                const memberCount = Object.keys(data.members || {}).length;
+                chatStatus.innerHTML = `
+                    <i class="fas fa-users" style="margin-right: 4px;"></i>
+                    <span>${memberCount} members</span>
+                `;
+            }
+        }
+    }
+    
+    async function deleteChat(chatId, targetId) {
+        if (!confirm('Are you sure you want to delete this chat? This will remove all messages and cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const conversation = appState.conversations.get(chatId);
+            
+            if (conversation?.type === 'channel') {
+                // For channels, check if user is the creator
+                const channel = appState.channels.get(chatId);
+                if (channel && channel.createdBy === appState.currentUser.uid) {
+                    // Delete channel completely
+                    await appState.db.ref(`channels/${chatId}`).remove();
+                    appState.channels.delete(chatId);
+                } else {
+                    // Just remove user from channel members
+                    await appState.db.ref(`channels/${chatId}/members/${appState.currentUser.uid}`).remove();
+                    if (channel) {
+                        delete channel.members[appState.currentUser.uid];
+                    }
                 }
             }
-        }
-        
-        // Remove conversation and messages
-        await appState.db.ref(`conversations/${chatId}`).remove();
-        await appState.db.ref(`messages/${chatId}`).remove();
-        
-        // Remove from local state
-        appState.conversations.delete(chatId);
-        
-        // Update UI
-        updateConversationsList();
-        updateRecentChats();
-        
-        // If this was the current chat, go back to homepage
-        if (appState.currentChat && appState.currentChat.chatId === chatId) {
-            showHomepage();
-        }
-        
-        showNotification('Chat Deleted', 'Chat has been successfully deleted', 'success');
-        
-    } catch (error) {
-        console.error('Error deleting chat:', error);
-        showNotification('Error', 'Failed to delete chat: ' + error.message, 'error');
-    }
-}
-
-async function clearAllChats() {
-    if (!confirm('Are you sure you want to clear all chats? This will remove all conversations and cannot be undone.')) {
-        return;
-    }
-    
-    try {
-        const deletePromises = [];
-        
-        for (const [chatId, conversation] of appState.conversations) {
-            if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
-                deletePromises.push(appState.db.ref(`conversations/${chatId}`).remove());
-                deletePromises.push(appState.db.ref(`messages/${chatId}`).remove());
-            }
-        }
-        
-        await Promise.all(deletePromises);
-        
-        // Clear local state
-        appState.conversations.clear();
-        
-        // Update UI
-        updateConversationsList();
-        updateRecentChats();
-        
-        // Go back to homepage if in chat view
-        showHomepage();
-        
-        showNotification('All Chats Cleared', 'All conversations have been cleared', 'success');
-        
-    } catch (error) {
-        console.error('Error clearing all chats:', error);
-        showNotification('Error', 'Failed to clear all chats: ' + error.message, 'error');
-    }
-}
-
-async function clearCurrentChat() {
-    if (!appState.currentChat) return;
-    
-    if (!confirm('Are you sure you want to clear this chat? This will remove all messages and cannot be undone.')) {
-        return;
-    }
-    
-    try {
-        const chatId = appState.currentChat.chatId;
-        
-        // Remove messages from Firebase
-        await appState.db.ref(`messages/${chatId}`).remove();
-        
-        // Update conversation
-        const lastMessage = appState.currentChat.type === 'channel' 
-            ? 'Channel messages cleared' 
-            : 'Chat cleared';
             
-        await appState.db.ref(`conversations/${chatId}`).update({
-            lastMessage: lastMessage,
-            lastMessageTime: Date.now()
-        });
-        
-        // Update local state
-        const conversation = appState.conversations.get(chatId);
-        if (conversation) {
-            conversation.lastMessage = lastMessage;
-            conversation.lastMessageTime = Date.now();
+            // Remove conversation and messages
+            await appState.db.ref(`conversations/${chatId}`).remove();
+            await appState.db.ref(`messages/${chatId}`).remove();
+            
+            // Remove from local state
+            appState.conversations.delete(chatId);
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            // If this was the current chat, go back to homepage
+            if (appState.currentChat && appState.currentChat.chatId === chatId) {
+                showHomepage();
+            }
+            
+            showNotification('Chat Deleted', 'Chat has been successfully deleted', 'success');
+            
+        } catch (error) {
+            console.error('Error deleting chat:', error);
+            showNotification('Error', 'Failed to delete chat: ' + error.message, 'error');
+        }
+    }
+    
+    async function clearAllChats() {
+        if (!confirm('Are you sure you want to clear all chats? This will remove all conversations and cannot be undone.')) {
+            return;
         }
         
-        // Clear messages display
+        try {
+            const deletePromises = [];
+            
+            for (const [chatId, conversation] of appState.conversations) {
+                if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
+                    deletePromises.push(appState.db.ref(`conversations/${chatId}`).remove());
+                    deletePromises.push(appState.db.ref(`messages/${chatId}`).remove());
+                }
+            }
+            
+            await Promise.all(deletePromises);
+            
+            // Clear local state
+            appState.conversations.clear();
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            // Go back to homepage if in chat view
+            showHomepage();
+            
+            showNotification('All Chats Cleared', 'All conversations have been cleared', 'success');
+            
+        } catch (error) {
+            console.error('Error clearing all chats:', error);
+            showNotification('Error', 'Failed to clear all chats: ' + error.message, 'error');
+        }
+    }
+    
+    async function clearCurrentChat() {
+        if (!appState.currentChat) return;
+        
+        if (!confirm('Are you sure you want to clear this chat? This will remove all messages and cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const chatId = appState.currentChat.chatId;
+            
+            // Remove messages from Firebase
+            await appState.db.ref(`messages/${chatId}`).remove();
+            
+            // Update conversation
+            const lastMessage = appState.currentChat.type === 'channel' 
+                ? 'Channel messages cleared' 
+                : 'Chat cleared';
+                
+            await appState.db.ref(`conversations/${chatId}`).update({
+                lastMessage: lastMessage,
+                lastMessageTime: Date.now()
+            });
+            
+            // Update local state
+            const conversation = appState.conversations.get(chatId);
+            if (conversation) {
+                conversation.lastMessage = lastMessage;
+                conversation.lastMessageTime = Date.now();
+            }
+            
+            // Clear messages display
+            const container = document.getElementById('messagesContainer');
+            if (container) {
+                container.innerHTML = `
+                    <div class="p-4 text-center">
+                        <div class="mb-2">
+                            <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
+                        </div>
+                        <h3 class="mb-2">${lastMessage}</h3>
+                        <p class="text-muted">Start a new conversation!</p>
+                    </div>
+                `;
+            }
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+            showNotification('Chat Cleared', 'Chat messages have been cleared', 'success');
+            
+        } catch (error) {
+            console.error('Error clearing chat:', error);
+            showNotification('Error', 'Failed to clear chat: ' + error.message, 'error');
+        }
+    }
+    
+    // ============================
+    // MESSAGES MANAGEMENT
+    // ============================
+    async function loadMessages(chatId) {
+        try {
+            const snapshot = await appState.db.ref(`messages/${chatId}`)
+                .orderByChild('timestamp')
+                .limitToLast(50)
+                .once('value');
+            
+            const messages = snapshot.val() || {};
+            displayMessages(Object.values(messages));
+            
+        } catch (error) {
+            console.error('Error loading messages:', error);
+            showNotification('Error', 'Failed to load messages: ' + error.message, 'error');
+        }
+    }
+    
+    function setupMessageListener(chatId) {
+        // Remove existing listener
+        if (appState.messageListeners.has(chatId)) {
+            appState.messageListeners.get(chatId)();
+        }
+        
+        // Set up new listener
+        const listener = appState.db.ref(`messages/${chatId}`)
+            .orderByChild('timestamp')
+            .limitToLast(100)
+            .on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                addMessageToDisplay(message);
+                
+                // Scroll to bottom
+                const container = document.getElementById('messagesContainer');
+                setTimeout(() => {
+                    if (container) container.scrollTop = container.scrollHeight;
+                }, 100);
+                
+                // Update conversation
+                if (message.senderId !== appState.currentUser.uid) {
+                    updateConversation(chatId, message.text, message.timestamp);
+                }
+            });
+        
+        // Store listener for cleanup
+        appState.messageListeners.set(chatId, () => {
+            appState.db.ref(`messages/${chatId}`).off('child_added', listener);
+        });
+    }
+    
+    function displayMessages(messages) {
         const container = document.getElementById('messagesContainer');
-        if (container) {
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (!messages || messages.length === 0) {
             container.innerHTML = `
                 <div class="p-4 text-center">
                     <div class="mb-2">
                         <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
                     </div>
-                    <h3 class="mb-2">${lastMessage}</h3>
-                    <p class="text-muted">Start a new conversation!</p>
+                    <h3 class="mb-2">No messages yet</h3>
+                    <p class="text-muted">Start the conversation!</p>
                 </div>
             `;
+            return;
         }
         
-        // Update UI
-        updateConversationsList();
-        updateRecentChats();
+        // Sort messages by timestamp
+        messages.sort((a, b) => a.timestamp - b.timestamp);
         
-        showNotification('Chat Cleared', 'Chat messages have been cleared', 'success');
+        let lastDate = null;
         
-    } catch (error) {
-        console.error('Error clearing chat:', error);
-        showNotification('Error', 'Failed to clear chat: ' + error.message, 'error');
-    }
-}
-
-// ============================
-// MESSAGES MANAGEMENT
-// ============================
-async function loadMessages(chatId) {
-    try {
-        const snapshot = await appState.db.ref(`messages/${chatId}`)
-            .orderByChild('timestamp')
-            .limitToLast(50)
-            .once('value');
+        messages.forEach(msg => {
+            const msgDate = new Date(msg.timestamp).toDateString();
+            
+            // Add date separator if date changed
+            if (msgDate !== lastDate) {
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'message-date';
+                dateDiv.innerHTML = `<span class="date-label">${formatDate(msg.timestamp)}</span>`;
+                container.appendChild(dateDiv);
+                lastDate = msgDate;
+            }
+            
+            addMessageToDisplay(msg);
+        });
         
-        const messages = snapshot.val() || {};
-        displayMessages(Object.values(messages));
-        
-    } catch (error) {
-        console.error('Error loading messages:', error);
-        showNotification('Error', 'Failed to load messages: ' + error.message, 'error');
-    }
-}
-
-function setupMessageListener(chatId) {
-    // Remove existing listener
-    if (appState.messageListeners.has(chatId)) {
-        appState.messageListeners.get(chatId)();
+        // Scroll to bottom
+        setTimeout(() => {
+            container.scrollTop = container.scrollHeight;
+        }, 100);
     }
     
-    // Set up new listener
-    const listener = appState.db.ref(`messages/${chatId}`)
-        .orderByChild('timestamp')
-        .limitToLast(100)
-        .on('child_added', (snapshot) => {
-            const message = snapshot.val();
-            addMessageToDisplay(message);
+    function addMessageToDisplay(message) {
+        const container = document.getElementById('messagesContainer');
+        if (!container) return;
+        
+        const isSent = message.senderId === appState.currentUser.uid;
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+        
+        const senderUser = appState.allUsers.get(message.senderId) || {
+            name: message.senderName || 'Unknown User',
+            color: getColorForUser(message.senderId)
+        };
+        
+        const avatarText = getInitials(senderUser.name);
+        const avatarColor = senderUser.color || getColorForUser(message.senderId);
+        
+        messageDiv.innerHTML = `
+            ${!isSent ? `
+                <div class="message-avatar" style="background: ${avatarColor}">
+                    ${avatarText}
+                </div>
+            ` : ''}
+            <div class="message-content">
+                <div class="message-bubble">
+                    <div class="message-text">${message.text || ''}</div>
+                </div>
+                <div class="message-info">
+                    ${!isSent && appState.currentChat?.type === 'channel' ? `
+                        <div class="message-sender">${senderUser.name}</div>
+                    ` : ''}
+                    <div class="message-time">${formatTime(message.timestamp)}</div>
+                </div>
+            </div>
+            ${isSent ? `
+                <div class="message-avatar" style="background: ${avatarColor}">
+                    ${avatarText}
+                </div>
+            ` : ''}
+        `;
+        
+        container.appendChild(messageDiv);
+    }
+    
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        if (!input) return;
+        
+        const text = input.value.trim();
+        
+        if (!text || !appState.currentChat || !appState.currentUser) return;
+        
+        try {
+            const messageId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const messageData = {
+                id: messageId,
+                senderId: appState.currentUser.uid,
+                senderName: appState.currentUser.name || appState.currentUser.email,
+                text: text,
+                timestamp: Date.now(),
+                read: false,
+                type: 'message'
+            };
             
-            // Scroll to bottom
-            const container = document.getElementById('messagesContainer');
-            setTimeout(() => {
-                if (container) container.scrollTop = container.scrollHeight;
-            }, 100);
+            // Save message to database
+            await appState.db.ref(`messages/${appState.currentChat.chatId}/${messageId}`).set(messageData);
             
             // Update conversation
-            if (message.senderId !== appState.currentUser.uid) {
-                updateConversation(chatId, message.text, message.timestamp);
-            }
-        });
-    
-    // Store listener for cleanup
-    appState.messageListeners.set(chatId, () => {
-        appState.db.ref(`messages/${chatId}`).off('child_added', listener);
-    });
-}
-
-function displayMessages(messages) {
-    const container = document.getElementById('messagesContainer');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    if (!messages || messages.length === 0) {
-        container.innerHTML = `
-            <div class="p-4 text-center">
-                <div class="mb-2">
-                    <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
-                </div>
-                <h3 class="mb-2">No messages yet</h3>
-                <p class="text-muted">Start the conversation!</p>
-            </div>
-        `;
-        return;
+            await appState.db.ref(`conversations/${appState.currentChat.chatId}`).update({
+                lastMessage: text,
+                lastMessageTime: Date.now(),
+                lastMessageSender: appState.currentUser.name || appState.currentUser.email
+            });
+            
+            // Update local conversation state
+            updateConversation(appState.currentChat.chatId, text, Date.now());
+            
+            // Clear input
+            input.value = '';
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) sendBtn.disabled = true;
+            autoResizeTextarea();
+            
+            // Send notifications to recipients
+            await sendChatNotifications(text);
+            
+        } catch (error) {
+            console.error('Error sending message:', error);
+            showNotification('Error', 'Failed to send message: ' + error.message, 'error');
+        }
     }
     
-    // Sort messages by timestamp
-    messages.sort((a, b) => a.timestamp - b.timestamp);
-    
-    let lastDate = null;
-    
-    messages.forEach(msg => {
-        const msgDate = new Date(msg.timestamp).toDateString();
-        
-        // Add date separator if date changed
-        if (msgDate !== lastDate) {
-            const dateDiv = document.createElement('div');
-            dateDiv.className = 'message-date';
-            dateDiv.innerHTML = `<span class="date-label">${formatDate(msg.timestamp)}</span>`;
-            container.appendChild(dateDiv);
-            lastDate = msgDate;
+    async function sendChatNotifications(message) {
+        try {
+            const conversation = appState.conversations.get(appState.currentChat.chatId);
+            if (!conversation || !conversation.participants) return;
+            
+            const notificationPromises = [];
+            
+            Object.keys(conversation.participants).forEach(userId => {
+                if (userId !== appState.currentUser.uid) {
+                    const notificationId = 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    const notification = {
+                        id: notificationId,
+                        type: appState.currentChat.type === 'channel' ? 'channel_message' : 'message',
+                        title: appState.currentChat.type === 'channel' 
+                            ? `New message in #${appState.currentChat.channel?.name || 'channel'}`
+                            : `New message from ${appState.currentUser.name || appState.currentUser.email}`,
+                        message: message,
+                        timestamp: Date.now(),
+                        read: false,
+                        senderId: appState.currentUser.uid,
+                        chatId: appState.currentChat.chatId
+                    };
+                    
+                    notificationPromises.push(
+                        appState.db.ref(`notifications/${userId}/${notificationId}`).set(notification)
+                    );
+                }
+            });
+            
+            await Promise.all(notificationPromises);
+            
+        } catch (error) {
+            console.error('Error sending notifications:', error);
         }
-        
-        addMessageToDisplay(msg);
-    });
+    }
     
-    // Scroll to bottom
-    setTimeout(() => {
-        container.scrollTop = container.scrollHeight;
-    }, 100);
-}
-
-function addMessageToDisplay(message) {
-    const container = document.getElementById('messagesContainer');
-    if (!container) return;
-    
-    const isSent = message.senderId === appState.currentUser.uid;
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-    
-    const senderUser = appState.allUsers.get(message.senderId) || {
-        name: message.senderName || 'Unknown User',
-        color: getColorForUser(message.senderId)
-    };
-    
-    const avatarText = getInitials(senderUser.name);
-    const avatarColor = senderUser.color || getColorForUser(message.senderId);
-    
-    messageDiv.innerHTML = `
-        ${!isSent ? `
-            <div class="message-avatar" style="background: ${avatarColor}">
-                ${avatarText}
-            </div>
-        ` : ''}
-        <div class="message-content">
-            <div class="message-bubble">
-                <div class="message-text">${message.text || ''}</div>
-            </div>
-            <div class="message-info">
-                ${!isSent && appState.currentChat?.type === 'channel' ? `
-                    <div class="message-sender">${senderUser.name}</div>
-                ` : ''}
-                <div class="message-time">${formatTime(message.timestamp)}</div>
-            </div>
-        </div>
-        ${isSent ? `
-            <div class="message-avatar" style="background: ${avatarColor}">
-                ${avatarText}
-            </div>
-        ` : ''}
-    `;
-    
-    container.appendChild(messageDiv);
-}
-
-async function sendMessage() {
-    const input = document.getElementById('messageInput');
-    if (!input) return;
-    
-    const text = input.value.trim();
-    
-    if (!text || !appState.currentChat || !appState.currentUser) return;
-    
-    try {
-        const messageId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const messageData = {
-            id: messageId,
-            senderId: appState.currentUser.uid,
-            senderName: appState.currentUser.name || appState.currentUser.email,
-            text: text,
-            timestamp: Date.now(),
-            read: false,
-            type: 'message'
+    function updateConversation(chatId, lastMessage, timestamp) {
+        const conversation = appState.conversations.get(chatId) || {
+            participants: {},
+            type: appState.currentChat?.type || 'individual'
         };
         
-        // Save message to database
-        await appState.db.ref(`messages/${appState.currentChat.chatId}/${messageId}`).set(messageData);
-        
-        // Update conversation
-        await appState.db.ref(`conversations/${appState.currentChat.chatId}`).update({
-            lastMessage: text,
-            lastMessageTime: Date.now(),
-            lastMessageSender: appState.currentUser.name || appState.currentUser.email
-        });
-        
-        // Update local conversation state
-        updateConversation(appState.currentChat.chatId, text, Date.now());
-        
-        // Clear input
-        input.value = '';
-        const sendBtn = document.getElementById('sendBtn');
-        if (sendBtn) sendBtn.disabled = true;
-        autoResizeTextarea();
-        
-        // Send notifications to recipients
-        await sendChatNotifications(text);
-        
-    } catch (error) {
-        console.error('Error sending message:', error);
-        showNotification('Error', 'Failed to send message: ' + error.message, 'error');
+        conversation.lastMessage = lastMessage;
+        conversation.lastMessageTime = timestamp;
+        conversation.lastMessageSender = appState.currentUser.name || appState.currentUser.email;
+        appState.conversations.set(chatId, conversation);
+        updateConversationsList();
+        updateRecentChats();
     }
-}
-
-async function sendChatNotifications(message) {
-    try {
-        const conversation = appState.conversations.get(appState.currentChat.chatId);
-        if (!conversation || !conversation.participants) return;
+    
+    async function markConversationAsRead(chatId) {
+        try {
+            await appState.db.ref(`conversations/${chatId}/unread/${appState.currentUser.uid}`).set(0);
+        } catch (error) {
+            console.error('Error marking conversation as read:', error);
+        }
+    }
+    
+    // ============================
+    // CONVERSATIONS MANAGEMENT
+    // ============================
+    async function loadConversations() {
+        try {
+            const conversationsSnapshot = await appState.db.ref('conversations')
+                .orderByChild('lastMessageTime')
+                .limitToLast(50)
+                .once('value');
+            
+            const conversations = conversationsSnapshot.val() || {};
+            
+            // Clear current conversations
+            appState.conversations.clear();
+            
+            // Add conversations to state where user is a participant
+            Object.entries(conversations).forEach(([chatId, data]) => {
+                if (data.participants && data.participants[appState.currentUser.uid]) {
+                    appState.conversations.set(chatId, data);
+                }
+            });
+            
+            // Load channels
+            await loadChannels();
+            
+            // Update UI
+            updateConversationsList();
+            updateRecentChats();
+            
+        } catch (error) {
+            console.error('Error loading conversations:', error);
+        }
+    }
+    
+    function updateConversationsList() {
+        const container = document.getElementById('chatList');
+        if (!container) return;
         
-        const notificationPromises = [];
+        container.innerHTML = '';
         
-        Object.keys(conversation.participants).forEach(userId => {
-            if (userId !== appState.currentUser.uid) {
-                const notificationId = 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                const notification = {
-                    id: notificationId,
-                    type: appState.currentChat.type === 'channel' ? 'channel_message' : 'message',
-                    title: appState.currentChat.type === 'channel' 
-                        ? `New message in #${appState.currentChat.channel?.name || 'channel'}`
-                        : `New message from ${appState.currentUser.name || appState.currentUser.email}`,
-                    message: message,
-                    timestamp: Date.now(),
-                    read: false,
-                    senderId: appState.currentUser.uid,
-                    chatId: appState.currentChat.chatId
+        if (appState.conversations.size === 0) {
+            container.innerHTML = `
+                <div class="text-center p-4 text-muted">
+                    <p>No conversations yet</p>
+                    <p class="text-sm">Click "New Chat" to start a conversation</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const sortedConversations = Array.from(appState.conversations.entries())
+            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
+            .slice(0, 20);
+        
+        sortedConversations.forEach(([chatId, data]) => {
+            if (data.type === 'channel') {
+                const channel = appState.channels.get(chatId);
+                if (!channel) return;
+                
+                const div = createChannelListItem(chatId, channel, data);
+                container.appendChild(div);
+            } else {
+                // Individual chat
+                const otherParticipantId = Object.keys(data.participants || {})
+                    .find(id => id !== appState.currentUser.uid);
+                
+                if (!otherParticipantId) return;
+                
+                const user = appState.allUsers.get(otherParticipantId) || {
+                    name: 'Unknown User',
+                    color: getColorForUser(otherParticipantId)
                 };
                 
-                notificationPromises.push(
-                    appState.db.ref(`notifications/${userId}/${notificationId}`).set(notification)
-                );
+                const div = createIndividualChatListItem(chatId, user, data, otherParticipantId);
+                container.appendChild(div);
             }
         });
-        
-        await Promise.all(notificationPromises);
-        
-    } catch (error) {
-        console.error('Error sending notifications:', error);
     }
-}
-
-function updateConversation(chatId, lastMessage, timestamp) {
-    const conversation = appState.conversations.get(chatId) || {
-        participants: {},
-        type: appState.currentChat?.type || 'individual'
-    };
     
-    conversation.lastMessage = lastMessage;
-    conversation.lastMessageTime = timestamp;
-    conversation.lastMessageSender = appState.currentUser.name || appState.currentUser.email;
-    appState.conversations.set(chatId, conversation);
-    updateConversationsList();
-    updateRecentChats();
-}
-
-async function markConversationAsRead(chatId) {
-    try {
-        await appState.db.ref(`conversations/${chatId}/unread/${appState.currentUser.uid}`).set(0);
-    } catch (error) {
-        console.error('Error marking conversation as read:', error);
-    }
-}
-
-// ============================
-// CONVERSATIONS MANAGEMENT
-// ============================
-async function loadConversations() {
-    try {
-        const conversationsSnapshot = await appState.db.ref('conversations')
-            .orderByChild('lastMessageTime')
-            .limitToLast(50)
-            .once('value');
-        
-        const conversations = conversationsSnapshot.val() || {};
-        
-        // Clear current conversations
-        appState.conversations.clear();
-        
-        // Add conversations to state where user is a participant
-        Object.entries(conversations).forEach(([chatId, data]) => {
-            if (data.participants && data.participants[appState.currentUser.uid]) {
-                appState.conversations.set(chatId, data);
-            }
-        });
-        
-        // Load channels
-        await loadChannels();
-        
-        // Update UI
-        updateConversationsList();
-        updateRecentChats();
-        
-    } catch (error) {
-        console.error('Error loading conversations:', error);
-    }
-}
-
-function updateConversationsList() {
-    const container = document.getElementById('chatList');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    if (appState.conversations.size === 0) {
-        container.innerHTML = `
-            <div class="text-center p-4 text-muted">
-                <p>No conversations yet</p>
-                <p class="text-sm">Click "New Chat" to start a conversation</p>
+    function createChannelListItem(chatId, channel, conversation) {
+        const div = document.createElement('div');
+        div.className = 'chat-item';
+        div.dataset.chatId = chatId;
+        div.dataset.channelId = chatId;
+        div.innerHTML = `
+            <div class="chat-avatar channel">
+                <i class="fas fa-hashtag"></i>
+            </div>
+            <div class="chat-info">
+                <div class="chat-name">${channel.name}</div>
+                <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="chat-actions">
+                <button class="chat-action-btn delete" title="Leave Channel" data-chat-id="${chatId}">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         `;
-        return;
+        
+        div.addEventListener('click', (e) => {
+            if (!e.target.closest('.chat-action-btn')) {
+                startChannelChat(chatId, channel);
+            }
+        });
+        
+        const deleteBtn = div.querySelector('.chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, null);
+        });
+        
+        return div;
     }
     
-    const sortedConversations = Array.from(appState.conversations.entries())
-        .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
-        .slice(0, 20);
-    
-    sortedConversations.forEach(([chatId, data]) => {
-        if (data.type === 'channel') {
-            const channel = appState.channels.get(chatId);
-            if (!channel) return;
-            
-            const div = createChannelListItem(chatId, channel, data);
-            container.appendChild(div);
-        } else {
-            // Individual chat
-            const otherParticipantId = Object.keys(data.participants || {})
-                .find(id => id !== appState.currentUser.uid);
-            
-            if (!otherParticipantId) return;
-            
-            const user = appState.allUsers.get(otherParticipantId) || {
-                name: 'Unknown User',
-                color: getColorForUser(otherParticipantId)
-            };
-            
-            const div = createIndividualChatListItem(chatId, user, data, otherParticipantId);
-            container.appendChild(div);
-        }
-    });
-}
-
-function createChannelListItem(chatId, channel, conversation) {
-    const div = document.createElement('div');
-    div.className = 'chat-item';
-    div.dataset.chatId = chatId;
-    div.dataset.channelId = chatId;
-    div.innerHTML = `
-        <div class="chat-avatar channel">
-            <i class="fas fa-hashtag"></i>
-        </div>
-        <div class="chat-info">
-            <div class="chat-name">${channel.name}</div>
-            <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
-        </div>
-        <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
-        <div class="chat-actions">
-            <button class="chat-action-btn delete" title="Leave Channel" data-chat-id="${chatId}">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    `;
-    
-    div.addEventListener('click', (e) => {
-        if (!e.target.closest('.chat-action-btn')) {
-            startChannelChat(chatId, channel);
-        }
-    });
-    
-    const deleteBtn = div.querySelector('.chat-action-btn.delete');
-    deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteChat(chatId, null);
-    });
-    
-    return div;
-}
-
-function createIndividualChatListItem(chatId, user, conversation, otherParticipantId) {
-    const div = document.createElement('div');
-    div.className = 'chat-item';
-    div.dataset.chatId = chatId;
-    div.dataset.userId = otherParticipantId;
-    div.innerHTML = `
-        <div class="chat-avatar" style="background: ${user.color}">
-            ${getInitials(user.name)}
-        </div>
-        <div class="chat-info">
-            <div class="chat-name">${user.name}</div>
-            <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
-        </div>
-        <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
-        <div class="chat-actions">
-            <button class="chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </div>
-    `;
-    
-    div.addEventListener('click', (e) => {
-        if (!e.target.closest('.chat-action-btn')) {
-            if (appState.allUsers.has(otherParticipantId)) {
-                startIndividualChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
-            }
-        }
-    });
-    
-    const deleteBtn = div.querySelector('.chat-action-btn.delete');
-    deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteChat(chatId, otherParticipantId);
-    });
-    
-    return div;
-}
-
-// ============================
-// RECENT CHATS MANAGEMENT
-// ============================
-function updateRecentChats() {
-    const container = document.getElementById('recentChatsGrid');
-    const noChatsMessage = document.getElementById('noChatsMessage');
-    
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    if (appState.conversations.size === 0) {
-        if (noChatsMessage) noChatsMessage.style.display = 'block';
-        return;
-    }
-    
-    if (noChatsMessage) noChatsMessage.style.display = 'none';
-    
-    const sortedConversations = Array.from(appState.conversations.entries())
-        .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
-        .slice(0, 12);
-    
-    sortedConversations.forEach(([chatId, data]) => {
-        if (data.type === 'channel') {
-            const channel = appState.channels.get(chatId);
-            if (!channel) return;
-            
-            const card = createChannelCard(chatId, channel, data);
-            container.appendChild(card);
-        } else {
-            const otherParticipantId = Object.keys(data.participants || {})
-                .find(id => id !== appState.currentUser.uid);
-            
-            if (!otherParticipantId) return;
-            
-            const user = appState.allUsers.get(otherParticipantId) || {
-                name: 'Unknown User',
-                color: getColorForUser(otherParticipantId)
-            };
-            
-            const card = createIndividualChatCard(chatId, user, data, otherParticipantId);
-            container.appendChild(card);
-        }
-    });
-}
-
-function createChannelCard(chatId, channel, conversation) {
-    const card = document.createElement('div');
-    card.className = 'recent-chat-card';
-    card.dataset.chatId = chatId;
-    card.dataset.channelId = chatId;
-    card.innerHTML = `
-        <div class="recent-chat-avatar channel">
-            <i class="fas fa-hashtag"></i>
-        </div>
-        <div class="recent-chat-info">
-            <div class="recent-chat-name channel">${channel.name}</div>
-            <div class="recent-chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
-        </div>
-        <div class="recent-chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
-        <div class="recent-chat-card-actions">
-            <button class="recent-chat-action-btn delete" title="Leave Channel" data-chat-id="${chatId}">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    `;
-    
-    card.addEventListener('click', (e) => {
-        if (!e.target.closest('.recent-chat-action-btn')) {
-            startChannelChat(chatId, channel);
-        }
-    });
-    
-    const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
-    deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteChat(chatId, null);
-    });
-    
-    return card;
-}
-
-function createIndividualChatCard(chatId, user, conversation, otherParticipantId) {
-    const card = document.createElement('div');
-    card.className = 'recent-chat-card';
-    card.dataset.chatId = chatId;
-    card.dataset.userId = otherParticipantId;
-    card.innerHTML = `
-        <div class="recent-chat-avatar" style="background: ${user.color}">
-            ${getInitials(user.name)}
-        </div>
-        <div class="recent-chat-info">
-            <div class="recent-chat-name">${user.name}</div>
-            <div class="recent-chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
-        </div>
-        <div class="recent-chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
-        <div class="recent-chat-card-actions">
-            <button class="recent-chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </div>
-    `;
-    
-    card.addEventListener('click', (e) => {
-        if (!e.target.closest('.recent-chat-action-btn')) {
-            if (appState.allUsers.has(otherParticipantId)) {
-                startIndividualChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
-            }
-        }
-    });
-    
-    const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
-    deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteChat(chatId, otherParticipantId);
-    });
-    
-    return card;
-}
-
-// ============================
-// APPS MANAGEMENT
-// ============================
-function initializeApps() {
-    appState.enterpriseApps = ENTERPRISE_APPS;
-    renderAppsGrid(appState.enterpriseApps);
-}
-
-function renderAppsGrid(apps) {
-    const container = document.getElementById('appsGrid');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    apps.forEach(app => {
-        const appElement = document.createElement('div');
-        appElement.className = 'app-item';
-        appElement.dataset.appId = app.id;
-        appElement.title = `Open ${app.name}`;
-        
-        let iconUrl = app.icon;
-        iconUrl = iconUrl.replace(/\(/g, '%28').replace(/\)/g, '%29');
-        
-        appElement.innerHTML = `
-            <div class="app-icon">
-                <img src="${iconUrl}" alt="${app.name}" onerror="handleIconError(this, '${app.color}', '${app.name}')">
+    function createIndividualChatListItem(chatId, user, conversation, otherParticipantId) {
+        const div = document.createElement('div');
+        div.className = 'chat-item';
+        div.dataset.chatId = chatId;
+        div.dataset.userId = otherParticipantId;
+        div.innerHTML = `
+            <div class="chat-avatar" style="background: ${user.color}">
+                ${getInitials(user.name)}
             </div>
-            <div class="app-name">${app.name}</div>
-            <div class="app-desc">${app.description}</div>
+            <div class="chat-info">
+                <div class="chat-name">${user.name}</div>
+                <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="chat-actions">
+                <button class="chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
         `;
         
-        appElement.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openApp(app);
-        });
-        
-        container.appendChild(appElement);
-    });
-}
-
-function handleIconError(imgElement, color, name) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-        <rect width="100" height="100" fill="${color}" rx="12"/>
-        <text x="50" y="55" font-family="Arial, sans-serif" font-size="36" 
-              fill="white" text-anchor="middle" font-weight="bold">
-            ${name.charAt(0)}
-        </text>
-    </svg>`;
-    
-    const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-    const svgUrl = URL.createObjectURL(svgBlob);
-    imgElement.src = svgUrl;
-}
-
-function openApp(app) {
-    window.open(app.link, '_blank');
-    toggleAppsPopup(false);
-    showNotification('App Launched', `${app.name} opened in new tab`, 'success');
-}
-
-function filterApps(searchTerm) {
-    if (!searchTerm) {
-        renderAppsGrid(appState.enterpriseApps);
-        return;
-    }
-    
-    const filteredApps = appState.enterpriseApps.filter(app => 
-        app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    
-    renderAppsGrid(filteredApps);
-}
-
-function toggleAppsPopup(show) {
-    const appsPopup = document.getElementById('appsPopup');
-    if (!appsPopup) return;
-    
-    if (show === undefined) {
-        appState.isAppsPopupOpen = !appState.isAppsPopupOpen;
-    } else {
-        appState.isAppsPopupOpen = show;
-    }
-    
-    if (appState.isAppsPopupOpen) {
-        appsPopup.classList.add('active');
-    } else {
-        appsPopup.classList.remove('active');
-    }
-}
-
-// ============================
-// THEME MANAGEMENT
-// ============================
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('workspace-theme');
-    if (savedTheme) {
-        appState.currentTheme = savedTheme;
-    } else {
-        appState.currentTheme = 'navy';
-        localStorage.setItem('workspace-theme', 'navy');
-    }
-    
-    applyTheme(appState.currentTheme);
-}
-
-function applyTheme(theme) {
-    appState.currentTheme = theme;
-    document.body.setAttribute('data-theme', theme);
-    
-    document.querySelectorAll('.theme-option').forEach(option => {
-        option.classList.remove('active');
-        if (option.dataset.theme === theme) {
-            option.classList.add('active');
-        }
-    });
-    
-    localStorage.setItem('workspace-theme', theme);
-}
-
-// ============================
-// STATUS MANAGEMENT
-// ============================
-function updateUserStatus(status) {
-    if (!appState.currentUser || !appState.db) return;
-    
-    appState.userStatus = status;
-    const config = STATUS_CONFIG[status];
-    
-    // Update UI
-    const statusIndicator = document.getElementById('statusIndicator');
-    const statusText = document.getElementById('statusText');
-    
-    if (statusIndicator) {
-        statusIndicator.className = `status-indicator ${config.colorClass}`;
-    }
-    if (statusText) {
-        statusText.textContent = config.text;
-    }
-    
-    // Update in Firebase
-    const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
-    userRef.update({
-        status: status,
-        statusText: config.text,
-        lastSeen: Date.now()
-    });
-    
-    const statusDropdown = document.getElementById('statusDropdown');
-    if (statusDropdown) statusDropdown.classList.remove('active');
-    
-    showNotification('Status Updated', `You are now ${config.text.toLowerCase()}`, 'success');
-}
-
-// ============================
-// REAL-TIME LISTENERS
-// ============================
-function setupRealtimeListeners() {
-    if (!appState.db) return;
-    
-    // Online users listener
-    appState.db.ref('users').on('child_changed', (snapshot) => {
-        const user = snapshot.val();
-        if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
-            appState.onlineUsers.set(snapshot.key, user);
-            
-            if (appState.currentChat && appState.currentChat.type === 'individual' && appState.currentChat.userId === snapshot.key) {
-                updateChatHeader(user, 'individual');
-            }
-        } else if (user.status === 'offline') {
-            appState.onlineUsers.delete(snapshot.key);
-            
-            if (appState.currentChat && appState.currentChat.type === 'individual' && appState.currentChat.userId === snapshot.key) {
-                const offlineUser = appState.allUsers.get(snapshot.key) || user;
-                updateChatHeader(offlineUser, 'individual');
-            }
-        }
-    });
-    
-    // New online users
-    appState.db.ref('users').on('child_added', (snapshot) => {
-        const user = snapshot.val();
-        if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
-            appState.onlineUsers.set(snapshot.key, user);
-        }
-    });
-    
-    // User removed
-    appState.db.ref('users').on('child_removed', (snapshot) => {
-        appState.onlineUsers.delete(snapshot.key);
-    });
-    
-    // Conversations listener
-    appState.db.ref('conversations').on('child_changed', (snapshot) => {
-        const conversation = snapshot.val();
-        if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
-            appState.conversations.set(snapshot.key, conversation);
-            updateConversationsList();
-            updateRecentChats();
-        }
-    });
-    
-    // New conversations
-    appState.db.ref('conversations').on('child_added', (snapshot) => {
-        const conversation = snapshot.val();
-        if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
-            appState.conversations.set(snapshot.key, conversation);
-            updateConversationsList();
-            updateRecentChats();
-        }
-    });
-    
-    // Conversations removed
-    appState.db.ref('conversations').on('child_removed', (snapshot) => {
-        appState.conversations.delete(snapshot.key);
-        updateConversationsList();
-        updateRecentChats();
-    });
-    
-    // Channels listener
-    appState.db.ref('channels').on('child_changed', (snapshot) => {
-        const channel = snapshot.val();
-        if (channel.members && channel.members[appState.currentUser.uid]) {
-            appState.channels.set(snapshot.key, channel);
-        } else {
-            appState.channels.delete(snapshot.key);
-        }
-    });
-    
-    // New channels
-    appState.db.ref('channels').on('child_added', (snapshot) => {
-        const channel = snapshot.val();
-        if (channel.members && channel.members[appState.currentUser.uid]) {
-            appState.channels.set(snapshot.key, channel);
-        }
-    });
-    
-    // Channels removed
-    appState.db.ref('channels').on('child_removed', (snapshot) => {
-        appState.channels.delete(snapshot.key);
-    });
-}
-
-// ============================
-// INITIALIZATION
-// ============================
-document.addEventListener('DOMContentLoaded', () => {
-    initializeTheme();
-    initializeApps();
-    setupEventListeners();
-    checkAuthState();
-});
-
-async function checkAuthState() {
-    try {
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-        const storage = firebase.storage();
-        
-        appState.firebase = app;
-        appState.auth = auth;
-        appState.db = db;
-        appState.storage = storage;
-        
-        auth.onAuthStateChanged(handleAuthStateChange);
-        
-    } catch (error) {
-        console.error('Initialization error:', error);
-        showNotification('Error', 'Failed to initialize application: ' + error.message, 'error');
-    }
-}
-
-function handleAuthStateChange(user) {
-    if (user) {
-        handleUserLogin(user);
-    } else {
-        document.getElementById('loginContainer').classList.remove('hidden');
-        document.getElementById('workspace').classList.add('hidden');
-        document.getElementById('loadingScreen').classList.add('hidden');
-    }
-}
-
-async function handleUserLogin(user) {
-    try {
-        // First, check if user exists in Firebase
-        const userRef = appState.db.ref(`users/${user.uid}`);
-        const snapshot = await userRef.once('value');
-        let userData = snapshot.val();
-        
-        if (!userData) {
-            // User doesn't exist in Firebase, create basic profile
-            userData = {
-                name: user.displayName || user.email.split('@')[0],
-                email: user.email,
-                role: 'User',
-                status: 'available',
-                statusText: 'Available',
-                color: getColorForUser(user.uid),
-                lastSeen: Date.now(),
-                createdAt: Date.now()
-            };
-            
-            // Save to Firebase
-            await userRef.set(userData);
-        }
-        
-        // Update app state
-        appState.currentUser = {
-            uid: user.uid,
-            email: user.email,
-            ...userData
-        };
-        
-        // Update UI
-        updateUserInterface();
-        
-        // Load all users from Firebase
-        await loadAllUsersFromFirebase();
-        
-        // Set online status
-        await setOnlineStatus();
-        
-        // Load conversations and channels
-        await loadConversations();
-        
-        // Set up real-time listeners
-        setupRealtimeListeners();
-        
-        // Show workspace
-        document.getElementById('loginContainer').classList.add('hidden');
-        document.getElementById('workspace').classList.remove('hidden');
-        document.getElementById('loadingScreen').classList.add('hidden');
-        
-        showNotification('Welcome Back', `Logged in as ${userData.name}`, 'success');
-        
-    } catch (error) {
-        console.error('Login error:', error);
-        showNotification('Error', 'Failed to load user data: ' + error.message, 'error');
-    }
-}
-
-async function loadAllUsersFromFirebase() {
-    try {
-        const snapshot = await appState.db.ref('users').once('value');
-        const users = snapshot.val() || {};
-        
-        // Clear current users
-        appState.allUsers.clear();
-        
-        // Add users to state (excluding current user)
-        Object.entries(users).forEach(([uid, user]) => {
-            if (uid !== appState.currentUser?.uid) {
-                appState.allUsers.set(uid, {
-                    uid,
-                    ...user,
-                    color: user.color || getColorForUser(uid)
-                });
-            }
-        });
-        
-    } catch (error) {
-        console.error('Error loading users from Firebase:', error);
-    }
-}
-
-function updateUserInterface() {
-    const userAvatar = document.getElementById('userAvatar');
-    const userName = document.getElementById('userName');
-    const userRole = document.getElementById('userRole');
-    
-    if (userAvatar) {
-        userAvatar.textContent = getInitials(appState.currentUser.name);
-        userAvatar.style.background = appState.currentUser.color || getColorForUser(appState.currentUser.uid);
-    }
-    if (userName) userName.textContent = appState.currentUser.name;
-    if (userRole) userRole.textContent = (appState.currentUser.role || 'USER').toUpperCase();
-}
-
-async function setOnlineStatus() {
-    try {
-        const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
-        const config = STATUS_CONFIG[appState.userStatus];
-        
-        await userRef.update({
-            status: appState.userStatus,
-            statusText: config.text,
-            lastSeen: Date.now()
-        });
-        
-        // Update status on disconnect
-        appState.db.ref('.info/connected').on('value', (snapshot) => {
-            if (snapshot.val() === false) {
-                userRef.update({ status: 'offline' });
-            }
-        });
-        
-        // Clean up on page unload
-        window.addEventListener('beforeunload', () => {
-            userRef.update({ status: 'offline' });
-        });
-        
-    } catch (error) {
-        console.error('Error setting online status:', error);
-    }
-}
-
-// ============================
-// EVENT LISTENERS SETUP
-// ============================
-function setupEventListeners() {
-    // Login form
-    const loginForm = document.getElementById('loginForm');
-    const loginBtn = document.getElementById('loginBtn');
-    
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const errorElement = document.getElementById('loginError');
-            
-            // Show loading
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Signing in...</span>';
-            
-            try {
-                // Sign in with Firebase
-                const auth = firebase.auth();
-                await auth.signInWithEmailAndPassword(email, password);
-                
-                // Clear form
-                loginForm.reset();
-                if (errorElement) errorElement.style.display = 'none';
-                
-            } catch (error) {
-                console.error('Login error:', error);
-                if (errorElement) errorElement.style.display = 'block';
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Sign In</span>';
-            }
-        });
-    }
-    
-    // Apps button
-    const appsBtn = document.getElementById('appsBtn');
-    if (appsBtn) {
-        appsBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleAppsPopup();
-        });
-    }
-    
-    // New Chat button - shows channel selection modal
-    const newChatBtn = document.getElementById('newChatBtn');
-    if (newChatBtn) {
-        newChatBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleChannelSelectionModal(true);
-        });
-    }
-    
-    // Channel selection options
-    const newMessageOption = document.getElementById('newMessageOption');
-    if (newMessageOption) {
-        newMessageOption.addEventListener('click', () => {
-            toggleChannelSelectionModal(false);
-            toggleNewChatModal(true);
-        });
-    }
-    
-    const newChannelOption = document.getElementById('newChannelOption');
-    if (newChannelOption) {
-        newChannelOption.addEventListener('click', () => {
-            toggleChannelSelectionModal(false);
-            toggleNewChannelModal(true);
-        });
-    }
-    
-    // Close modals
-    const closeNewChatModal = document.getElementById('closeNewChatModal');
-    if (closeNewChatModal) {
-        closeNewChatModal.addEventListener('click', () => {
-            toggleNewChatModal(false);
-        });
-    }
-    
-    const closeNewChannelModal = document.getElementById('closeNewChannelModal');
-    if (closeNewChannelModal) {
-        closeNewChannelModal.addEventListener('click', () => {
-            toggleNewChannelModal(false);
-        });
-    }
-    
-    const cancelChannelBtn = document.getElementById('cancelChannelBtn');
-    if (cancelChannelBtn) {
-        cancelChannelBtn.addEventListener('click', () => {
-            toggleNewChannelModal(false);
-        });
-    }
-    
-    // New Chat search
-    const newChatSearch = document.getElementById('newChatSearch');
-    if (newChatSearch) {
-        newChatSearch.addEventListener('input', (e) => {
-            filterNewChatUsers(e.target.value);
-        });
-    }
-    
-    // Channel name input
-    const channelNameInput = document.getElementById('channelName');
-    if (channelNameInput) {
-        channelNameInput.addEventListener('input', () => {
-            updateCreateChannelButton();
-        });
-    }
-    
-    // Create channel button
-    const createChannelBtn = document.getElementById('createChannelBtn');
-    if (createChannelBtn) {
-        createChannelBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            createChannel();
-        });
-    }
-    
-    // Apps search
-    const appsSearch = document.getElementById('appsSearch');
-    if (appsSearch) {
-        appsSearch.addEventListener('input', (e) => {
-            filterApps(e.target.value);
-        });
-    }
-    
-    // Status selector
-    const statusBtn = document.getElementById('statusBtn');
-    const statusDropdown = document.getElementById('statusDropdown');
-    
-    if (statusBtn && statusDropdown) {
-        statusBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            statusDropdown.classList.toggle('active');
-        });
-        
-        // Status options
-        document.querySelectorAll('.status-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const status = option.dataset.status;
-                updateUserStatus(status);
-            });
-        });
-    }
-    
-    // Theme selector
-    const themeBtn = document.getElementById('themeBtn');
-    const themeDropdown = document.getElementById('themeDropdown');
-    
-    if (themeBtn && themeDropdown) {
-        themeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            themeDropdown.classList.toggle('active');
-        });
-        
-        // Theme options
-        document.querySelectorAll('.theme-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const theme = option.dataset.theme;
-                applyTheme(theme);
-                themeDropdown.classList.remove('active');
-            });
-        });
-    }
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-        // Close apps popup if clicking outside
-        const appsPopup = document.getElementById('appsPopup');
-        const appsBtn = document.getElementById('appsBtn');
-        
-        if (appsPopup && appsBtn && 
-            !appsPopup.contains(e.target) && 
-            !appsBtn.contains(e.target)) {
-            toggleAppsPopup(false);
-        }
-        
-        // Close channel selection modal
-        const channelSelectionModal = document.getElementById('channelSelectionModal');
-        const channelSelectionContent = document.querySelector('.channel-selection-content');
-        
-        if (channelSelectionModal && channelSelectionContent && 
-            channelSelectionModal.classList.contains('active') &&
-            !channelSelectionContent.contains(e.target) &&
-            !e.target.closest('#newChatBtn')) {
-            toggleChannelSelectionModal(false);
-        }
-        
-        // Close new chat modal
-        const newChatModal = document.getElementById('newChatModal');
-        const newChatContent = document.querySelector('.new-chat-content');
-        
-        if (newChatModal && newChatContent && 
-            newChatModal.classList.contains('active') &&
-            !newChatContent.contains(e.target)) {
-            toggleNewChatModal(false);
-        }
-        
-        // Close new channel modal
-        const newChannelModal = document.getElementById('newChannelModal');
-        const newChannelContent = document.querySelector('.new-channel-content');
-        
-        if (newChannelModal && newChannelContent && 
-            newChannelModal.classList.contains('active') &&
-            !newChannelContent.contains(e.target)) {
-            toggleNewChannelModal(false);
-        }
-        
-        // Close status dropdown
-        const statusDropdown = document.getElementById('statusDropdown');
-        const statusBtn = document.getElementById('statusBtn');
-        
-        if (statusDropdown && statusBtn && 
-            !statusDropdown.contains(e.target) && 
-            !statusBtn.contains(e.target)) {
-            statusDropdown.classList.remove('active');
-        }
-        
-        // Close theme dropdown
-        const themeDropdown = document.getElementById('themeDropdown');
-        const themeBtn = document.getElementById('themeBtn');
-        
-        if (themeDropdown && themeBtn && 
-            !themeDropdown.contains(e.target) && 
-            !themeBtn.contains(e.target)) {
-            themeDropdown.classList.remove('active');
-        }
-    });
-    
-    // Message input
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-    
-    if (messageInput && sendBtn) {
-        messageInput.addEventListener('input', () => {
-            sendBtn.disabled = !messageInput.value.trim();
-            autoResizeTextarea();
-        });
-        
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (messageInput.value.trim()) {
-                    sendMessage();
+        div.addEventListener('click', (e) => {
+            if (!e.target.closest('.chat-action-btn')) {
+                if (appState.allUsers.has(otherParticipantId)) {
+                    startIndividualChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
                 }
             }
         });
         
-        sendBtn.addEventListener('click', sendMessage);
-    }
-    
-    // File attachment
-    const attachFileBtn = document.getElementById('attachFileBtn');
-    if (attachFileBtn) {
-        attachFileBtn.addEventListener('click', () => {
-            showNotification('Info', 'File upload coming soon', 'info');
+        const deleteBtn = div.querySelector('.chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, otherParticipantId);
         });
+        
+        return div;
     }
     
-    // Image attachment
-    const attachImageBtn = document.getElementById('attachImageBtn');
-    if (attachImageBtn) {
-        attachImageBtn.addEventListener('click', () => {
-            showNotification('Info', 'Image upload coming soon', 'info');
-        });
-    }
-    
-    // User menu
-    const userMenu = document.getElementById('userMenu');
-    if (userMenu) {
-        userMenu.addEventListener('click', () => {
-            // Sign out
-            if (confirm('Are you sure you want to sign out?')) {
-                firebase.auth().signOut().then(() => {
-                    showNotification('Signed Out', 'You have been signed out successfully', 'success');
-                }).catch(error => {
-                    console.error('Sign out error:', error);
-                    showNotification('Error', 'Failed to sign out: ' + error.message, 'error');
-                });
+    // ============================
+    // RECENT CHATS MANAGEMENT
+    // ============================
+    function updateRecentChats() {
+        const container = document.getElementById('recentChatsGrid');
+        const noChatsMessage = document.getElementById('noChatsMessage');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (appState.conversations.size === 0) {
+            if (noChatsMessage) noChatsMessage.style.display = 'block';
+            return;
+        }
+        
+        if (noChatsMessage) noChatsMessage.style.display = 'none';
+        
+        const sortedConversations = Array.from(appState.conversations.entries())
+            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
+            .slice(0, 12);
+        
+        sortedConversations.forEach(([chatId, data]) => {
+            if (data.type === 'channel') {
+                const channel = appState.channels.get(chatId);
+                if (!channel) return;
+                
+                const card = createChannelCard(chatId, channel, data);
+                container.appendChild(card);
+            } else {
+                const otherParticipantId = Object.keys(data.participants || {})
+                    .find(id => id !== appState.currentUser.uid);
+                
+                if (!otherParticipantId) return;
+                
+                const user = appState.allUsers.get(otherParticipantId) || {
+                    name: 'Unknown User',
+                    color: getColorForUser(otherParticipantId)
+                };
+                
+                const card = createIndividualChatCard(chatId, user, data, otherParticipantId);
+                container.appendChild(card);
             }
         });
     }
     
-    // Nav items (Team Chat, Tasks, Files)
-    document.querySelectorAll('.nav-item[data-section]').forEach(item => {
-        item.addEventListener('click', () => {
-            const section = item.dataset.section;
+    function createChannelCard(chatId, channel, conversation) {
+        const card = document.createElement('div');
+        card.className = 'recent-chat-card';
+        card.dataset.chatId = chatId;
+        card.dataset.channelId = chatId;
+        card.innerHTML = `
+            <div class="recent-chat-avatar channel">
+                <i class="fas fa-hashtag"></i>
+            </div>
+            <div class="recent-chat-info">
+                <div class="recent-chat-name channel">${channel.name}</div>
+                <div class="recent-chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="recent-chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="recent-chat-card-actions">
+                <button class="recent-chat-action-btn delete" title="Leave Channel" data-chat-id="${chatId}">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        `;
+        
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.recent-chat-action-btn')) {
+                startChannelChat(chatId, channel);
+            }
+        });
+        
+        const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, null);
+        });
+        
+        return card;
+    }
+    
+    function createIndividualChatCard(chatId, user, conversation, otherParticipantId) {
+        const card = document.createElement('div');
+        card.className = 'recent-chat-card';
+        card.dataset.chatId = chatId;
+        card.dataset.userId = otherParticipantId;
+        card.innerHTML = `
+            <div class="recent-chat-avatar" style="background: ${user.color}">
+                ${getInitials(user.name)}
+            </div>
+            <div class="recent-chat-info">
+                <div class="recent-chat-name">${user.name}</div>
+                <div class="recent-chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="recent-chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+            <div class="recent-chat-card-actions">
+                <button class="recent-chat-action-btn delete" title="Delete Chat" data-chat-id="${chatId}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+        
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.recent-chat-action-btn')) {
+                if (appState.allUsers.has(otherParticipantId)) {
+                    startIndividualChat(otherParticipantId, appState.allUsers.get(otherParticipantId));
+                }
+            }
+        });
+        
+        const deleteBtn = card.querySelector('.recent-chat-action-btn.delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chatId, otherParticipantId);
+        });
+        
+        return card;
+    }
+    
+    // ============================
+    // APPS MANAGEMENT
+    // ============================
+    function initializeApps() {
+        appState.enterpriseApps = ENTERPRISE_APPS;
+        renderAppsGrid(appState.enterpriseApps);
+    }
+    
+    function renderAppsGrid(apps) {
+        const container = document.getElementById('appsGrid');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        apps.forEach(app => {
+            const appElement = document.createElement('div');
+            appElement.className = 'app-item';
+            appElement.dataset.appId = app.id;
+            appElement.title = `Open ${app.name}`;
             
-            // Update active state
-            document.querySelectorAll('.nav-item').forEach(nav => {
-                nav.classList.remove('active');
+            let iconUrl = app.icon;
+            iconUrl = iconUrl.replace(/\(/g, '%28').replace(/\)/g, '%29');
+            
+            appElement.innerHTML = `
+                <div class="app-icon">
+                    <img src="${iconUrl}" alt="${app.name}" onerror="handleIconError(this, '${app.color}', '${app.name}')">
+                </div>
+                <div class="app-name">${app.name}</div>
+                <div class="app-desc">${app.description}</div>
+            `;
+            
+            appElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openApp(app);
             });
-            item.classList.add('active');
             
-            // Handle section switching
-            if (section === 'chat') {
-                showNotification('Team Chat', 'Team chat functionality is enabled', 'info');
-            } else if (section === 'tasks') {
-                showNotification('Tasks', 'Task management coming soon', 'info');
-            } else if (section === 'files') {
-                showNotification('Files', 'File management coming soon', 'info');
+            container.appendChild(appElement);
+        });
+    }
+    
+    function handleIconError(imgElement, color, name) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect width="100" height="100" fill="${color}" rx="12"/>
+            <text x="50" y="55" font-family="Arial, sans-serif" font-size="36" 
+                  fill="white" text-anchor="middle" font-weight="bold">
+                ${name.charAt(0)}
+            </text>
+        </svg>`;
+        
+        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        imgElement.src = svgUrl;
+    }
+    
+    function openApp(app) {
+        window.open(app.link, '_blank');
+        toggleAppsPopup(false);
+        showNotification('App Launched', `${app.name} opened in new tab`, 'success');
+    }
+    
+    function filterApps(searchTerm) {
+        if (!searchTerm) {
+            renderAppsGrid(appState.enterpriseApps);
+            return;
+        }
+        
+        const filteredApps = appState.enterpriseApps.filter(app => 
+            app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.category.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        renderAppsGrid(filteredApps);
+    }
+    
+    function toggleAppsPopup(show) {
+        const appsPopup = document.getElementById('appsPopup');
+        if (!appsPopup) return;
+        
+        if (show === undefined) {
+            appState.isAppsPopupOpen = !appState.isAppsPopupOpen;
+        } else {
+            appState.isAppsPopupOpen = show;
+        }
+        
+        if (appState.isAppsPopupOpen) {
+            appsPopup.classList.add('active');
+        } else {
+            appsPopup.classList.remove('active');
+        }
+    }
+    
+    // ============================
+    // THEME MANAGEMENT
+    // ============================
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('workspace-theme');
+        if (savedTheme) {
+            appState.currentTheme = savedTheme;
+        } else {
+            appState.currentTheme = 'navy';
+            localStorage.setItem('workspace-theme', 'navy');
+        }
+        
+        applyTheme(appState.currentTheme);
+    }
+    
+    function applyTheme(theme) {
+        appState.currentTheme = theme;
+        document.body.setAttribute('data-theme', theme);
+        
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.theme === theme) {
+                option.classList.add('active');
             }
         });
+        
+        localStorage.setItem('workspace-theme', theme);
+    }
+    
+    // ============================
+    // STATUS MANAGEMENT
+    // ============================
+    function updateUserStatus(status) {
+        if (!appState.currentUser || !appState.db) return;
+        
+        appState.userStatus = status;
+        const config = STATUS_CONFIG[status];
+        
+        // Update UI
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        
+        if (statusIndicator) {
+            statusIndicator.className = `status-indicator ${config.colorClass}`;
+        }
+        if (statusText) {
+            statusText.textContent = config.text;
+        }
+        
+        // Update in Firebase
+        const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
+        userRef.update({
+            status: status,
+            statusText: config.text,
+            lastSeen: Date.now()
+        });
+        
+        const statusDropdown = document.getElementById('statusDropdown');
+        if (statusDropdown) statusDropdown.classList.remove('active');
+        
+        showNotification('Status Updated', `You are now ${config.text.toLowerCase()}`, 'success');
+    }
+    
+    // ============================
+    // REAL-TIME LISTENERS
+    // ============================
+    function setupRealtimeListeners() {
+        if (!appState.db) return;
+        
+        // Online users listener
+        appState.db.ref('users').on('child_changed', (snapshot) => {
+            const user = snapshot.val();
+            if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
+                appState.onlineUsers.set(snapshot.key, user);
+                
+                if (appState.currentChat && appState.currentChat.type === 'individual' && appState.currentChat.userId === snapshot.key) {
+                    updateChatHeader(user, 'individual');
+                }
+            } else if (user.status === 'offline') {
+                appState.onlineUsers.delete(snapshot.key);
+                
+                if (appState.currentChat && appState.currentChat.type === 'individual' && appState.currentChat.userId === snapshot.key) {
+                    const offlineUser = appState.allUsers.get(snapshot.key) || user;
+                    updateChatHeader(offlineUser, 'individual');
+                }
+            }
+        });
+        
+        // New online users
+        appState.db.ref('users').on('child_added', (snapshot) => {
+            const user = snapshot.val();
+            if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
+                appState.onlineUsers.set(snapshot.key, user);
+            }
+        });
+        
+        // User removed
+        appState.db.ref('users').on('child_removed', (snapshot) => {
+            appState.onlineUsers.delete(snapshot.key);
+        });
+        
+        // Conversations listener
+        appState.db.ref('conversations').on('child_changed', (snapshot) => {
+            const conversation = snapshot.val();
+            if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
+                appState.conversations.set(snapshot.key, conversation);
+                updateConversationsList();
+                updateRecentChats();
+            }
+        });
+        
+        // New conversations
+        appState.db.ref('conversations').on('child_added', (snapshot) => {
+            const conversation = snapshot.val();
+            if (conversation.participants && conversation.participants[appState.currentUser.uid]) {
+                appState.conversations.set(snapshot.key, conversation);
+                updateConversationsList();
+                updateRecentChats();
+            }
+        });
+        
+        // Conversations removed
+        appState.db.ref('conversations').on('child_removed', (snapshot) => {
+            appState.conversations.delete(snapshot.key);
+            updateConversationsList();
+            updateRecentChats();
+        });
+        
+        // Channels listener
+        appState.db.ref('channels').on('child_changed', (snapshot) => {
+            const channel = snapshot.val();
+            if (channel.members && channel.members[appState.currentUser.uid]) {
+                appState.channels.set(snapshot.key, channel);
+            } else {
+                appState.channels.delete(snapshot.key);
+            }
+        });
+        
+        // New channels
+        appState.db.ref('channels').on('child_added', (snapshot) => {
+            const channel = snapshot.val();
+            if (channel.members && channel.members[appState.currentUser.uid]) {
+                appState.channels.set(snapshot.key, channel);
+            }
+        });
+        
+        // Channels removed
+        appState.db.ref('channels').on('child_removed', (snapshot) => {
+            appState.channels.delete(snapshot.key);
+        });
+    }
+    
+    // ============================
+    // INITIALIZATION
+    // ============================
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeTheme();
+        initializeApps();
+        setupEventListeners();
+        checkAuthState();
     });
     
-    // Back to home button
-    const backToHomeBtn = document.getElementById('backToHomeBtn');
-    if (backToHomeBtn) {
-        backToHomeBtn.addEventListener('click', () => {
-            showHomepage();
-        });
+    async function checkAuthState() {
+        try {
+            const app = firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.database();
+            const storage = firebase.storage();
+            
+            appState.firebase = app;
+            appState.auth = auth;
+            appState.db = db;
+            appState.storage = storage;
+            
+            auth.onAuthStateChanged(handleAuthStateChange);
+            
+        } catch (error) {
+            console.error('Initialization error:', error);
+            showNotification('Error', 'Failed to initialize application: ' + error.message, 'error');
+        }
     }
     
-    // Clear current chat button
-    const clearChatBtn = document.getElementById('clearChatBtn');
-    if (clearChatBtn) {
-        clearChatBtn.addEventListener('click', () => {
-            clearCurrentChat();
-        });
+    function handleAuthStateChange(user) {
+        if (user) {
+            handleUserLogin(user);
+        } else {
+            document.getElementById('loginContainer').classList.remove('hidden');
+            document.getElementById('workspace').classList.add('hidden');
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }
     }
     
-    // Clear all chats button
-    const clearAllChatsBtn = document.getElementById('clearAllChatsBtn');
-    if (clearAllChatsBtn) {
-        clearAllChatsBtn.addEventListener('click', () => {
-            clearAllChats();
-        });
+    async function handleUserLogin(user) {
+        try {
+            // First, check if user exists in Firebase
+            const userRef = appState.db.ref(`users/${user.uid}`);
+            const snapshot = await userRef.once('value');
+            let userData = snapshot.val();
+            
+            if (!userData) {
+                // User doesn't exist in Firebase, create basic profile
+                userData = {
+                    name: user.displayName || user.email.split('@')[0],
+                    email: user.email,
+                    role: 'User',
+                    status: 'available',
+                    statusText: 'Available',
+                    color: getColorForUser(user.uid),
+                    lastSeen: Date.now(),
+                    createdAt: Date.now()
+                };
+                
+                // Save to Firebase
+                await userRef.set(userData);
+            }
+            
+            // Update app state
+            appState.currentUser = {
+                uid: user.uid,
+                email: user.email,
+                ...userData
+            };
+            
+            // Update UI
+            updateUserInterface();
+            
+            // Load all users from Firebase
+            await loadAllUsersFromFirebase();
+            
+            // Set online status
+            await setOnlineStatus();
+            
+            // Load conversations and channels
+            await loadConversations();
+            
+            // Set up real-time listeners
+            setupRealtimeListeners();
+            
+            // Show workspace
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('workspace').classList.remove('hidden');
+            document.getElementById('loadingScreen').classList.add('hidden');
+            
+            showNotification('Welcome Back', `Logged in as ${userData.name}`, 'success');
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            showNotification('Error', 'Failed to load user data: ' + error.message, 'error');
+        }
     }
-}
-</script>
+    
+    async function loadAllUsersFromFirebase() {
+        try {
+            const snapshot = await appState.db.ref('users').once('value');
+            const users = snapshot.val() || {};
+            
+            // Clear current users
+            appState.allUsers.clear();
+            
+            // Add users to state (excluding current user)
+            Object.entries(users).forEach(([uid, user]) => {
+                if (uid !== appState.currentUser?.uid) {
+                    appState.allUsers.set(uid, {
+                        uid,
+                        ...user,
+                        color: user.color || getColorForUser(uid)
+                    });
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error loading users from Firebase:', error);
+        }
+    }
+    
+    function updateUserInterface() {
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        
+        if (userAvatar) {
+            userAvatar.textContent = getInitials(appState.currentUser.name);
+            userAvatar.style.background = appState.currentUser.color || getColorForUser(appState.currentUser.uid);
+        }
+        if (userName) userName.textContent = appState.currentUser.name;
+        if (userRole) userRole.textContent = (appState.currentUser.role || 'USER').toUpperCase();
+    }
+    
+    async function setOnlineStatus() {
+        try {
+            const userRef = appState.db.ref(`users/${appState.currentUser.uid}`);
+            const config = STATUS_CONFIG[appState.userStatus];
+            
+            await userRef.update({
+                status: appState.userStatus,
+                statusText: config.text,
+                lastSeen: Date.now()
+            });
+            
+            // Update status on disconnect
+            appState.db.ref('.info/connected').on('value', (snapshot) => {
+                if (snapshot.val() === false) {
+                    userRef.update({ status: 'offline' });
+                }
+            });
+            
+            // Clean up on page unload
+            window.addEventListener('beforeunload', () => {
+                userRef.update({ status: 'offline' });
+            });
+            
+        } catch (error) {
+            console.error('Error setting online status:', error);
+        }
+    }
+    
+    // ============================
+    // EVENT LISTENERS SETUP
+    // ============================
+    function setupEventListeners() {
+        // Login form
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const errorElement = document.getElementById('loginError');
+                
+                // Show loading
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Signing in...</span>';
+                
+                try {
+                    // Sign in with Firebase
+                    const auth = firebase.auth();
+                    await auth.signInWithEmailAndPassword(email, password);
+                    
+                    // Clear form
+                    loginForm.reset();
+                    if (errorElement) errorElement.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Login error:', error);
+                    if (errorElement) errorElement.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Sign In</span>';
+                }
+            });
+        }
+        
+        // Apps button
+        const appsBtn = document.getElementById('appsBtn');
+        if (appsBtn) {
+            appsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleAppsPopup();
+            });
+        }
+        
+        // New Chat button - shows channel selection modal
+        const newChatBtn = document.getElementById('newChatBtn');
+        if (newChatBtn) {
+            newChatBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleChannelSelectionModal(true);
+            });
+        }
+        
+        // Channel selection options
+        const newMessageOption = document.getElementById('newMessageOption');
+        if (newMessageOption) {
+            newMessageOption.addEventListener('click', () => {
+                toggleChannelSelectionModal(false);
+                toggleNewChatModal(true);
+            });
+        }
+        
+        const newChannelOption = document.getElementById('newChannelOption');
+        if (newChannelOption) {
+            newChannelOption.addEventListener('click', () => {
+                toggleChannelSelectionModal(false);
+                toggleNewChannelModal(true);
+            });
+        }
+        
+        // Close modals
+        const closeNewChatModal = document.getElementById('closeNewChatModal');
+        if (closeNewChatModal) {
+            closeNewChatModal.addEventListener('click', () => {
+                toggleNewChatModal(false);
+            });
+        }
+        
+        const closeNewChannelModal = document.getElementById('closeNewChannelModal');
+        if (closeNewChannelModal) {
+            closeNewChannelModal.addEventListener('click', () => {
+                toggleNewChannelModal(false);
+            });
+        }
+        
+        const cancelChannelBtn = document.getElementById('cancelChannelBtn');
+        if (cancelChannelBtn) {
+            cancelChannelBtn.addEventListener('click', () => {
+                toggleNewChannelModal(false);
+            });
+        }
+        
+        // New Chat search
+        const newChatSearch = document.getElementById('newChatSearch');
+        if (newChatSearch) {
+            newChatSearch.addEventListener('input', (e) => {
+                filterNewChatUsers(e.target.value);
+            });
+        }
+        
+        // Channel name input
+        const channelNameInput = document.getElementById('channelName');
+        if (channelNameInput) {
+            channelNameInput.addEventListener('input', () => {
+                updateCreateChannelButton();
+            });
+        }
+        
+        // Create channel button
+        const createChannelBtn = document.getElementById('createChannelBtn');
+        if (createChannelBtn) {
+            createChannelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                createChannel();
+            });
+        }
+        
+        // Apps search
+        const appsSearch = document.getElementById('appsSearch');
+        if (appsSearch) {
+            appsSearch.addEventListener('input', (e) => {
+                filterApps(e.target.value);
+            });
+        }
+        
+        // Status selector
+        const statusBtn = document.getElementById('statusBtn');
+        const statusDropdown = document.getElementById('statusDropdown');
+        
+        if (statusBtn && statusDropdown) {
+            statusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                statusDropdown.classList.toggle('active');
+            });
+            
+            // Status options
+            document.querySelectorAll('.status-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const status = option.dataset.status;
+                    updateUserStatus(status);
+                });
+            });
+        }
+        
+        // Theme selector
+        const themeBtn = document.getElementById('themeBtn');
+        const themeDropdown = document.getElementById('themeDropdown');
+        
+        if (themeBtn && themeDropdown) {
+            themeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                themeDropdown.classList.toggle('active');
+            });
+            
+            // Theme options
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const theme = option.dataset.theme;
+                    applyTheme(theme);
+                    themeDropdown.classList.remove('active');
+                });
+            });
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            // Close apps popup if clicking outside
+            const appsPopup = document.getElementById('appsPopup');
+            const appsBtn = document.getElementById('appsBtn');
+            
+            if (appsPopup && appsBtn && 
+                !appsPopup.contains(e.target) && 
+                !appsBtn.contains(e.target)) {
+                toggleAppsPopup(false);
+            }
+            
+            // Close channel selection modal
+            const channelSelectionModal = document.getElementById('channelSelectionModal');
+            const channelSelectionContent = document.querySelector('.channel-selection-content');
+            
+            if (channelSelectionModal && channelSelectionContent && 
+                channelSelectionModal.classList.contains('active') &&
+                !channelSelectionContent.contains(e.target) &&
+                !e.target.closest('#newChatBtn')) {
+                toggleChannelSelectionModal(false);
+            }
+            
+            // Close new chat modal
+            const newChatModal = document.getElementById('newChatModal');
+            const newChatContent = document.querySelector('.new-chat-content');
+            
+            if (newChatModal && newChatContent && 
+                newChatModal.classList.contains('active') &&
+                !newChatContent.contains(e.target)) {
+                toggleNewChatModal(false);
+            }
+            
+            // Close new channel modal
+            const newChannelModal = document.getElementById('newChannelModal');
+            const newChannelContent = document.querySelector('.new-channel-content');
+            
+            if (newChannelModal && newChannelContent && 
+                newChannelModal.classList.contains('active') &&
+                !newChannelContent.contains(e.target)) {
+                toggleNewChannelModal(false);
+            }
+            
+            // Close status dropdown
+            const statusDropdown = document.getElementById('statusDropdown');
+            const statusBtn = document.getElementById('statusBtn');
+            
+            if (statusDropdown && statusBtn && 
+                !statusDropdown.contains(e.target) && 
+                !statusBtn.contains(e.target)) {
+                statusDropdown.classList.remove('active');
+            }
+            
+            // Close theme dropdown
+            const themeDropdown = document.getElementById('themeDropdown');
+            const themeBtn = document.getElementById('themeBtn');
+            
+            if (themeDropdown && themeBtn && 
+                !themeDropdown.contains(e.target) && 
+                !themeBtn.contains(e.target)) {
+                themeDropdown.classList.remove('active');
+            }
+        });
+        
+        // Message input
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        if (messageInput && sendBtn) {
+            messageInput.addEventListener('input', () => {
+                sendBtn.disabled = !messageInput.value.trim();
+                autoResizeTextarea();
+            });
+            
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (messageInput.value.trim()) {
+                        sendMessage();
+                    }
+                }
+            });
+            
+            sendBtn.addEventListener('click', sendMessage);
+        }
+        
+        // File attachment
+        const attachFileBtn = document.getElementById('attachFileBtn');
+        if (attachFileBtn) {
+            attachFileBtn.addEventListener('click', () => {
+                showNotification('Info', 'File upload coming soon', 'info');
+            });
+        }
+        
+        // Image attachment
+        const attachImageBtn = document.getElementById('attachImageBtn');
+        if (attachImageBtn) {
+            attachImageBtn.addEventListener('click', () => {
+                showNotification('Info', 'Image upload coming soon', 'info');
+            });
+        }
+        
+        // User menu
+        const userMenu = document.getElementById('userMenu');
+        if (userMenu) {
+            userMenu.addEventListener('click', () => {
+                // Sign out
+                if (confirm('Are you sure you want to sign out?')) {
+                    firebase.auth().signOut().then(() => {
+                        showNotification('Signed Out', 'You have been signed out successfully', 'success');
+                    }).catch(error => {
+                        console.error('Sign out error:', error);
+                        showNotification('Error', 'Failed to sign out: ' + error.message, 'error');
+                    });
+                }
+            });
+        }
+        
+        // Nav items (Team Chat, Tasks, Files)
+        document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.dataset.section;
+                
+                // Update active state
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                item.classList.add('active');
+                
+                // Handle section switching
+                if (section === 'chat') {
+                    showNotification('Team Chat', 'Team chat functionality is enabled', 'info');
+                } else if (section === 'tasks') {
+                    showNotification('Tasks', 'Task management coming soon', 'info');
+                } else if (section === 'files') {
+                    showNotification('Files', 'File management coming soon', 'info');
+                }
+            });
+        });
+        
+        // Back to home button
+        const backToHomeBtn = document.getElementById('backToHomeBtn');
+        if (backToHomeBtn) {
+            backToHomeBtn.addEventListener('click', () => {
+                showHomepage();
+            });
+        }
+        
+        // Clear current chat button
+        const clearChatBtn = document.getElementById('clearChatBtn');
+        if (clearChatBtn) {
+            clearChatBtn.addEventListener('click', () => {
+                clearCurrentChat();
+            });
+        }
+        
+        // Clear all chats button
+        const clearAllChatsBtn = document.getElementById('clearAllChatsBtn');
+        if (clearAllChatsBtn) {
+            clearAllChatsBtn.addEventListener('click', () => {
+                clearAllChats();
+            });
+        }
+    }
+    </script>
 </body>
 </html>
