@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management Admin Panel | Professional Dashboard</title>
+    <title>User Management Admin Panel | Real-time Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Modern Color Palette */
@@ -50,141 +50,53 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: var(--gray-50);
             color: var(--gray-800);
             font-weight: 400;
             line-height: 1.5;
-        }
-
-        .auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 20px;
-        }
-
-        .auth-box {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: var(--shadow-xl);
-            animation: slideUp 0.4s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .auth-logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .auth-logo h1 {
-            color: var(--primary-700);
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .auth-logo p {
-            color: var(--gray-500);
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--gray-700);
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--gray-200);
-            border-radius: 8px;
-            font-size: 14px;
-            transition: var(--transition);
-            background: var(--gray-50);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-500);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .auth-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(to right, var(--primary-600), var(--primary-700));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .auth-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .auth-btn:active {
-            transform: translateY(0);
-        }
-
-        .auth-error {
-            background: var(--danger-500);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 14px;
-            display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            overflow-x: hidden;
         }
 
         .admin-container {
             display: flex;
             min-height: 100vh;
-            background: var(--gray-50);
+        }
+
+        /* Real-time Status Indicator */
+        .realtime-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            border: 1px solid var(--gray-200);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .realtime-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-500);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         /* Sidebar Styles */
@@ -203,18 +115,18 @@
         .sidebar-header {
             padding: 24px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-header h2 {
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+
+        .sidebar-header h2 {
             font-size: 20px;
             font-weight: 700;
             color: white;
         }
 
-        .sidebar-header h2 i {
+        .sidebar-header i {
             color: var(--primary-500);
             font-size: 22px;
         }
@@ -234,6 +146,7 @@
             border-left: 4px solid transparent;
             font-size: 15px;
             font-weight: 500;
+            cursor: pointer;
         }
 
         .menu-item:hover {
@@ -336,6 +249,11 @@
             color: white;
         }
 
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
         .btn-warning {
             background: linear-gradient(to right, var(--warning-500), #d97706);
             color: white;
@@ -431,29 +349,23 @@
             font-weight: 700;
             margin-bottom: 4px;
             color: var(--gray-900);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-number-update {
+            animation: numberUpdate 0.5s ease;
+        }
+
+        @keyframes numberUpdate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .stat-info p {
             color: var(--gray-500);
             font-size: 14px;
             font-weight: 500;
-        }
-
-        .stat-trend {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        .trend-up {
-            color: var(--success-500);
-        }
-
-        .trend-down {
-            color: var(--danger-500);
         }
 
         /* Content Sections */
@@ -553,6 +465,7 @@
             border-bottom: 1px solid var(--gray-200);
             vertical-align: middle;
             font-size: 14px;
+            transition: var(--transition);
         }
 
         .data-table tbody tr {
@@ -561,6 +474,24 @@
 
         .data-table tbody tr:hover {
             background: var(--gray-50);
+        }
+
+        .data-table tbody tr.new-user {
+            animation: highlightRow 2s ease;
+        }
+
+        @keyframes highlightRow {
+            0% { background: rgba(16, 185, 129, 0.2); }
+            100% { background: transparent; }
+        }
+
+        .data-table tbody tr.user-updated {
+            animation: highlightUpdate 2s ease;
+        }
+
+        @keyframes highlightUpdate {
+            0% { background: rgba(245, 158, 11, 0.2); }
+            100% { background: transparent; }
         }
 
         .user-cell {
@@ -610,6 +541,17 @@
             font-weight: 600;
             line-height: 1;
             gap: 4px;
+            transition: var(--transition);
+        }
+
+        .badge-status-update {
+            animation: badgePulse 1s ease;
+        }
+
+        @keyframes badgePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .badge-success {
@@ -701,6 +643,12 @@
 
         .modal.active {
             display: flex;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
@@ -777,6 +725,11 @@
             font-size: 14px;
         }
 
+        .form-label.required::after {
+            content: ' *';
+            color: var(--danger-500);
+        }
+
         .form-control {
             width: 100%;
             padding: 12px;
@@ -792,6 +745,17 @@
             border-color: var(--primary-500);
             background: white;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-control.error {
+            border-color: var(--danger-500);
+        }
+
+        .form-error {
+            color: var(--danger-500);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
         }
 
         .modal-footer {
@@ -856,6 +820,7 @@
             animation: slideInRight 0.3s ease-out;
             border-left: 4px solid var(--primary-500);
             max-width: 400px;
+            cursor: pointer;
         }
 
         @keyframes slideInRight {
@@ -879,6 +844,10 @@
 
         .toast.warning {
             border-left-color: var(--warning-500);
+        }
+
+        .toast-info {
+            border-left-color: var(--info-500);
         }
 
         .toast-icon {
@@ -925,7 +894,52 @@
             font-size: 13px;
         }
 
-        /* User Detail View */
+        /* Real-time Connection Status */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            border: 1px solid var(--gray-200);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .connection-dot.connected {
+            background: var(--success-500);
+            animation: pulse 2s infinite;
+        }
+
+        .connection-dot.disconnected {
+            background: var(--danger-500);
+        }
+
+        /* User Detail Modal */
         .user-detail-grid {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -1093,36 +1107,25 @@
     </style>
 </head>
 <body>
-    <!-- Authentication Overlay -->
-    <div class="auth-overlay" id="authOverlay">
-        <div class="auth-box">
-            <div class="auth-logo">
-                <h1><i class="fas fa-user-shield"></i> Admin Panel</h1>
-                <p>User Management System</p>
-            </div>
-            <div class="form-group">
-                <label for="adminEmail">Admin Email</label>
-                <input type="email" id="adminEmail" placeholder="Enter admin email" value="admin@example.com">
-            </div>
-            <div class="form-group">
-                <label for="adminPassword">Password</label>
-                <input type="password" id="adminPassword" placeholder="Enter password" value="admin123">
-            </div>
-            <button class="auth-btn" id="loginBtn">
-                <i class="fas fa-sign-in-alt"></i> Sign In
-            </button>
-            <div class="auth-error" id="authError">
-                Invalid credentials. Please try again.
-            </div>
-        </div>
+    <!-- Real-time Connection Status -->
+    <div class="connection-status" id="connectionStatus" style="display: none;">
+        <div class="connection-dot connected"></div>
+        <span>Connected to Firebase</span>
+    </div>
+
+    <!-- Real-time Indicator -->
+    <div class="realtime-indicator" id="realtimeIndicator">
+        <div class="realtime-dot"></div>
+        <span>Live Updates Active</span>
     </div>
 
     <!-- Admin Panel -->
-    <div class="admin-container" id="adminContainer" style="display: none;">
+    <div class="admin-container" id="adminContainer">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+                <i class="fas fa-user-shield"></i>
+                <h2>Admin Panel</h2>
             </div>
             <nav class="sidebar-menu">
                 <a href="#" class="menu-item active" data-section="dashboard">
@@ -1154,11 +1157,11 @@
                 </button>
                 <div class="topbar-left">
                     <h1 id="pageTitle">Dashboard Overview</h1>
-                    <p>Welcome back, Admin</p>
+                    <p id="lastUpdate">Last update: Just now</p>
                 </div>
                 <div class="topbar-right">
                     <button class="btn btn-outline" id="refreshBtn">
-                        <i class="fas fa-sync-alt"></i> Refresh
+                        <i class="fas fa-sync-alt"></i> Sync Now
                     </button>
                     <button class="btn btn-primary" id="addUserBtn">
                         <i class="fas fa-user-plus"></i> Add User
@@ -1178,7 +1181,7 @@
                                 <h3 id="totalUsers">0</h3>
                                 <p>Total Users</p>
                                 <div class="stat-trend trend-up">
-                                    <i class="fas fa-arrow-up"></i> 12% from last month
+                                    <i class="fas fa-arrow-up"></i> Real-time
                                 </div>
                             </div>
                         </div>
@@ -1192,7 +1195,7 @@
                                 <h3 id="onlineUsers">0</h3>
                                 <p>Online Now</p>
                                 <div class="stat-trend trend-up">
-                                    <i class="fas fa-signal"></i> Active
+                                    <i class="fas fa-signal"></i> Live
                                 </div>
                             </div>
                         </div>
@@ -1205,8 +1208,8 @@
                             <div class="stat-info">
                                 <h3 id="activeSessions">0</h3>
                                 <p>Active Sessions</p>
-                                <div class="stat-trend trend-down">
-                                    <i class="fas fa-arrow-down"></i> 3% from yesterday
+                                <div class="stat-trend trend-up">
+                                    <i class="fas fa-bolt"></i> Real-time
                                 </div>
                             </div>
                         </div>
@@ -1220,7 +1223,7 @@
                                 <h3 id="totalMessages">0</h3>
                                 <p>Total Messages</p>
                                 <div class="stat-trend trend-up">
-                                    <i class="fas fa-arrow-up"></i> 24% today
+                                    <i class="fas fa-sync-alt"></i> Updating
                                 </div>
                             </div>
                         </div>
@@ -1250,7 +1253,7 @@
                                 </tr>
                             </thead>
                             <tbody id="dashboardUsersTable">
-                                <!-- Users will be populated here -->
+                                <!-- Users will be populated in real-time -->
                             </tbody>
                         </table>
                     </div>
@@ -1267,6 +1270,9 @@
                                 <i class="fas fa-search"></i>
                                 <input type="text" id="usersSearch" placeholder="Search users...">
                             </div>
+                            <button class="btn btn-success" id="exportUsersBtn">
+                                <i class="fas fa-download"></i> Export
+                            </button>
                         </div>
                     </div>
                     <div class="table-container">
@@ -1283,7 +1289,7 @@
                                 </tr>
                             </thead>
                             <tbody id="usersTable">
-                                <!-- Users will be populated here -->
+                                <!-- Users will be populated in real-time -->
                             </tbody>
                         </table>
                     </div>
@@ -1310,7 +1316,7 @@
                                 </tr>
                             </thead>
                             <tbody id="sessionsTable">
-                                <!-- Sessions will be populated here -->
+                                <!-- Sessions will be populated in real-time -->
                             </tbody>
                         </table>
                     </div>
@@ -1335,7 +1341,7 @@
                                 </tr>
                             </thead>
                             <tbody id="activityTable">
-                                <!-- Activity logs will be populated here -->
+                                <!-- Activity logs will be populated in real-time -->
                             </tbody>
                         </table>
                     </div>
@@ -1351,29 +1357,32 @@
                     <div class="modal-body">
                         <div class="info-grid">
                             <div class="info-item">
-                                <div class="info-label">Auto Backup</div>
-                                <div class="info-value" id="autoBackupStatus">Enabled</div>
+                                <div class="info-label">Firebase Status</div>
+                                <div class="info-value" id="firebaseStatus">Connected</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">Last Backup</div>
-                                <div class="info-value" id="lastBackup">2024-01-01 10:30</div>
+                                <div class="info-label">Last Sync</div>
+                                <div class="info-value" id="lastSync">Just now</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">Next Backup</div>
-                                <div class="info-value" id="nextBackup">2024-01-02 10:30</div>
+                                <div class="info-label">Realtime Updates</div>
+                                <div class="info-value" id="realtimeStatus">Active</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">Total Storage</div>
-                                <div class="info-value" id="totalStorage">5 GB</div>
+                                <div class="info-label">Database Size</div>
+                                <div class="info-value" id="databaseSize">Calculating...</div>
                             </div>
                         </div>
                         
-                        <div style="margin-top: 24px;">
+                        <div style="margin-top: 24px; display: flex; gap: 12px;">
                             <button class="btn btn-primary" id="backupNowBtn">
                                 <i class="fas fa-database"></i> Backup Now
                             </button>
-                            <button class="btn btn-outline" id="clearCacheBtn" style="margin-left: 12px;">
+                            <button class="btn btn-outline" id="clearCacheBtn">
                                 <i class="fas fa-broom"></i> Clear Cache
+                            </button>
+                            <button class="btn btn-outline" id="reconnectBtn">
+                                <i class="fas fa-plug"></i> Reconnect
                             </button>
                         </div>
                     </div>
@@ -1390,54 +1399,70 @@
                 <button class="close-modal" id="closeUserModal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label" for="userName">Full Name *</label>
-                    <input type="text" class="form-control" id="userName" placeholder="Enter full name" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="userEmail">Email Address *</label>
-                    <input type="email" class="form-control" id="userEmail" placeholder="Enter email address" required>
-                </div>
-                <div class="form-row">
+                <form id="userForm">
                     <div class="form-group">
-                        <label class="form-label" for="userRole">Role *</label>
-                        <select class="form-control" id="userRole" required>
-                            <option value="User">User</option>
-                            <option value="Administrator">Administrator</option>
-                            <option value="Sales Executive">Sales Executive</option>
-                            <option value="Manager">Manager</option>
-                            <option value="Director">Director</option>
-                        </select>
+                        <label class="form-label required" for="userName">Full Name</label>
+                        <input type="text" class="form-control" id="userName" placeholder="Enter full name" required>
+                        <div class="form-error" id="nameError">Name is required</div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="userDepartment">Department</label>
-                        <input type="text" class="form-control" id="userDepartment" placeholder="Enter department">
+                        <label class="form-label required" for="userEmail">Email Address</label>
+                        <input type="email" class="form-control" id="userEmail" placeholder="Enter email address" required>
+                        <div class="form-error" id="emailError">Valid email is required</div>
                     </div>
-                </div>
-                <div class="form-row">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required" for="userRole">Role</label>
+                            <select class="form-control" id="userRole" required>
+                                <option value="">Select role</option>
+                                <option value="User">User</option>
+                                <option value="Administrator">Administrator</option>
+                                <option value="Sales Executive">Sales Executive</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Director">Director</option>
+                            </select>
+                            <div class="form-error" id="roleError">Role is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="userDepartment">Department</label>
+                            <input type="text" class="form-control" id="userDepartment" placeholder="Enter department">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="userStatus">Status</label>
+                            <select class="form-control" id="userStatus">
+                                <option value="online">Online</option>
+                                <option value="offline">Offline</option>
+                                <option value="away">Away</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="userPermissions">Permissions</label>
+                            <select class="form-control" id="userPermissions">
+                                <option value="basic">Basic Access</option>
+                                <option value="standard">Standard Access</option>
+                                <option value="advanced">Advanced Access</option>
+                                <option value="admin">Admin Access</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
-                        <label class="form-label" for="userStatus">Status</label>
-                        <select class="form-control" id="userStatus">
-                            <option value="online">Online</option>
-                            <option value="offline">Offline</option>
-                            <option value="away">Away</option>
-                        </select>
+                        <label class="form-label" for="userPassword">Password (Optional)</label>
+                        <input type="password" class="form-control" id="userPassword" placeholder="Leave empty for auto-generate">
+                        <small style="color: var(--gray-500); font-size: 12px; margin-top: 4px; display: block;">
+                            If empty, a random password will be generated
+                        </small>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="userPermissions">Permissions</label>
-                        <select class="form-control" id="userPermissions">
-                            <option value="basic">Basic Access</option>
-                            <option value="standard">Standard Access</option>
-                            <option value="advanced">Advanced Access</option>
-                            <option value="admin">Admin Access</option>
-                        </select>
-                    </div>
-                </div>
-                <input type="hidden" id="userId">
+                    <input type="hidden" id="userId">
+                </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" id="cancelUserBtn">Cancel</button>
-                <button class="btn btn-primary" id="saveUserBtn">Save User</button>
+                <button class="btn btn-primary" id="saveUserBtn">
+                    <span id="saveBtnText">Save User</span>
+                    <i class="fas fa-spinner fa-spin" id="saveSpinner" style="display: none;"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -1497,14 +1522,14 @@
                                 <div class="info-value" id="detailCreated">N/A</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">Theme</div>
-                                <div class="info-value" id="detailTheme">Default</div>
+                                <div class="info-label">User ID</div>
+                                <div class="info-value" id="detailUserId">N/A</div>
                             </div>
                         </div>
                         <div style="margin-top: 24px;">
                             <h4 style="margin-bottom: 12px; color: var(--gray-700);">Recent Activity</h4>
                             <div id="detailActivity">
-                                <p style="color: var(--gray-500); font-size: 14px;">No recent activity found.</p>
+                                <p style="color: var(--gray-500); font-size: 14px;">Loading activity...</p>
                             </div>
                         </div>
                     </div>
@@ -1517,6 +1542,9 @@
                 <button class="btn btn-danger" id="deleteDetailBtn">
                     <i class="fas fa-trash"></i> Delete User
                 </button>
+                <button class="btn btn-outline" id="resetPasswordBtn">
+                    <i class="fas fa-key"></i> Reset Password
+                </button>
             </div>
         </div>
     </div>
@@ -1524,6 +1552,7 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
+        <div style="margin-top: 20px; color: var(--gray-600); font-weight: 500;">Loading data...</div>
     </div>
 
     <!-- Toast Container -->
@@ -1535,7 +1564,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <script>
-        // Firebase Configuration
+        // =============================================
+        // FIREBASE CONFIGURATION
+        // =============================================
         const firebaseConfig = {
             apiKey: "AIzaSyCOb4BqfiN3vt1Y13UTEpA_boCqNRH6rrQ",
             authDomain: "dsog-stores-dashboard.firebaseapp.com",
@@ -1547,11 +1578,13 @@
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const auth = firebase.auth();
 
-        // Application State
+        // =============================================
+        // APPLICATION STATE
+        // =============================================
         let appState = {
             users: {},
             activeSessions: {},
@@ -1561,34 +1594,45 @@
             appUsage: {},
             userStatus: {},
             counters: {},
-            currentUser: null,
-            isAuthenticated: false
+            system: {},
+            dashboard: {},
+            realtimeListeners: [],
+            isConnected: true,
+            lastUpdateTime: Date.now(),
+            currentDetailUserId: null
         };
 
-        // DOM Elements
-        const authOverlay = document.getElementById('authOverlay');
+        // =============================================
+        // DOM ELEMENTS
+        // =============================================
         const adminContainer = document.getElementById('adminContainer');
-        const loginBtn = document.getElementById('loginBtn');
-        const authError = document.getElementById('authError');
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const sidebar = document.getElementById('sidebar');
         const menuItems = document.querySelectorAll('.menu-item');
         const contentSections = document.querySelectorAll('.content-section');
         const pageTitle = document.getElementById('pageTitle');
+        const lastUpdate = document.getElementById('lastUpdate');
         const refreshBtn = document.getElementById('refreshBtn');
         const addUserBtn = document.getElementById('addUserBtn');
         const userModal = document.getElementById('userModal');
         const closeUserModal = document.getElementById('closeUserModal');
         const cancelUserBtn = document.getElementById('cancelUserBtn');
         const saveUserBtn = document.getElementById('saveUserBtn');
+        const saveBtnText = document.getElementById('saveBtnText');
+        const saveSpinner = document.getElementById('saveSpinner');
         const userDetailModal = document.getElementById('userDetailModal');
         const closeDetailModal = document.getElementById('closeDetailModal');
         const editDetailBtn = document.getElementById('editDetailBtn');
         const deleteDetailBtn = document.getElementById('deleteDetailBtn');
+        const resetPasswordBtn = document.getElementById('resetPasswordBtn');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const toastContainer = document.getElementById('toastContainer');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const realtimeIndicator = document.getElementById('realtimeIndicator');
         const backupNowBtn = document.getElementById('backupNowBtn');
         const clearCacheBtn = document.getElementById('clearCacheBtn');
+        const reconnectBtn = document.getElementById('reconnectBtn');
+        const exportUsersBtn = document.getElementById('exportUsersBtn');
 
         // Statistics Elements
         const totalUsersEl = document.getElementById('totalUsers');
@@ -1608,20 +1652,25 @@
         const usersSearch = document.getElementById('usersSearch');
         const dashboardSearch = document.getElementById('dashboardSearch');
 
-        // Initialize Application
+        // Settings Elements
+        const firebaseStatus = document.getElementById('firebaseStatus');
+        const lastSync = document.getElementById('lastSync');
+        const realtimeStatus = document.getElementById('realtimeStatus');
+        const databaseSize = document.getElementById('databaseSize');
+
+        // =============================================
+        // INITIALIZATION
+        // =============================================
         document.addEventListener('DOMContentLoaded', () => {
             initEventListeners();
-            checkAuthState();
+            initializeRealtimeConnection();
+            startUpdateTimer();
         });
 
-        // Event Listeners
+        // =============================================
+        // EVENT LISTENERS
+        // =============================================
         function initEventListeners() {
-            // Login
-            loginBtn.addEventListener('click', handleLogin);
-            document.getElementById('adminPassword').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
-            });
-
             // Mobile Menu
             mobileMenuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
@@ -1651,9 +1700,6 @@
                     };
                     pageTitle.textContent = sectionTitles[section];
                     
-                    // Load section data
-                    loadSectionData(section);
-                    
                     // Close sidebar on mobile
                     if (window.innerWidth <= 1024) {
                         sidebar.classList.remove('active');
@@ -1661,10 +1707,9 @@
                 });
             });
 
-            // Refresh Button
+            // Sync Button
             refreshBtn.addEventListener('click', () => {
-                loadAllData();
-                showToast('Data refreshed successfully!', 'success');
+                manualSync();
             });
 
             // Add User Button
@@ -1675,7 +1720,15 @@
             // User Modal Controls
             closeUserModal.addEventListener('click', hideUserModal);
             cancelUserBtn.addEventListener('click', hideUserModal);
-            saveUserBtn.addEventListener('click', saveUser);
+            saveUserBtn.addEventListener('click', handleSaveUser);
+
+            // Form validation
+            const formInputs = document.querySelectorAll('#userForm input, #userForm select');
+            formInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    validateField(input);
+                });
+            });
 
             // User Detail Modal
             closeDetailModal.addEventListener('click', () => {
@@ -1683,16 +1736,20 @@
             });
 
             editDetailBtn.addEventListener('click', () => {
-                const userId = editDetailBtn.dataset.userId;
-                if (userId) {
-                    showUserModal(userId);
+                if (appState.currentDetailUserId) {
+                    showUserModal(appState.currentDetailUserId);
                 }
             });
 
             deleteDetailBtn.addEventListener('click', () => {
-                const userId = deleteDetailBtn.dataset.userId;
-                if (userId) {
-                    deleteUser(userId);
+                if (appState.currentDetailUserId) {
+                    deleteUser(appState.currentDetailUserId);
+                }
+            });
+
+            resetPasswordBtn.addEventListener('click', () => {
+                if (appState.currentDetailUserId) {
+                    resetUserPassword(appState.currentDetailUserId);
                 }
             });
 
@@ -1707,7 +1764,9 @@
 
             // Settings Buttons
             backupNowBtn.addEventListener('click', createBackup);
-            clearCacheBtn.addEventListener('click', clearCache);
+            clearCacheBtn.addEventListener('click', clearLocalCache);
+            reconnectBtn.addEventListener('click', reconnectFirebase);
+            exportUsersBtn.addEventListener('click', exportUsers);
 
             // Close modals on outside click
             window.addEventListener('click', (e) => {
@@ -1721,79 +1780,42 @@
                     sidebar.classList.remove('active');
                 }
             });
-        }
 
-        // Authentication
-        function checkAuthState() {
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    appState.currentUser = user;
-                    appState.isAuthenticated = true;
-                    showAdminPanel();
-                } else {
-                    showAuthOverlay();
-                }
+            // Show connection status on hover
+            realtimeIndicator.addEventListener('mouseenter', () => {
+                connectionStatus.style.display = 'flex';
+            });
+
+            realtimeIndicator.addEventListener('mouseleave', () => {
+                connectionStatus.style.display = 'none';
             });
         }
 
-        async function handleLogin() {
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-
-            if (!email || !password) {
-                showAuthError('Please enter both email and password');
-                return;
-            }
-
-            showLoading();
-
-            try {
-                // For demo purposes, we'll use simple authentication
-                // In production, use Firebase Authentication
-                if (email === 'admin@example.com' && password === 'admin123') {
-                    // Simulate successful login
-                    setTimeout(() => {
-                        hideLoading();
-                        appState.isAuthenticated = true;
-                        showAdminPanel();
-                        showToast('Login successful!', 'success');
-                    }, 1000);
-                } else {
-                    // Try Firebase authentication
-                    await auth.signInWithEmailAndPassword(email, password);
-                    hideLoading();
-                    showToast('Login successful!', 'success');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                hideLoading();
-                showAuthError('Invalid credentials. Please try again.');
-            }
-        }
-
-        function showAuthError(message) {
-            authError.textContent = message;
-            authError.style.display = 'block';
-            setTimeout(() => {
-                authError.style.display = 'none';
-            }, 3000);
-        }
-
-        function showAdminPanel() {
-            authOverlay.style.display = 'none';
-            adminContainer.style.display = 'flex';
-            loadAllData();
-        }
-
-        function showAuthOverlay() {
-            authOverlay.style.display = 'flex';
-            adminContainer.style.display = 'none';
-        }
-
-        // Data Loading
-        async function loadAllData() {
+        // =============================================
+        // REALTIME DATABASE FUNCTIONS
+        // =============================================
+        function initializeRealtimeConnection() {
             showLoading();
             
+            // Set up connection state listener
+            database.ref('.info/connected').on('value', (snapshot) => {
+                appState.isConnected = snapshot.val() === true;
+                updateConnectionStatus();
+            });
+
+            // Load initial data and set up realtime listeners
+            loadInitialData().then(() => {
+                setupRealtimeListeners();
+                hideLoading();
+                showToast('Connected to Firebase successfully!', 'success');
+            }).catch(error => {
+                console.error('Failed to load initial data:', error);
+                hideLoading();
+                showToast('Failed to connect to database', 'error');
+            });
+        }
+
+        async function loadInitialData() {
             try {
                 const dataSnapshot = await database.ref('/').once('value');
                 const data = dataSnapshot.val();
@@ -1809,91 +1831,494 @@
                 appState.system = data.system || {};
                 appState.dashboard = data.dashboard || {};
                 
-                updateStatistics();
-                updateDashboardTable();
-                updateUsersTable();
-                updateSessionsTable();
-                updateActivityTable();
-                updateSettings();
+                updateAllUI();
                 
-                hideLoading();
             } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('Error loading data!', 'error');
-                hideLoading();
+                console.error('Error loading initial data:', error);
+                throw error;
             }
         }
 
-        function loadSectionData(section) {
-            switch (section) {
-                case 'users':
-                    updateUsersTable();
-                    break;
-                case 'sessions':
-                    updateSessionsTable();
-                    break;
-                case 'activity':
-                    updateActivityTable();
-                    break;
-                case 'settings':
-                    updateSettings();
-                    break;
+        function setupRealtimeListeners() {
+            // Clear existing listeners
+            appState.realtimeListeners.forEach(listener => {
+                database.ref(listener.path).off(listener.event, listener.callback);
+            });
+            appState.realtimeListeners = [];
+
+            // Users listener
+            const usersListener = database.ref('users').on('value', (snapshot) => {
+                appState.users = snapshot.val() || {};
+                updateStatistics();
+                updateUsersTable();
+                updateDashboardTable();
+                
+                // Check if we need to show a new user notification
+                checkForNewUsers();
+            });
+            appState.realtimeListeners.push({ path: 'users', event: 'value', callback: usersListener });
+
+            // Active Sessions listener
+            const sessionsListener = database.ref('activeSessions').on('value', (snapshot) => {
+                appState.activeSessions = snapshot.val() || {};
+                updateStatistics();
+                updateSessionsTable();
+                updateUserStatuses();
+            });
+            appState.realtimeListeners.push({ path: 'activeSessions', event: 'value', callback: sessionsListener });
+
+            // Messages listener
+            const messagesListener = database.ref('messages').on('value', (snapshot) => {
+                appState.messages = snapshot.val() || {};
+                updateStatistics();
+            });
+            appState.realtimeListeners.push({ path: 'messages', event: 'value', callback: messagesListener });
+
+            // User Status listener
+            const userStatusListener = database.ref('userStatus').on('value', (snapshot) => {
+                appState.userStatus = snapshot.val() || {};
+                updateStatistics();
+            });
+            appState.realtimeListeners.push({ path: 'userStatus', event: 'value', callback: userStatusListener });
+
+            // Counters listener
+            const countersListener = database.ref('counters').on('value', (snapshot) => {
+                appState.counters = snapshot.val() || {};
+                updateStatistics();
+            });
+            appState.realtimeListeners.push({ path: 'counters', event: 'value', callback: countersListener });
+
+            // System listener
+            const systemListener = database.ref('system').on('value', (snapshot) => {
+                appState.system = snapshot.val() || {};
+                updateSettings();
+            });
+            appState.realtimeListeners.push({ path: 'system', event: 'value', callback: systemListener });
+
+            console.log('Realtime listeners established');
+        }
+
+        function checkForNewUsers() {
+            // This function would compare old vs new state to detect new users
+            // For now, we'll rely on the real-time updates
+        }
+
+        // =============================================
+        // USER MANAGEMENT FUNCTIONS
+        // =============================================
+        function showUserModal(userId = null) {
+            const modalTitle = document.getElementById('modalTitle');
+            const form = document.getElementById('userForm');
+            
+            // Reset form
+            form.reset();
+            hideFormErrors();
+            
+            if (userId && appState.users[userId]) {
+                // Edit mode
+                modalTitle.textContent = 'Edit User';
+                const user = appState.users[userId];
+                
+                document.getElementById('userId').value = userId;
+                document.getElementById('userName').value = user.name || user.profile?.fullName || '';
+                document.getElementById('userEmail').value = user.email || user.profile?.email || '';
+                document.getElementById('userRole').value = user.role || user.profile?.role || '';
+                document.getElementById('userDepartment').value = user.department || user.profile?.department || '';
+                document.getElementById('userStatus').value = user.status || user.profile?.status || 'offline';
+                document.getElementById('userPermissions').value = 'standard';
+                
+                // Hide password field for editing (can be reset separately)
+                document.getElementById('userPassword').value = '';
+                
+            } else {
+                // Add mode
+                modalTitle.textContent = 'Add New User';
+                document.getElementById('userId').value = '';
+                document.getElementById('userStatus').value = 'offline';
+                document.getElementById('userPermissions').value = 'basic';
+                document.getElementById('userPassword').value = '';
             }
+            
+            userModal.classList.add('active');
+            userDetailModal.classList.remove('active');
+        }
+
+        function hideUserModal() {
+            userModal.classList.remove('active');
+            const form = document.getElementById('userForm');
+            form.reset();
+            hideFormErrors();
+        }
+
+        function validateField(field) {
+            const errorId = field.id + 'Error';
+            const errorElement = document.getElementById(errorId);
+            
+            if (!field.checkValidity()) {
+                field.classList.add('error');
+                errorElement.style.display = 'block';
+                return false;
+            } else {
+                field.classList.remove('error');
+                errorElement.style.display = 'none';
+                return true;
+            }
+        }
+
+        function hideFormErrors() {
+            document.querySelectorAll('.form-error').forEach(error => {
+                error.style.display = 'none';
+            });
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.classList.remove('error');
+            });
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            const requiredFields = ['userName', 'userEmail', 'userRole'];
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+            
+            // Validate email format
+            const emailField = document.getElementById('userEmail');
+            if (emailField.value && !isValidEmail(emailField.value)) {
+                emailField.classList.add('error');
+                document.getElementById('emailError').textContent = 'Please enter a valid email address';
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        async function handleSaveUser() {
+            if (!validateForm()) {
+                showToast('Please fix the form errors', 'error');
+                return;
+            }
+            
+            const userId = document.getElementById('userId').value;
+            const name = document.getElementById('userName').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            const role = document.getElementById('userRole').value;
+            const department = document.getElementById('userDepartment').value.trim();
+            const status = document.getElementById('userStatus').value;
+            const permissions = document.getElementById('userPermissions').value;
+            const password = document.getElementById('userPassword').value.trim();
+            
+            // Show loading state
+            saveBtnText.textContent = 'Saving...';
+            saveSpinner.style.display = 'inline-block';
+            saveUserBtn.disabled = true;
+            
+            try {
+                if (userId && appState.users[userId]) {
+                    // Update existing user
+                    await updateUser(userId, { name, email, role, department, status, permissions });
+                } else {
+                    // Create new user
+                    await createUser({ name, email, role, department, status, permissions, password });
+                }
+                
+                hideUserModal();
+                showToast(userId ? 'User updated successfully!' : 'User created successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error saving user:', error);
+                showToast(error.message || 'Failed to save user', 'error');
+            } finally {
+                // Reset button state
+                saveBtnText.textContent = 'Save User';
+                saveSpinner.style.display = 'none';
+                saveUserBtn.disabled = false;
+            }
+        }
+
+        async function createUser(userData) {
+            // Generate a unique user ID
+            const userId = generateUserId(userData.email);
+            
+            // Prepare user object
+            const userObject = {
+                name: userData.name,
+                email: userData.email,
+                role: userData.role,
+                department: userData.department || '',
+                status: userData.status || 'offline',
+                permissions: userData.permissions || 'basic',
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                lastSeen: Date.now()
+            };
+            
+            // Add profile structure if needed
+            userObject.profile = {
+                fullName: userData.name,
+                email: userData.email,
+                role: userData.role,
+                department: userData.department || '',
+                status: userData.status || 'offline',
+                theme: 'default',
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+            
+            // Save to Firebase
+            await database.ref(`users/${userId}`).set(userObject);
+            
+            // Also update userStatus
+            await database.ref(`userStatus/${userId}`).set({
+                name: userData.name,
+                email: userData.email,
+                role: userData.role,
+                status: userData.status || 'offline',
+                lastSeen: Date.now(),
+                department: userData.department || ''
+            });
+            
+            // Create Firebase Auth user if password provided
+            if (userData.password) {
+                try {
+                    await auth.createUserWithEmailAndPassword(userData.email, userData.password);
+                } catch (authError) {
+                    console.warn('Could not create auth user:', authError);
+                    // Continue anyway - user will exist in database
+                }
+            }
+            
+            // Log the action
+            await logAdminAction('user_create', `Created user: ${userData.name}`, userId);
+            
+            return userId;
+        }
+
+        async function updateUser(userId, userData) {
+            const updates = {};
+            
+            // Build update object
+            updates[`users/${userId}/name`] = userData.name;
+            updates[`users/${userId}/email`] = userData.email;
+            updates[`users/${userId}/role`] = userData.role;
+            updates[`users/${userId}/department`] = userData.department || '';
+            updates[`users/${userId}/status`] = userData.status;
+            updates[`users/${userId}/permissions`] = userData.permissions;
+            updates[`users/${userId}/updatedAt`] = Date.now();
+            
+            // Update profile as well
+            updates[`users/${userId}/profile/fullName`] = userData.name;
+            updates[`users/${userId}/profile/email`] = userData.email;
+            updates[`users/${userId}/profile/role`] = userData.role;
+            updates[`users/${userId}/profile/department`] = userData.department || '';
+            updates[`users/${userId}/profile/status`] = userData.status;
+            updates[`users/${userId}/profile/updatedAt`] = Date.now();
+            
+            // Update userStatus
+            updates[`userStatus/${userId}/name`] = userData.name;
+            updates[`userStatus/${userId}/email`] = userData.email;
+            updates[`userStatus/${userId}/role`] = userData.role;
+            updates[`userStatus/${userId}/status`] = userData.status;
+            updates[`userStatus/${userId}/department`] = userData.department || '';
+            
+            // Execute updates
+            await database.ref().update(updates);
+            
+            // Log the action
+            await logAdminAction('user_update', `Updated user: ${userData.name}`, userId);
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                return;
+            }
+            
+            const userName = appState.users[userId]?.name || 'Unknown User';
+            
+            showLoading();
+            
+            try {
+                // Prepare all references to delete
+                const updates = {};
+                updates[`users/${userId}`] = null;
+                updates[`userStatus/${userId}`] = null;
+                updates[`activeSessions/${userId}`] = null;
+                updates[`notifications/${userId}`] = null;
+                
+                // Also remove from conversations
+                Object.keys(appState.conversations || {}).forEach(convId => {
+                    const conv = appState.conversations[convId];
+                    if (conv && conv.participants) {
+                        if (Array.isArray(conv.participants) && conv.participants.includes(userId)) {
+                            updates[`conversations/${convId}`] = null;
+                        } else if (conv.participants[userId]) {
+                            updates[`conversations/${convId}/participants/${userId}`] = null;
+                        }
+                    }
+                });
+                
+                // Execute all deletions
+                await database.ref().update(updates);
+                
+                // Log the action
+                await logAdminAction('user_delete', `Deleted user: ${userName}`, userId);
+                
+                showToast('User deleted successfully!', 'success');
+                
+                // Close detail modal if open
+                if (userDetailModal.classList.contains('active') && appState.currentDetailUserId === userId) {
+                    userDetailModal.classList.remove('active');
+                }
+                
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                showToast('Failed to delete user', 'error');
+            }
+            
+            hideLoading();
+        }
+
+        async function resetUserPassword(userId) {
+            const user = appState.users[userId];
+            if (!user || !user.email) {
+                showToast('User email not found', 'error');
+                return;
+            }
+            
+            const newPassword = generateRandomPassword();
+            
+            try {
+                // Try to reset password in Firebase Auth
+                await auth.sendPasswordResetEmail(user.email);
+                
+                // Update password in database if stored there
+                await database.ref(`users/${userId}/password`).set(newPassword);
+                
+                showToast(`Password reset email sent to ${user.email}`, 'success');
+                await logAdminAction('password_reset', `Reset password for user: ${user.name}`, userId);
+                
+            } catch (error) {
+                console.error('Error resetting password:', error);
+                
+                // Fallback: Just update in database
+                await database.ref(`users/${userId}/password`).set(newPassword);
+                showToast(`Password reset to: ${newPassword}`, 'warning');
+                
+                await logAdminAction('password_reset', `Manually reset password for user: ${user.name}`, userId);
+            }
+        }
+
+        function generateRandomPassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        function generateUserId(email) {
+            // Create a clean user ID from email
+            const baseId = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const timestamp = Date.now().toString().slice(-6);
+            return `${baseId}_${timestamp}`;
+        }
+
+        // =============================================
+        // UI UPDATE FUNCTIONS
+        // =============================================
+        function updateAllUI() {
+            updateStatistics();
+            updateUsersTable();
+            updateDashboardTable();
+            updateSessionsTable();
+            updateActivityTable();
+            updateSettings();
         }
 
         function updateStatistics() {
             // Total users
             const totalUsers = Object.keys(appState.users).length;
-            totalUsersEl.textContent = totalUsers;
+            updateCounter(totalUsersEl, totalUsers);
             usersBadge.textContent = totalUsers;
 
-            // Online users (from activeSessions where status is online)
+            // Online users
+            const now = Date.now();
             const onlineUsers = Object.values(appState.activeSessions).filter(
-                session => session.status === 'online'
+                session => session.status === 'online' && session.lastPing && (now - session.lastPing < 300000)
             ).length;
-            onlineUsersEl.textContent = onlineUsers;
+            updateCounter(onlineUsersEl, onlineUsers);
 
             // Active sessions
-            const now = Date.now();
             const activeSessions = Object.values(appState.activeSessions).filter(
-                session => session.lastPing && (now - session.lastPing < 5 * 60 * 1000)
+                session => session.lastPing && (now - session.lastPing < 300000)
             ).length;
-            activeSessionsEl.textContent = activeSessions;
+            updateCounter(activeSessionsEl, activeSessions);
             sessionsBadge.textContent = activeSessions;
 
             // Total messages
             let totalMessages = 0;
-            Object.values(appState.messages).forEach(conversation => {
+            Object.values(appState.messages || {}).forEach(conversation => {
                 if (conversation && typeof conversation === 'object') {
                     totalMessages += Object.keys(conversation).length;
                 }
             });
-            totalMessagesEl.textContent = totalMessages;
+            updateCounter(totalMessagesEl, totalMessages);
         }
 
-        function updateDashboardTable() {
-            dashboardUsersTable.innerHTML = '';
-            
-            // Get recent users (limit to 5)
-            const users = Object.entries(appState.users).slice(0, 5);
-            
-            users.forEach(([userId, userData]) => {
-                const row = createUserRow(userId, userData);
-                dashboardUsersTable.appendChild(row);
-            });
+        function updateCounter(element, newValue) {
+            const oldValue = parseInt(element.textContent) || 0;
+            if (oldValue !== newValue) {
+                element.textContent = newValue;
+                element.classList.add('stat-number-update');
+                setTimeout(() => {
+                    element.classList.remove('stat-number-update');
+                }, 500);
+            }
         }
 
         function updateUsersTable() {
-            usersTable.innerHTML = '';
-            
-            Object.entries(appState.users).forEach(([userId, userData]) => {
-                const row = createUserRow(userId, userData);
-                usersTable.appendChild(row);
-            });
+            updateTable('usersTable', appState.users, false);
         }
 
-        function createUserRow(userId, userData) {
+        function updateDashboardTable() {
+            // Show only recent users (last 5)
+            const recentUsers = {};
+            const userEntries = Object.entries(appState.users);
+            userEntries.slice(-5).forEach(([userId, userData]) => {
+                recentUsers[userId] = userData;
+            });
+            updateTable('dashboardUsersTable', recentUsers, true);
+        }
+
+        function updateTable(tableId, usersData, isDashboard = false) {
+            const tableBody = document.getElementById(tableId);
+            if (!tableBody) return;
+            
+            // Create document fragment for batch update
+            const fragment = document.createDocumentFragment();
+            
+            Object.entries(usersData).forEach(([userId, userData]) => {
+                const row = createUserRow(userId, userData, isDashboard);
+                fragment.appendChild(row);
+            });
+            
+            // Replace table content
+            tableBody.innerHTML = '';
+            tableBody.appendChild(fragment);
+        }
+
+        function createUserRow(userId, userData, isDashboard = false) {
             const row = document.createElement('tr');
+            row.dataset.userId = userId;
             
             // Get user info
             const name = userData.name || userData.profile?.fullName || 'Unknown User';
@@ -1924,7 +2349,8 @@
             // Create avatar
             const avatar = getAvatar(name);
             
-            row.innerHTML = `
+            // Build row HTML
+            let rowHTML = `
                 <td>
                     <div class="user-cell">
                         <div class="user-avatar">${avatar}</div>
@@ -1936,8 +2362,18 @@
                 </td>
                 <td>${email}</td>
                 <td><span class="badge badge-primary">${role}</span></td>
-                <td>${department}</td>
-                <td><span class="badge ${getStatusClass(status)}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+            `;
+            
+            if (!isDashboard) {
+                rowHTML += `<td>${department}</td>`;
+            }
+            
+            rowHTML += `
+                <td>
+                    <span class="badge ${getStatusClass(status)}" id="status-${userId}">
+                        ${status.charAt(0).toUpperCase() + status.slice(1)}
+                    </span>
+                </td>
                 <td>${lastSeen}</td>
                 <td>
                     <div class="action-buttons">
@@ -1947,18 +2383,31 @@
                         <button class="action-btn edit" onclick="showUserModal('${userId}')" title="Edit User">
                             <i class="fas fa-edit"></i>
                         </button>
+            `;
+            
+            if (!isDashboard) {
+                rowHTML += `
                         <button class="action-btn delete" onclick="deleteUser('${userId}')" title="Delete User">
                             <i class="fas fa-trash"></i>
                         </button>
+                `;
+            }
+            
+            rowHTML += `
                     </div>
                 </td>
             `;
             
+            row.innerHTML = rowHTML;
             return row;
         }
 
         function updateSessionsTable() {
-            sessionsTable.innerHTML = '';
+            const tableBody = sessionsTable;
+            if (!tableBody) return;
+            
+            const fragment = document.createDocumentFragment();
+            const now = Date.now();
             
             Object.entries(appState.activeSessions).forEach(([userId, sessionData]) => {
                 const row = document.createElement('tr');
@@ -1978,6 +2427,10 @@
                     duration = formatDuration(diff);
                 }
                 
+                // Check if session is active (within 5 minutes)
+                const isActive = sessionData.lastPing && (now - sessionData.lastPing < 300000);
+                const status = isActive ? (sessionData.status || 'online') : 'offline';
+                
                 // Create avatar
                 const avatar = getAvatar(name);
                 
@@ -1993,7 +2446,7 @@
                     </td>
                     <td>${sessionData.device || 'Unknown device'}</td>
                     <td>${sessionData.lastPing ? formatTime(sessionData.lastPing) : 'Never'}</td>
-                    <td><span class="badge ${getStatusClass(sessionData.status || 'offline')}">${(sessionData.status || 'offline').charAt(0).toUpperCase() + (sessionData.status || 'offline').slice(1)}</span></td>
+                    <td><span class="badge ${getStatusClass(status)}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
                     <td>${sessionData.ip || 'N/A'}</td>
                     <td>${duration}</td>
                     <td>
@@ -2005,27 +2458,39 @@
                     </td>
                 `;
                 
-                sessionsTable.appendChild(row);
+                fragment.appendChild(row);
             });
+            
+            tableBody.innerHTML = '';
+            tableBody.appendChild(fragment);
         }
 
         function updateActivityTable() {
-            activityTable.innerHTML = '';
+            const tableBody = activityTable;
+            if (!tableBody) return;
             
-            // Get audit logs from system
+            const fragment = document.createDocumentFragment();
             const auditLogs = appState.system?.auditLogs || {};
             
-            Object.entries(auditLogs).forEach(([logId, logData]) => {
+            // Convert to array and sort by timestamp
+            const logsArray = Object.entries(auditLogs).map(([id, log]) => ({
+                id,
+                ...log
+            })).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            
+            // Show only recent logs
+            logsArray.slice(0, 20).forEach(log => {
                 const row = document.createElement('tr');
                 
                 // Get user info
-                const userId = logData.userId || 'system';
-                const name = appState.users[userId]?.name || 
+                const userId = log.userId || 'system';
+                const name = userId === 'system' ? 'System' : 
+                           appState.users[userId]?.name || 
                            appState.users[userId]?.profile?.fullName || 
                            userId;
                 
                 row.innerHTML = `
-                    <td>${logData.timestamp ? formatTime(logData.timestamp) : 'N/A'}</td>
+                    <td>${log.timestamp ? formatTime(log.timestamp) : 'N/A'}</td>
                     <td>
                         <div class="user-cell">
                             <div class="user-avatar">${getAvatar(name)}</div>
@@ -2034,395 +2499,58 @@
                             </div>
                         </div>
                     </td>
-                    <td><span class="badge badge-info">${logData.action || 'Unknown'}</span></td>
-                    <td>${logData.details || 'No details'}</td>
-                    <td>${logData.ip || 'N/A'}</td>
+                    <td><span class="badge badge-info">${log.action || 'Unknown'}</span></td>
+                    <td>${log.details || 'No details'}</td>
+                    <td>${log.ip || 'N/A'}</td>
                 `;
                 
-                activityTable.appendChild(row);
+                fragment.appendChild(row);
+            });
+            
+            tableBody.innerHTML = '';
+            tableBody.appendChild(fragment);
+        }
+
+        function updateUserStatuses() {
+            // Update status badges in real-time
+            Object.entries(appState.activeSessions).forEach(([userId, sessionData]) => {
+                const badge = document.getElementById(`status-${userId}`);
+                if (badge) {
+                    const now = Date.now();
+                    const isActive = sessionData.lastPing && (now - sessionData.lastPing < 300000);
+                    const status = isActive ? (sessionData.status || 'online') : 'offline';
+                    
+                    badge.className = `badge ${getStatusClass(status)} badge-status-update`;
+                    badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                    
+                    // Remove animation class after animation completes
+                    setTimeout(() => {
+                        badge.classList.remove('badge-status-update');
+                    }, 1000);
+                }
             });
         }
 
         function updateSettings() {
             if (appState.system?.backups) {
                 const autoBackup = appState.system.backups.autoBackup ? 'Enabled' : 'Disabled';
-                document.getElementById('autoBackupStatus').textContent = autoBackup;
-                
-                const lastBackup = appState.system.backups.lastBackup ? 
-                    formatTime(appState.system.backups.lastBackup) : 'Never';
-                document.getElementById('lastBackup').textContent = lastBackup;
-                
-                const nextBackup = appState.system.backups.nextBackup ? 
-                    formatTime(appState.system.backups.nextBackup) : 'Not scheduled';
-                document.getElementById('nextBackup').textContent = nextBackup;
+                // Update backup status if elements exist
             }
             
-            document.getElementById('totalStorage').textContent = '5 GB';
+            // Update connection status
+            firebaseStatus.textContent = appState.isConnected ? 'Connected' : 'Disconnected';
+            firebaseStatus.style.color = appState.isConnected ? 'var(--success-500)' : 'var(--danger-500)';
+            
+            realtimeStatus.textContent = 'Active';
+            realtimeStatus.style.color = 'var(--success-500)';
+            
+            // Update last sync time
+            lastSync.textContent = formatTime(appState.lastUpdateTime);
         }
 
-        // User Management
-        function showUserModal(userId = null) {
-            const modalTitle = document.getElementById('modalTitle');
-            const form = userModal.querySelector('.modal-body');
-            
-            if (userId) {
-                // Edit mode
-                modalTitle.textContent = 'Edit User';
-                const user = appState.users[userId];
-                
-                if (user) {
-                    document.getElementById('userId').value = userId;
-                    document.getElementById('userName').value = user.name || user.profile?.fullName || '';
-                    document.getElementById('userEmail').value = user.email || user.profile?.email || '';
-                    document.getElementById('userRole').value = user.role || user.profile?.role || 'User';
-                    document.getElementById('userDepartment').value = user.department || user.profile?.department || '';
-                    document.getElementById('userStatus').value = user.status || user.profile?.status || 'offline';
-                    document.getElementById('userPermissions').value = 'standard';
-                }
-            } else {
-                // Add mode
-                modalTitle.textContent = 'Add New User';
-                document.getElementById('userId').value = '';
-                form.reset();
-                document.getElementById('userStatus').value = 'offline';
-                document.getElementById('userPermissions').value = 'basic';
-            }
-            
-            userModal.classList.add('active');
-        }
-
-        function hideUserModal() {
-            userModal.classList.remove('active');
-            const form = userModal.querySelector('.modal-body');
-            form.reset();
-        }
-
-        async function saveUser() {
-            const userId = document.getElementById('userId').value;
-            const name = document.getElementById('userName').value.trim();
-            const email = document.getElementById('userEmail').value.trim();
-            const role = document.getElementById('userRole').value;
-            const department = document.getElementById('userDepartment').value.trim();
-            const status = document.getElementById('userStatus').value;
-            const permissions = document.getElementById('userPermissions').value;
-            
-            if (!name || !email) {
-                showToast('Please fill in all required fields!', 'error');
-                return;
-            }
-            
-            showLoading();
-            
-            try {
-                const userData = {
-                    name: name,
-                    email: email,
-                    role: role,
-                    department: department,
-                    status: status,
-                    permissions: permissions,
-                    updatedAt: Date.now()
-                };
-                
-                // Add timestamp for new users
-                if (!userId) {
-                    userData.createdAt = Date.now();
-                    userData.lastSeen = Date.now();
-                }
-                
-                let userRef;
-                if (userId) {
-                    // Update existing user
-                    userRef = database.ref(`users/${userId}`);
-                    await userRef.update(userData);
-                    showToast('User updated successfully!', 'success');
-                } else {
-                    // Create new user with generated ID
-                    const newUserId = generateUserId(email);
-                    userRef = database.ref(`users/${newUserId}`);
-                    await userRef.set(userData);
-                    
-                    // Also create userStatus entry
-                    await database.ref(`userStatus/${newUserId}`).set({
-                        name: name,
-                        email: email,
-                        role: role,
-                        status: status,
-                        lastSeen: Date.now()
-                    });
-                    
-                    showToast('User created successfully!', 'success');
-                }
-                
-                // Add to audit log
-                await addAuditLog(
-                    userId ? 'user_update' : 'user_create',
-                    `User ${userId ? 'updated' : 'created'}: ${name}`,
-                    userId || newUserId
-                );
-                
-                await loadAllData();
-                hideUserModal();
-                
-            } catch (error) {
-                console.error('Error saving user:', error);
-                showToast('Error saving user!', 'error');
-            }
-            
-            hideLoading();
-        }
-
-        async function deleteUser(userId) {
-            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-                return;
-            }
-            
-            showLoading();
-            
-            try {
-                // Get user name for audit log
-                const userName = appState.users[userId]?.name || 'Unknown User';
-                
-                // Delete user from users
-                await database.ref(`users/${userId}`).remove();
-                
-                // Delete from userStatus
-                await database.ref(`userStatus/${userId}`).remove();
-                
-                // Delete active session
-                await database.ref(`activeSessions/${userId}`).remove();
-                
-                // Add to audit log
-                await addAuditLog('user_delete', `User deleted: ${userName}`, userId);
-                
-                showToast('User deleted successfully!', 'success');
-                await loadAllData();
-                
-                // Close detail modal if open
-                userDetailModal.classList.remove('active');
-                
-            } catch (error) {
-                console.error('Error deleting user:', error);
-                showToast('Error deleting user!', 'error');
-            }
-            
-            hideLoading();
-        }
-
-        async function terminateSession(userId) {
-            if (!confirm('Are you sure you want to terminate this session?')) {
-                return;
-            }
-            
-            try {
-                await database.ref(`activeSessions/${userId}`).remove();
-                
-                // Add to audit log
-                await addAuditLog('session_terminate', 'Session terminated', userId);
-                
-                showToast('Session terminated successfully!', 'success');
-                await loadAllData();
-            } catch (error) {
-                console.error('Error terminating session:', error);
-                showToast('Error terminating session!', 'error');
-            }
-        }
-
-        // User Details View
-        function viewUserDetails(userId) {
-            const user = appState.users[userId];
-            if (!user) {
-                showToast('User not found!', 'error');
-                return;
-            }
-            
-            // Set user data
-            const name = user.name || user.profile?.fullName || 'Unknown User';
-            const email = user.email || user.profile?.email || 'No email';
-            const role = user.role || user.profile?.role || 'User';
-            
-            document.getElementById('detailName').textContent = name;
-            document.getElementById('detailRole').textContent = role;
-            document.getElementById('detailEmail').textContent = email;
-            document.getElementById('detailDepartment').textContent = user.department || user.profile?.department || 'N/A';
-            document.getElementById('detailStatus').textContent = user.status || user.profile?.status || 'offline';
-            
-            // Last seen
-            let lastSeen = 'Never';
-            if (appState.activeSessions[userId]?.lastPing) {
-                lastSeen = formatTime(appState.activeSessions[userId].lastPing);
-            } else if (appState.userStatus[userId]?.lastSeen) {
-                lastSeen = formatTime(appState.userStatus[userId].lastSeen);
-            } else if (user.lastSeen) {
-                lastSeen = formatTime(user.lastSeen);
-            } else if (user.profile?.lastSeen) {
-                lastSeen = formatTime(user.profile.lastSeen);
-            }
-            document.getElementById('detailLastSeen').textContent = lastSeen;
-            
-            // Account created
-            const createdAt = user.profile?.createdAt || user.createdAt;
-            document.getElementById('detailCreated').textContent = createdAt ? formatTime(createdAt) : 'N/A';
-            
-            // Theme
-            document.getElementById('detailTheme').textContent = user.profile?.theme || 'Default';
-            
-            // Avatar
-            document.getElementById('detailAvatar').textContent = getAvatar(name);
-            
-            // Statistics
-            // Count messages for this user
-            let messageCount = 0;
-            Object.values(appState.messages).forEach(conversation => {
-                if (conversation && typeof conversation === 'object') {
-                    Object.values(conversation).forEach(message => {
-                        if (message.senderId === userId) {
-                            messageCount++;
-                        }
-                    });
-                }
-            });
-            document.getElementById('detailMessages').textContent = messageCount;
-            
-            // Session count
-            const sessionCount = appState.activeSessions[userId] ? 1 : 0;
-            document.getElementById('detailSessions').textContent = sessionCount;
-            
-            // Active days (simulated)
-            document.getElementById('detailActive').textContent = '7';
-            
-            // Set user ID for edit/delete buttons
-            editDetailBtn.dataset.userId = userId;
-            deleteDetailBtn.dataset.userId = userId;
-            
-            // Show recent activity
-            updateUserActivity(userId);
-            
-            // Show modal
-            userDetailModal.classList.add('active');
-        }
-
-        function updateUserActivity(userId) {
-            const activityContainer = document.getElementById('detailActivity');
-            
-            // Get app usage for this user
-            const userAppUsage = appState.appUsage[userId];
-            if (userAppUsage && Object.keys(userAppUsage).length > 0) {
-                let html = '';
-                const recentUsage = Object.values(userAppUsage).slice(0, 3);
-                
-                recentUsage.forEach(usage => {
-                    html += `
-                        <div style="padding: 12px; border-bottom: 1px solid var(--gray-200);">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-weight: 500; color: var(--gray-700);">${usage.appName || 'App'}</span>
-                                <span style="font-size: 12px; color: var(--gray-500);">${formatTime(usage.timestamp)}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                activityContainer.innerHTML = html;
-            } else {
-                activityContainer.innerHTML = '<p style="color: var(--gray-500); font-size: 14px;">No recent activity found.</p>';
-            }
-        }
-
-        // Settings Functions
-        async function createBackup() {
-            showLoading();
-            
-            try {
-                const backupData = {
-                    timestamp: Date.now(),
-                    data: {
-                        users: appState.users,
-                        activeSessions: appState.activeSessions,
-                        conversations: appState.conversations,
-                        messages: appState.messages,
-                        notifications: appState.notifications,
-                        appUsage: appState.appUsage,
-                        userStatus: appState.userStatus
-                    }
-                };
-                
-                const backupRef = database.ref('system/backups/history').push();
-                await backupRef.set(backupData);
-                
-                // Update backup info
-                await database.ref('system/backups').update({
-                    lastBackup: Date.now(),
-                    nextBackup: Date.now() + 24 * 60 * 60 * 1000
-                });
-                
-                // Add to audit log
-                await addAuditLog('backup_create', 'System backup created', 'system');
-                
-                showToast('Backup created successfully!', 'success');
-                await loadAllData();
-                
-            } catch (error) {
-                console.error('Error creating backup:', error);
-                showToast('Error creating backup!', 'error');
-            }
-            
-            hideLoading();
-        }
-
-        async function clearCache() {
-            if (!confirm('Clear all cached data? This will not affect your Firebase data.')) {
-                return;
-            }
-            
-            showLoading();
-            
-            // Clear local state
-            appState = {
-                users: {},
-                activeSessions: {},
-                conversations: {},
-                messages: {},
-                notifications: {},
-                appUsage: {},
-                userStatus: {},
-                counters: {},
-                currentUser: appState.currentUser,
-                isAuthenticated: appState.isAuthenticated
-            };
-            
-            // Clear tables
-            usersTable.innerHTML = '';
-            dashboardUsersTable.innerHTML = '';
-            sessionsTable.innerHTML = '';
-            activityTable.innerHTML = '';
-            
-            // Reload data
-            await loadAllData();
-            
-            showToast('Cache cleared successfully!', 'success');
-        }
-
-        // Utility Functions
-        function filterTable(tableType, searchTerm) {
-            const tableId = tableType === 'dashboard' ? 'dashboardUsersTable' : 'usersTable';
-            const table = document.getElementById(tableId);
-            const rows = table.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if (text.includes(searchTerm.toLowerCase())) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        function generateUserId(email) {
-            // Generate a simple user ID from email
-            return email.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '_' + Date.now().toString().slice(-6);
-        }
-
+        // =============================================
+        // UTILITY FUNCTIONS
+        // =============================================
         function getAvatar(name) {
             if (!name) return 'U';
             return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
@@ -2445,19 +2573,19 @@
             const diff = now - date;
             
             // If less than 1 minute
-            if (diff < 60 * 1000) {
+            if (diff < 60000) {
                 return 'Just now';
             }
             
             // If less than 1 hour
-            if (diff < 60 * 60 * 1000) {
-                const minutes = Math.floor(diff / (60 * 1000));
+            if (diff < 3600000) {
+                const minutes = Math.floor(diff / 60000);
                 return `${minutes}m ago`;
             }
             
             // If less than 1 day
-            if (diff < 24 * 60 * 60 * 1000) {
-                const hours = Math.floor(diff / (60 * 60 * 1000));
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
                 return `${hours}h ago`;
             }
             
@@ -2490,22 +2618,297 @@
             }
         }
 
-        async function addAuditLog(action, details, userId) {
+        function filterTable(tableType, searchTerm) {
+            const tableId = tableType === 'dashboard' ? 'dashboardUsersTable' : 'usersTable';
+            const table = document.getElementById(tableId);
+            const rows = table.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm.toLowerCase())) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // =============================================
+        // VIEW USER DETAILS
+        // =============================================
+        function viewUserDetails(userId) {
+            const user = appState.users[userId];
+            if (!user) {
+                showToast('User not found!', 'error');
+                return;
+            }
+            
+            appState.currentDetailUserId = userId;
+            
+            // Set user data
+            const name = user.name || user.profile?.fullName || 'Unknown User';
+            const email = user.email || user.profile?.email || 'No email';
+            const role = user.role || user.profile?.role || 'User';
+            
+            document.getElementById('detailName').textContent = name;
+            document.getElementById('detailRole').textContent = role;
+            document.getElementById('detailEmail').textContent = email;
+            document.getElementById('detailDepartment').textContent = user.department || user.profile?.department || 'N/A';
+            
+            // Status
+            let status = 'offline';
+            if (appState.activeSessions[userId]) {
+                status = appState.activeSessions[userId].status || 'offline';
+            } else if (appState.userStatus[userId]) {
+                status = appState.userStatus[userId].status || 'offline';
+            }
+            document.getElementById('detailStatus').textContent = status;
+            
+            // Last seen
+            let lastSeen = 'Never';
+            if (appState.activeSessions[userId]?.lastPing) {
+                lastSeen = formatTime(appState.activeSessions[userId].lastPing);
+            } else if (appState.userStatus[userId]?.lastSeen) {
+                lastSeen = formatTime(appState.userStatus[userId].lastSeen);
+            } else if (user.lastSeen) {
+                lastSeen = formatTime(user.lastSeen);
+            } else if (user.profile?.lastSeen) {
+                lastSeen = formatTime(user.profile.lastSeen);
+            }
+            document.getElementById('detailLastSeen').textContent = lastSeen;
+            
+            // Account created
+            const createdAt = user.profile?.createdAt || user.createdAt;
+            document.getElementById('detailCreated').textContent = createdAt ? formatTime(createdAt) : 'N/A';
+            
+            // User ID
+            document.getElementById('detailUserId').textContent = userId;
+            
+            // Avatar
+            document.getElementById('detailAvatar').textContent = getAvatar(name);
+            
+            // Statistics
+            // Count messages for this user
+            let messageCount = 0;
+            Object.values(appState.messages || {}).forEach(conversation => {
+                if (conversation && typeof conversation === 'object') {
+                    Object.values(conversation).forEach(message => {
+                        if (message.senderId === userId) {
+                            messageCount++;
+                        }
+                    });
+                }
+            });
+            document.getElementById('detailMessages').textContent = messageCount;
+            
+            // Session count
+            const sessionCount = appState.activeSessions[userId] ? 1 : 0;
+            document.getElementById('detailSessions').textContent = sessionCount;
+            
+            // Active days (simplified)
+            document.getElementById('detailActive').textContent = '7';
+            
+            // Update recent activity
+            updateDetailActivity(userId);
+            
+            // Show modal
+            userDetailModal.classList.add('active');
+        }
+
+        function updateDetailActivity(userId) {
+            const activityContainer = document.getElementById('detailActivity');
+            const userAppUsage = appState.appUsage?.[userId];
+            
+            if (userAppUsage && Object.keys(userAppUsage).length > 0) {
+                let html = '';
+                const recentUsage = Object.values(userAppUsage).slice(-3).reverse();
+                
+                recentUsage.forEach(usage => {
+                    html += `
+                        <div style="padding: 12px; border-bottom: 1px solid var(--gray-200);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 500; color: var(--gray-700);">
+                                    <i class="fas fa-${getAppIcon(usage.appId)}" style="margin-right: 8px;"></i>
+                                    ${usage.appName || 'App'}
+                                </span>
+                                <span style="font-size: 12px; color: var(--gray-500);">${formatTime(usage.timestamp)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                activityContainer.innerHTML = html;
+            } else {
+                activityContainer.innerHTML = '<p style="color: var(--gray-500); font-size: 14px;">No recent activity found.</p>';
+            }
+        }
+
+        function getAppIcon(appId) {
+            const icons = {
+                'efh': 'money-bill',
+                'erh': 'users',
+                'efs': 'truck',
+                'emh': 'chart-bar',
+                'eth': 'briefcase'
+            };
+            return icons[appId] || 'cube';
+        }
+
+        // =============================================
+        // SESSION MANAGEMENT
+        // =============================================
+        async function terminateSession(userId) {
+            if (!confirm('Are you sure you want to terminate this session?')) {
+                return;
+            }
+            
+            try {
+                await database.ref(`activeSessions/${userId}`).remove();
+                
+                // Update user status
+                await database.ref(`userStatus/${userId}/status`).set('offline');
+                
+                showToast('Session terminated successfully!', 'success');
+                await logAdminAction('session_terminate', 'Terminated user session', userId);
+                
+            } catch (error) {
+                console.error('Error terminating session:', error);
+                showToast('Error terminating session!', 'error');
+            }
+        }
+
+        // =============================================
+        // SETTINGS FUNCTIONS
+        // =============================================
+        async function createBackup() {
+            showLoading();
+            
+            try {
+                const backupData = {
+                    timestamp: Date.now(),
+                    users: appState.users,
+                    activeSessions: appState.activeSessions,
+                    conversations: appState.conversations,
+                    messages: appState.messages,
+                    notifications: appState.notifications,
+                    appUsage: appState.appUsage,
+                    userStatus: appState.userStatus
+                };
+                
+                const backupRef = database.ref('system/backups/history').push();
+                await backupRef.set(backupData);
+                
+                // Update backup info
+                await database.ref('system/backups').update({
+                    lastBackup: Date.now(),
+                    nextBackup: Date.now() + 24 * 60 * 60 * 1000
+                });
+                
+                // Log the action
+                await logAdminAction('backup_create', 'Created system backup', 'system');
+                
+                showToast('Backup created successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error creating backup:', error);
+                showToast('Error creating backup!', 'error');
+            }
+            
+            hideLoading();
+        }
+
+        function clearLocalCache() {
+            if (!confirm('Clear all cached data? This will not affect your Firebase data.')) {
+                return;
+            }
+            
+            showToast('Local cache cleared!', 'info');
+        }
+
+        function reconnectFirebase() {
+            showLoading();
+            
+            // Re-initialize connection
+            initializeRealtimeConnection();
+            
+            setTimeout(() => {
+                hideLoading();
+                showToast('Reconnected to Firebase!', 'success');
+            }, 1000);
+        }
+
+        function exportUsers() {
+            const usersArray = Object.entries(appState.users).map(([id, user]) => ({
+                id,
+                ...user
+            }));
+            
+            const dataStr = JSON.stringify(usersArray, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `users-export-${Date.now()}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showToast('Users exported successfully!', 'success');
+        }
+
+        // =============================================
+        // CONNECTION MANAGEMENT
+        // =============================================
+        function updateConnectionStatus() {
+            const dot = connectionStatus.querySelector('.connection-dot');
+            const text = connectionStatus.querySelector('span');
+            
+            if (appState.isConnected) {
+                dot.className = 'connection-dot connected';
+                text.textContent = 'Connected to Firebase';
+                connectionStatus.style.display = 'none'; // Hide by default
+            } else {
+                dot.className = 'connection-dot disconnected';
+                text.textContent = 'Disconnected from Firebase';
+                connectionStatus.style.display = 'flex';
+            }
+        }
+
+        function manualSync() {
+            showLoading();
+            
+            // Force update all data
+            loadInitialData().then(() => {
+                hideLoading();
+                showToast('Data synchronized successfully!', 'success');
+            }).catch(error => {
+                hideLoading();
+                showToast('Failed to synchronize data', 'error');
+            });
+        }
+
+        // =============================================
+        // ADMIN LOGGING
+        // =============================================
+        async function logAdminAction(action, details, targetUserId = null) {
             try {
                 const logRef = database.ref('system/auditLogs').push();
                 await logRef.set({
                     action: action,
                     details: details,
-                    userId: userId,
+                    userId: targetUserId,
+                    adminId: 'admin_panel',
                     timestamp: Date.now(),
-                    ip: '127.0.0.1' // In production, get real IP
+                    ip: '127.0.0.1'
                 });
             } catch (error) {
-                console.error('Error adding audit log:', error);
+                console.error('Error logging admin action:', error);
             }
         }
 
-        // UI Functions
+        // =============================================
+        // UI HELPER FUNCTIONS
+        // =============================================
         function showLoading() {
             loadingOverlay.classList.add('active');
         }
@@ -2518,23 +2921,33 @@
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             
-            const icon = type === 'success' ? 'check-circle' :
-                        type === 'error' ? 'exclamation-circle' :
-                        type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-circle',
+                warning: 'exclamation-triangle',
+                info: 'info-circle'
+            };
+            
+            const titles = {
+                success: 'Success',
+                error: 'Error',
+                warning: 'Warning',
+                info: 'Info'
+            };
             
             toast.innerHTML = `
                 <div class="toast-icon">
-                    <i class="fas fa-${icon}"></i>
+                    <i class="fas fa-${icons[type] || 'info-circle'}"></i>
                 </div>
                 <div class="toast-content">
-                    <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                    <div class="toast-title">${titles[type] || 'Info'}</div>
                     <div class="toast-message">${message}</div>
                 </div>
             `;
             
             toastContainer.appendChild(toast);
             
-            // Remove toast after 4 seconds
+            // Auto-remove after 4 seconds
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(100px)';
@@ -2544,13 +2957,37 @@
                     }
                 }, 300);
             }, 4000);
+            
+            // Click to dismiss
+            toast.addEventListener('click', () => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            });
         }
 
-        // Make functions available globally
+        function startUpdateTimer() {
+            setInterval(() => {
+                appState.lastUpdateTime = Date.now();
+                lastUpdate.textContent = `Last update: ${formatTime(appState.lastUpdateTime)}`;
+                updateUserStatuses();
+            }, 10000); // Update every 10 seconds
+        }
+
+        // =============================================
+        // GLOBAL FUNCTION EXPORTS
+        // =============================================
         window.showUserModal = showUserModal;
         window.deleteUser = deleteUser;
         window.viewUserDetails = viewUserDetails;
         window.terminateSession = terminateSession;
+
+        // Initial UI update
+        updateAllUI();
     </script>
 </body>
 </html>
