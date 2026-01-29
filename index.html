@@ -442,9 +442,9 @@
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: var(--spacing-lg);
+            gap: var(--spacing-xl);
             padding: var(--spacing-xl);
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
@@ -466,8 +466,8 @@
 
         .app-item:hover {
             background: var(--bg-tertiary);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
         }
 
         .app-item:hover::before {
@@ -481,43 +481,49 @@
         }
 
         .app-icon {
-            width: 72px;
-            height: 72px;
+            width: 96px;
+            height: 96px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: var(--radius-lg);
             margin-bottom: var(--spacing);
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: var(--spacing);
-            box-shadow: var(--shadow);
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-lg);
             transition: all var(--transition);
         }
 
         .app-item:hover .app-icon {
-            transform: scale(1.05);
-            box-shadow: var(--shadow-lg);
+            transform: scale(1.1);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--color-primary);
         }
 
         .app-icon img {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            padding: var(--spacing);
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         .app-name {
-            font-weight: 600;
-            font-size: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
             margin-bottom: 4px;
             color: var(--text-primary);
         }
 
         .app-desc {
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
             line-height: 1.3;
+            text-align: center;
+            padding: 0 var(--spacing);
         }
 
         .apps-footer {
@@ -1556,12 +1562,12 @@
             }
             .apps-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: var(--spacing);
-                padding: var(--spacing);
+                gap: var(--spacing-lg);
+                padding: var(--spacing-lg);
             }
             .app-icon {
-                width: 60px;
-                height: 60px;
+                width: 80px;
+                height: 80px;
             }
             .recent-chats-grid {
                 grid-template-columns: 1fr;
@@ -1579,8 +1585,8 @@
                 gap: var(--spacing);
             }
             .app-icon {
-                width: 72px;
-                height: 72px;
+                width: 96px;
+                height: 96px;
             }
         }
 
@@ -2024,7 +2030,8 @@
         auth: null,
         db: null,
         messageListeners: {},
-        userStatus: 'available'
+        userStatus: 'available',
+        lastMessageTimes: {}
     };
     
     // ============================
@@ -2145,9 +2152,14 @@
         document.getElementById('messagesContainer').style.display = 'none';
         document.getElementById('messageInputContainer').style.display = 'none';
         
-        if (state.currentChat && state.messageListeners[state.currentChat.id]) {
-            state.messageListeners[state.currentChat.id]();
-        }
+        // Clean up all message listeners
+        Object.keys(state.messageListeners).forEach(chatId => {
+            if (state.messageListeners[chatId]) {
+                state.messageListeners[chatId]();
+            }
+        });
+        state.messageListeners = {};
+        
         state.currentChat = null;
         updateRecentChats();
     }
@@ -2608,13 +2620,25 @@
     // ============================
     async function loadMessages(chatId) {
         try {
+            const container = document.getElementById('messagesContainer');
+            if (container) {
+                container.innerHTML = '<div class="p-4 text-center text-muted">Loading messages...</div>';
+            }
+            
             const snapshot = await state.db.ref(`messages/${chatId}`)
                 .orderByChild('timestamp')
-                .limitToLast(50)
                 .once('value');
             
             const messages = snapshot.val() || {};
-            displayMessages(Object.values(messages));
+            const messageArray = Object.values(messages);
+            
+            // Store last message time to prevent duplication
+            if (messageArray.length > 0) {
+                state.lastMessageTimes = state.lastMessageTimes || {};
+                state.lastMessageTimes[chatId] = Math.max(...messageArray.map(m => m.timestamp));
+            }
+            
+            displayMessages(messageArray);
             
         } catch (error) {
             console.error('Error loading messages:', error);
@@ -2623,34 +2647,64 @@
     }
     
     function setupMessageListener(chatId) {
-        // Remove existing listener
+        // Remove existing listener for this chat
         if (state.messageListeners[chatId]) {
             state.messageListeners[chatId]();
+            delete state.messageListeners[chatId];
         }
         
+        // Also remove any other active listeners if we're switching chats
+        Object.keys(state.messageListeners).forEach(key => {
+            if (key !== chatId && state.messageListeners[key]) {
+                state.messageListeners[key]();
+                delete state.messageListeners[key];
+            }
+        });
+        
         // Setup new listener
-        const listener = state.db.ref(`messages/${chatId}`)
+        const messagesRef = state.db.ref(`messages/${chatId}`);
+        let initialLoad = true;
+        const lastMessageTime = state.lastMessageTimes?.[chatId] || 0;
+        
+        const listener = messagesRef
             .orderByChild('timestamp')
-            .limitToLast(100)
             .on('child_added', (snapshot) => {
                 const message = snapshot.val();
-                addMessageToDisplay(message);
                 
-                // Scroll to bottom
-                setTimeout(() => {
-                    const container = document.getElementById('messagesContainer');
-                    if (container) container.scrollTop = container.scrollHeight;
-                }, 100);
+                // Skip if this is an initial load of old messages
+                if (initialLoad && message.timestamp <= lastMessageTime) {
+                    return;
+                }
                 
-                // Update conversation
-                if (message.senderId !== state.currentUser?.uid) {
-                    updateConversation(chatId, message.text, message.timestamp);
+                // Update last message time
+                state.lastMessageTimes = state.lastMessageTimes || {};
+                state.lastMessageTimes[chatId] = Math.max(state.lastMessageTimes[chatId] || 0, message.timestamp);
+                
+                // Only add to display if we're in the current chat
+                if (state.currentChat && state.currentChat.id === chatId) {
+                    addMessageToDisplay(message);
+                    
+                    // Scroll to bottom
+                    setTimeout(() => {
+                        const container = document.getElementById('messagesContainer');
+                        if (container) container.scrollTop = container.scrollHeight;
+                    }, 100);
+                    
+                    // Update conversation
+                    if (message.senderId !== state.currentUser?.uid) {
+                        updateConversation(chatId, message.text, message.timestamp);
+                    }
                 }
             });
         
+        // Mark initial load as complete after a short delay
+        setTimeout(() => {
+            initialLoad = false;
+        }, 1000);
+        
         // Store listener for cleanup
         state.messageListeners[chatId] = () => {
-            state.db.ref(`messages/${chatId}`).off('child_added', listener);
+            messagesRef.off('child_added', listener);
         };
     }
     
