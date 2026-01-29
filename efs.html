@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EFS - Enterprise Fleet System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --dark-blue: #0a192f;
+      --medium-blue: #172a45;
+      --light-blue: #64ffda;
+      --accent-gold: #e6c78a;
+      --soft-teal: #81c8be;
+      --text-primary: #f0e6ef;
+      --text-secondary: #b8b8d1;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--dark-blue);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--dark-blue);
+      z-index: -2;
+    }
+    
+    .background-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle at 25% 25%, rgba(100, 255, 218, 0.1) 0%, transparent 50%);
+      background-size: 400% 400%;
+      z-index: -1;
+      animation: gradientMove 30s ease infinite;
+    }
+    
+    @keyframes gradientMove {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    /* Authentication Loader */
+    .auth-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--dark-blue);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10001;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .auth-loader-text {
+      color: var(--light-blue);
+      margin-top: 25px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* Sheet Loader */
+    .sheet-loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--medium-blue);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .sheet-loader-text {
+      color: var(--light-blue);
+      margin-top: 25px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      animation: pulse 1.5s ease-in-out infinite;
+      max-width: 80%;
+      text-align: center;
+    }
+    
+    .sheet-loader small {
+      color: var(--text-secondary);
+      margin-top: 10px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Loader animation */
+    .loader {
+      width: 45px;
+      aspect-ratio: 1;
+      --c: no-repeat linear-gradient(var(--light-blue) 0 0);
+      background: var(--c), var(--c), var(--c), var(--c), var(--c), var(--c);
+      animation: 
+        l14-1 .5s infinite alternate,
+        l14-2 2s infinite;
+    }
+    
+    @keyframes l14-1 {
+      0%,10% { background-size: 20% 100%; }
+      100% { background-size: 20% 20%; }
+    }
+    
+    @keyframes l14-2 {
+      0%,49.9% { background-position: 0 0, 0 100%, 50% 50%, 50% 50%, 100% 0, 100% 100%; }
+      50%,100% { background-position: 0 50%, 0 50%, 50% 0, 50% 100%, 100% 50%, 100% 50%; }
+    }
+
+    /* Access Denied Message */
+    .access-denied {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 25, 47, 0.95);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .access-denied h2 {
+      color: var(--light-blue);
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+    
+    .access-denied p {
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+    
+    .access-denied-btn {
+      background: var(--light-blue);
+      color: var(--dark-blue);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .access-denied-btn:hover {
+      background: var(--accent-gold);
+      color: var(--dark-blue);
+      transform: translateY(-2px);
+    }
+
+    /* Layout structure */
+    .app-container {
+      display: none;
+      height: 100vh;
+      min-height: 0;
+      width: 100%;
+    }
+
+    /* Side navigation */
+    .sidenav {
+      width: 280px;
+      background: var(--medium-blue);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      flex-shrink: 0;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .nav-logo-placeholder {
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+      padding: 20px 0;
+    }
+
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      background: rgba(100, 255, 218, 0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--light-blue);
+      font-size: 1.8rem;
+    }
+
+    .hub-code {
+      padding: 20px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-align: center;
+      border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+      margin-bottom: 20px;
+      color: var(--light-blue);
+    }
+
+    .nav-spacer {
+      height: 30px;
+    }
+
+    .nav-links {
+      list-style: none;
+      padding: 0 15px;
+      margin: 0;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .nav-section {
+      margin-bottom: 15px;
+    }
+
+    .nav-section-title {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      color: var(--light-blue);
+      font-weight: 600;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .nav-section-title:hover {
+      background: rgba(100, 255, 218, 0.1);
+    }
+
+    .nav-section-title i {
+      margin-right: 15px;
+      width: 20px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .nav-submenu {
+      list-style: none;
+      padding: 0;
+      margin: 5px 0 15px 0;
+      display: none;
+    }
+
+    .nav-section.active .nav-submenu {
+      display: block;
+    }
+
+    .nav-link {
+      padding: 12px 20px 12px 50px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      position: relative;
+      user-select: none;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background: rgba(100, 255, 218, 0.05);
+    }
+
+    .nav-link.active {
+      color: var(--light-blue);
+      font-weight: 500;
+      background: rgba(100, 255, 218, 0.1);
+    }
+
+    .nav-link.active::before {
+      content: "";
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: var(--light-blue);
+      border-radius: 50%;
+    }
+
+    /* Main content area */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--medium-blue);
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Header styles */
+    header {
+      background: var(--medium-blue);
+      color: var(--text-primary);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+      flex-shrink: 0;
+      z-index: 5;
+    }
+
+    .hub-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .hub-name {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--light-blue);
+      margin: 0;
+    }
+
+    .hub-status {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 5px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .dashboard-nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    .dashboard-nav a {
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .dashboard-nav a:hover {
+      color: var(--text-primary);
+      background: rgba(100, 255, 218, 0.05);
+    }
+
+    .dashboard-nav a.active {
+      color: var(--light-blue);
+      background: rgba(100, 255, 218, 0.1);
+    }
+
+    /* User Info in Header */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-right: 20px;
+    }
+
+    .user-email {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .logout-btn {
+      background: var(--soft-teal);
+      color: var(--dark-blue);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: var(--light-blue);
+      color: var(--dark-blue);
+      transform: translateY(-2px);
+    }
+
+    .datetime {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      white-space: nowrap;
+    }
+
+    #time {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    #date {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .menu-button {
+      background: rgba(100, 255, 218, 0.1);
+      color: var(--light-blue);
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid rgba(100, 255, 218, 0.2);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-button:hover {
+      background: rgba(100, 255, 218, 0.2);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      min-width: 220px;
+      background: var(--medium-blue);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      border: 1px solid rgba(100, 255, 218, 0.2);
+      overflow: hidden;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 10px 16px;
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+      color: var(--text-primary);
+      background: rgba(100, 255, 218, 0.05);
+    }
+
+    .dropdown-content a:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown.open .dropdown-content {
+      display: block;
+    }
+
+    /* Content area */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow: auto;
+      position: relative;
+    }
+
+    .iframe-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      background-color: #fff;
+    }
+
+    /* Current Sheet Info */
+    .current-sheet-info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(10, 25, 47, 0.9);
+      padding: 8px 15px;
+      border-radius: 6px;
+      color: var(--light-blue);
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 998;
+      display: none;
+      border: 1px solid rgba(100, 255, 218, 0.2);
+      backdrop-filter: blur(5px);
+      max-width: 80%;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--medium-blue);
+      color: var(--text-secondary);
+      text-align: center;
+      font-size: 13px;
+      padding: 12px 20px;
+      border-top: 1px solid rgba(100, 255, 218, 0.2);
+      flex-shrink: 0;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 1200px) {
+      .sidenav {
+        width: 240px;
+      }
+      
+      .header-actions {
+        gap: 15px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidenav {
+        width: 80px;
+      }
+      
+      .hub-code, .nav-section-title span, .nav-link span {
+        display: none;
+      }
+      
+      .nav-section-title {
+        justify-content: center;
+        padding: 16px 0;
+      }
+      
+      .nav-section-title i {
+        margin-right: 0;
+        font-size: 1.3rem;
+      }
+
+      .nav-link {
+        padding: 16px 0;
+        justify-content: center;
+      }
+
+      .nav-link.active::before {
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      
+      header {
+        padding: 15px 20px;
+      }
+      
+      .header-actions {
+        gap: 12px;
+      }
+      
+      .user-email {
+        display: none;
+      }
+      
+      .logout-btn span {
+        display: none;
+      }
+      
+      .logout-btn {
+        padding: 6px;
+        width: 32px;
+        height: 32px;
+        justify-content: center;
+      }
+      
+      .current-sheet-info {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        max-width: 70%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        flex-direction: column;
+      }
+      
+      .sidenav {
+        width: 100%;
+        flex-direction: row;
+        height: auto;
+        margin-bottom: 0;
+      }
+      
+      .nav-logo-placeholder, .hub-code, .nav-spacer {
+        display: none;
+      }
+      
+      .nav-links {
+        display: flex;
+        overflow-x: auto;
+        padding: 0 10px;
+      }
+      
+      .nav-section {
+        margin-bottom: 0;
+        margin-right: 5px;
+        min-width: 80px;
+      }
+
+      .nav-section-title {
+        padding: 15px 10px;
+        border-radius: 0;
+        white-space: nowrap;
+      }
+
+      .nav-submenu {
+        position: absolute;
+        background: var(--medium-blue);
+        z-index: 100;
+        min-width: 200px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .nav-link {
+        padding: 12px 15px;
+        white-space: nowrap;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .dashboard-nav {
+        flex-wrap: wrap;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .user-info {
+        order: 1;
+        margin-right: 0;
+      }
+      
+      .datetime {
+        order: 2;
+        align-items: flex-start;
+      }
+      
+      .dropdown {
+        order: 4;
+        width: 100%;
+      }
+
+      .dropdown-content {
+        left: 0;
+        right: auto;
+        width: 100%;
+      }
+
+      .menu-button {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      main {
+        padding: 15px;
+      }
+      
+      .current-sheet-info {
+        top: 5px;
+        left: 5px;
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        max-width: 60%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      
+      .dashboard-nav {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .datetime {
+        width: 100%;
+        align-items: flex-start;
+      }
+      
+      .sheet-loader-text {
+        font-size: 1rem;
+        max-width: 90%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      header {
+        padding: 12px;
+      }
+      
+      main {
+        padding: 12px;
+      }
+      
+      .hub-name {
+        font-size: 1.1rem;
+      }
+      
+      .dashboard-nav a {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+      }
+      
+      .logout-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+      }
+      
+      .current-sheet-info {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+        max-width: 50%;
+      }
+      
+      .sheet-loader-text {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="background-pattern"></div>
+
+  <!-- Authentication Loader (Shows first) -->
+  <div class="auth-loader" id="authLoader">
+    <div class="loader"></div>
+    <div class="auth-loader-text">Verifying your access...</div>
+  </div>
+
+  <!-- Access Denied Message (Shows when not logged in) -->
+  <div class="access-denied" id="accessDenied">
+    <h2>🔒 Access Restricted</h2>
+    <p>You need to be logged in to access the Enterprise Fleet System. Please sign in through the main dashboard first.</p>
+    <a href="index.html" class="access-denied-btn">Go to Dashboard</a>
+  </div>
+
+  <!-- Workspace Content (Shows when logged in) -->
+  <div class="app-container" id="workspaceContainer">
+    
+    <!-- Side Navigation -->
+    <nav class="sidenav">
+      <div class="nav-logo-placeholder">
+        <div class="logo-img"><i class="fas fa-truck-moving"></i></div>
+      </div>
+      
+      <div class="hub-code">EFS-FLEET001</div>
+      
+      <div class="nav-spacer"></div>
+      
+      <ul class="nav-links">
+        <!-- Fleet Management Section -->
+        <li class="nav-section active">
+          <div class="nav-section-title">
+            <i class="fas fa-truck"></i>
+            <span>Fleet Management</span>
+          </div>
+          <ul class="nav-submenu">
+            <li>
+              <a href="#" class="nav-link active" data-section="vehicle-management">
+                <span>Vehicle Management</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="maintenance">
+                <span>Maintenance</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="fuel-management">
+                <span>Fuel Management</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="driver-management">
+                <span>Driver Management</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        
+        <!-- Warehouse Management Section -->
+        <li class="nav-section">
+          <div class="nav-section-title">
+            <i class="fas fa-warehouse"></i>
+            <span>Warehouse</span>
+          </div>
+          <ul class="nav-submenu">
+            <li>
+              <a href="#" class="nav-link" data-section="inventory-control">
+                <span>Inventory Control</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="stock-movements">
+                <span>Stock Movements</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="warehouse-management">
+                <span>Warehouse Management</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="receiving-shipping">
+                <span>Receiving & Shipping</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        
+        <!-- Route Planning Section -->
+        <li class="nav-section">
+          <div class="nav-section-title">
+            <i class="fas fa-route"></i>
+            <span>Route Planning</span>
+          </div>
+          <ul class="nav-submenu">
+            <li>
+              <a href="#" class="nav-link" data-section="route-optimization">
+                <span>Route Optimization</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="delivery-scheduling">
+                <span>Delivery Scheduling</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="gps-tracking">
+                <span>GPS Tracking</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        
+        <!-- Compliance Section -->
+        <li class="nav-section">
+          <div class="nav-section-title">
+            <i class="fas fa-clipboard-check"></i>
+            <span>Compliance</span>
+          </div>
+          <ul class="nav-submenu">
+            <li>
+              <a href="#" class="nav-link" data-section="safety-compliance">
+                <span>Safety Compliance</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="regulatory-documents">
+                <span>Regulatory Documents</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="vehicle-inspections">
+                <span>Vehicle Inspections</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        
+        <!-- Analytics Section -->
+        <li class="nav-section">
+          <div class="nav-section-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Analytics</span>
+          </div>
+          <ul class="nav-submenu">
+            <li>
+              <a href="#" class="nav-link" data-section="fleet-analytics">
+                <span>Fleet Analytics</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="warehouse-analytics">
+                <span>Warehouse Analytics</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="cost-analysis">
+                <span>Cost Analysis</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="kpi-dashboard">
+                <span>KPI Dashboard</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <header>
+        <div class="hub-info">
+          <h1 class="hub-name" id="moduleTitle">Enterprise Fleet System - Workspace</h1>
+          <div class="hub-status">Fleet System • All Systems Operational</div>
+        </div>
+
+        <div class="header-actions">
+          <!-- User Info in Header -->
+          <div class="user-info">
+            <div class="user-email" id="userEmail">admin@efs.com</div>
+            <button class="logout-btn" id="logoutBtn">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </button>
+          </div>
+
+          <div class="datetime">
+            <div id="time">10:45 AM</div>
+            <div id="date">Friday, June 10, 2023</div>
+          </div>
+
+          <div class="dropdown" id="dropdown">
+            <button class="menu-button" id="menuToggle">
+              <i class="fas fa-tools"></i>
+              <span>Tools</span>
+            </button>
+            <div class="dropdown-content" id="menuContent">
+              <a href="#" data-link="vehicle-directory">Vehicle Directory</a>
+              <a href="#" data-link="vehicle-details">Vehicle Details</a>
+              <a href="#" data-link="registration">Registration & Licensing</a>
+              <a href="#" data-link="insurance">Insurance Management</a>
+              <a href="#" data-link="utilization">Vehicle Utilization</a>
+            </div>
+          </div>
+          
+          <div class="dashboard-nav">
+            <a href="index.html" id="homeButton">Home</a>
+            <a href="#" class="active" id="workspaceButton">Workspace</a>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="iframe-container">
+          <!-- Sheet Loader -->
+          <div class="sheet-loader" id="sheetLoader">
+            <div class="loader"></div>
+            <div class="sheet-loader-text" id="sheetLoaderText">Loading sheet...</div>
+            <small>This may take a moment for larger sheets</small>
+          </div>
+          
+          <!-- Current Sheet Info -->
+          <div class="current-sheet-info" id="currentSheetInfo"></div>
+          
+          <iframe id="iframe" loading="lazy" title="EFS Workspace Content"></iframe>
+        </div>
+      </main>
+
+      <footer>Powered by EFS - Enterprise Fleet System &copy; 2025</footer>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOb4BqfiN3vt1Y13UTEpA_boCqNRH6rrQ",
+      authDomain: "dsog-stores-dashboard.firebaseapp.com",
+      databaseURL: "https://dsog-stores-dashboard-default-rtdb.firebaseio.com",
+      projectId: "dsog-stores-dashboard",
+      storageBucket: "dsog-stores-dashboard.firebasestorage.app",
+      messagingSenderId: "1085972125142",
+      appId: "1:1085972125142:web:9abea9ee0dd792a052c077"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    
+    // DOM elements
+    const authLoader = document.getElementById('authLoader');
+    const accessDenied = document.getElementById('accessDenied');
+    const workspaceContainer = document.getElementById('workspaceContainer');
+    const sheetLoader = document.getElementById('sheetLoader');
+    const sheetLoaderText = document.getElementById('sheetLoaderText');
+    const currentSheetInfo = document.getElementById('currentSheetInfo');
+    const iframe = document.getElementById('iframe');
+    
+    // Show auth loader initially
+    authLoader.style.display = 'flex';
+    accessDenied.style.display = 'none';
+    workspaceContainer.style.display = 'none';
+    
+    // Track current sheet info
+    let currentSheetName = '';
+    let currentSheetUrl = '';
+    
+    // Authentication state observer
+    let authCheckTimeout;
+    
+    auth.onAuthStateChanged((user) => {
+      // Clear any existing timeout
+      clearTimeout(authCheckTimeout);
+      
+      if (user) {
+        // User is signed in - show workspace after a short delay
+        setTimeout(() => {
+          handleUserSignedIn(user);
+        }, 800);
+      } else {
+        // User is signed out - show access denied after a short delay
+        setTimeout(() => {
+          handleUserSignedOut();
+        }, 800);
+      }
+    });
+    
+    // Set a timeout in case Firebase auth takes too long
+    authCheckTimeout = setTimeout(() => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        handleUserSignedOut();
+      }
+    }, 3000);
+
+    function handleUserSignedIn(user) {
+      console.log("User signed in:", user.email);
+      
+      // Hide auth loader
+      authLoader.style.display = 'none';
+      
+      // Show workspace content
+      workspaceContainer.style.display = 'flex';
+      
+      // Update user email display
+      document.getElementById('userEmail').textContent = user.email;
+      
+      // Initialize the workspace functionality
+      initWorkspace();
+    }
+
+    function handleUserSignedOut() {
+      console.log("User signed out");
+      
+      // Hide auth loader
+      authLoader.style.display = 'none';
+      
+      // Show access denied message
+      accessDenied.style.display = 'flex';
+      
+      // Hide workspace content
+      workspaceContainer.style.display = 'none';
+    }
+
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      auth.signOut()
+        .then(() => {
+          window.location.href = 'index.html';
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+        });
+    });
+
+    // Data for each section with sheet URLs for each tool
+    const moduleData = {
+      // Fleet Management
+      "vehicle-management": {
+        title: "Vehicle Management",
+        tools: [
+          { 
+            name: "Vehicle Directory", 
+            link: "vehicle-directory",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_DIRECTORY_SHEET_ID/edit" 
+          },
+          { 
+            name: "Vehicle Details", 
+            link: "vehicle-details",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_DETAILS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Registration & Licensing", 
+            link: "registration",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1REGISTRATION_SHEET_ID/edit" 
+          },
+          { 
+            name: "Insurance Management", 
+            link: "insurance",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSURANCE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Vehicle Utilization", 
+            link: "utilization",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1UTILIZATION_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "maintenance": {
+        title: "Maintenance",
+        tools: [
+          { 
+            name: "Maintenance Schedule", 
+            link: "maintenance-schedule",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1MAINTENANCE_SCHEDULE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Service History", 
+            link: "service-history",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1SERVICE_HISTORY_SHEET_ID/edit" 
+          },
+          { 
+            name: "Repair Requests", 
+            link: "repair-requests",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1REPAIR_REQUESTS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Parts Inventory", 
+            link: "parts-inventory",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1PARTS_INVENTORY_SHEET_ID/edit" 
+          },
+          { 
+            name: "Maintenance Costs", 
+            link: "maintenance-costs",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1MAINTENANCE_COSTS_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "fuel-management": {
+        title: "Fuel Management",
+        tools: [
+          { 
+            name: "Fuel Consumption", 
+            link: "fuel-consumption",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_CONSUMPTION_SHEET_ID/edit" 
+          },
+          { 
+            name: "Fuel Cards", 
+            link: "fuel-cards",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_CARDS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Fuel Expenses", 
+            link: "fuel-expenses",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_EXPENSES_SHEET_ID/edit" 
+          },
+          { 
+            name: "MPG Analysis", 
+            link: "mpg-analysis",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1MPG_ANALYSIS_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "driver-management": {
+        title: "Driver Management",
+        tools: [
+          { 
+            name: "Driver Directory", 
+            link: "driver-directory",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_DIRECTORY_SHEET_ID/edit" 
+          },
+          { 
+            name: "Driver Schedule", 
+            link: "driver-schedule",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_SCHEDULE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Driver Performance", 
+            link: "driver-performance",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_PERFORMANCE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Driver Compliance", 
+            link: "driver-compliance",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_COMPLIANCE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Training Records", 
+            link: "training-records",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1TRAINING_RECORDS_SHEET_ID/edit" 
+          }
+        ]
+      },
+      
+      // Warehouse Management
+      "inventory-control": {
+        title: "Inventory Control",
+        tools: [
+          { 
+            name: "Stock Levels", 
+            link: "stock-levels",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1STOCK_LEVELS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Inventory Valuation", 
+            link: "inventory-valuation",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1INVENTORY_VALUATION_SHEET_ID/edit" 
+          },
+          { 
+            name: "Stock Alerts", 
+            link: "stock-alerts",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1STOCK_ALERTS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Cycle Counting", 
+            link: "cycle-counting",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1CYCLE_COUNTING_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "stock-movements": {
+        title: "Stock Movements",
+        tools: [
+          { 
+            name: "Receipts", 
+            link: "receipts",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1RECEIPTS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Issues", 
+            link: "issues",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1ISSUES_SHEET_ID/edit" 
+          },
+          { 
+            name: "Transfers", 
+            link: "transfers",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1TRANSFERS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Adjustments", 
+            link: "adjustments",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1ADJUSTMENTS_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "warehouse-management": {
+        title: "Warehouse Management",
+        tools: [
+          { 
+            name: "Location Management", 
+            link: "locations",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1LOCATIONS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Bin Management", 
+            link: "bin-management",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1BIN_MANAGEMENT_SHEET_ID/edit" 
+          },
+          { 
+            name: "Putaway Strategy", 
+            link: "putaway",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1PUTAWAY_SHEET_ID/edit" 
+          },
+          { 
+            name: "Picking Strategy", 
+            link: "picking",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1PICKING_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "receiving-shipping": {
+        title: "Receiving & Shipping",
+        tools: [
+          { 
+            name: "Receiving Schedule", 
+            link: "receiving-schedule",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1RECEIVING_SCHEDULE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Shipping Schedule", 
+            link: "shipping-schedule",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1SHIPPING_SCHEDULE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Dock Management", 
+            link: "dock-management",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DOCK_MANAGEMENT_SHEET_ID/edit" 
+          },
+          { 
+            name: "Loading/Unloading", 
+            link: "loading-unloading",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1LOADING_UNLOADING_SHEET_ID/edit" 
+          }
+        ]
+      },
+      
+      // Route Planning
+      "route-optimization": {
+        title: "Route Optimization",
+        tools: [
+          { 
+            name: "Route Planning", 
+            link: "route-planning",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1ROUTE_PLANNING_SHEET_ID/edit" 
+          },
+          { 
+            name: "Route Analysis", 
+            link: "route-analysis",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1ROUTE_ANALYSIS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Traffic Patterns", 
+            link: "traffic-patterns",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1TRAFFIC_PATTERNS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Optimization Results", 
+            link: "optimization-results",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1OPTIMIZATION_RESULTS_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "delivery-scheduling": {
+        title: "Delivery Scheduling",
+        tools: [
+          { 
+            name: "Delivery Calendar", 
+            link: "delivery-calendar",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DELIVERY_CALENDAR_SHEET_ID/edit" 
+          },
+          { 
+            name: "Time Windows", 
+            link: "time-windows",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1TIME_WINDOWS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Scheduling Rules", 
+            link: "scheduling-rules",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1SCHEDULING_RULES_SHEET_ID/edit" 
+          },
+          { 
+            name: "Delivery Performance", 
+            link: "delivery-performance",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DELIVERY_PERFORMANCE_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "gps-tracking": {
+        title: "GPS Tracking",
+        tools: [
+          { 
+            name: "Live Tracking", 
+            link: "live-tracking",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1LIVE_TRACKING_SHEET_ID/edit" 
+          },
+          { 
+            name: "Historical Routes", 
+            link: "historical-routes",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1HISTORICAL_ROUTES_SHEET_ID/edit" 
+          },
+          { 
+            name: "Geofencing", 
+            link: "geofencing",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1GEOFENCING_SHEET_ID/edit" 
+          },
+          { 
+            name: "Vehicle Locations", 
+            link: "vehicle-locations",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_LOCATIONS_SHEET_ID/edit" 
+          }
+        ]
+      },
+      
+      // Compliance
+      "safety-compliance": {
+        title: "Safety Compliance",
+        tools: [
+          { 
+            name: "Safety Policies", 
+            link: "safety-policies",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1SAFETY_POLICIES_SHEET_ID/edit" 
+          },
+          { 
+            name: "Incident Reports", 
+            link: "incident-reports",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1INCIDENT_REPORTS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Safety Training", 
+            link: "safety-training",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1SAFETY_TRAINING_SHEET_ID/edit" 
+          },
+          { 
+            name: "Compliance Checklist", 
+            link: "compliance-checklist",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1COMPLIANCE_CHECKLIST_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "regulatory-documents": {
+        title: "Regulatory Documents",
+        tools: [
+          { 
+            name: "Document Repository", 
+            link: "document-repository",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DOCUMENT_REPOSITORY_SHEET_ID/edit" 
+          },
+          { 
+            name: "Expiration Tracking", 
+            link: "expiration-tracking",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1EXPIRATION_TRACKING_SHEET_ID/edit" 
+          },
+          { 
+            name: "Audit Trail", 
+            link: "audit-trail",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1AUDIT_TRAIL_SHEET_ID/edit" 
+          },
+          { 
+            name: "Regulatory Updates", 
+            link: "regulatory-updates",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1REGULATORY_UPDATES_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "vehicle-inspections": {
+        title: "Vehicle Inspections",
+        tools: [
+          { 
+            name: "Inspection Schedule", 
+            link: "inspection-schedule",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSPECTION_SCHEDULE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Inspection Forms", 
+            link: "inspection-forms",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSPECTION_FORMS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Defect Tracking", 
+            link: "defect-tracking",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1DEFECT_TRACKING_SHEET_ID/edit" 
+          },
+          { 
+            name: "Inspection History", 
+            link: "inspection-history",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSPECTION_HISTORY_SHEET_ID/edit" 
+          }
+        ]
+      },
+      
+      // Analytics
+      "fleet-analytics": {
+        title: "Fleet Analytics",
+        tools: [
+          { 
+            name: "Fleet Utilization", 
+            link: "fleet-utilization",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1FLEET_UTILIZATION_SHEET_ID/edit" 
+          },
+          { 
+            name: "Cost per Mile", 
+            link: "cost-per-mile",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1COST_PER_MILE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Vehicle Lifecycle", 
+            link: "vehicle-lifecycle",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_LIFECYCLE_SHEET_ID/edit" 
+          },
+          { 
+            name: "Fuel Efficiency", 
+            link: "fuel-efficiency",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_EFFICIENCY_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "warehouse-analytics": {
+        title: "Warehouse Analytics",
+        tools: [
+          { 
+            name: "Space Utilization", 
+            link: "space-utilization",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1SPACE_UTILIZATION_SHEET_ID/edit" 
+          },
+          { 
+            name: "Throughput Analysis", 
+            link: "throughput-analysis",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1THROUGHPUT_ANALYSIS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Order Accuracy", 
+            link: "order-accuracy",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1ORDER_ACCURACY_SHEET_ID/edit" 
+          },
+          { 
+            name: "Labor Productivity", 
+            link: "labor-productivity",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1LABOR_PRODUCTIVITY_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "cost-analysis": {
+        title: "Cost Analysis",
+        tools: [
+          { 
+            name: "Total Cost Analysis", 
+            link: "total-cost",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1TOTAL_COST_SHEET_ID/edit" 
+          },
+          { 
+            name: "Cost Breakdown", 
+            link: "cost-breakdown",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1COST_BREAKDOWN_SHEET_ID/edit" 
+          },
+          { 
+            name: "Cost Optimization", 
+            link: "cost-optimization",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1COST_OPTIMIZATION_SHEET_ID/edit" 
+          },
+          { 
+            name: "Cost Benchmarking", 
+            link: "benchmarking",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1BENCHMARKING_SHEET_ID/edit" 
+          }
+        ]
+      },
+      "kpi-dashboard": {
+        title: "KPI Dashboard",
+        tools: [
+          { 
+            name: "Fleet KPIs", 
+            link: "fleet-kpis",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1FLEET_KPIS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Warehouse KPIs", 
+            link: "warehouse-kpis",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1WAREHOUSE_KPIS_SHEET_ID/edit" 
+          },
+          { 
+            name: "Operational KPIs", 
+            link: "operational",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1OPERATIONAL_SHEET_ID/edit" 
+          },
+          { 
+            name: "Custom KPIs", 
+            link: "custom",
+            sheetUrl: "https://docs.google.com/spreadsheets/d/1CUSTOM_SHEET_ID/edit" 
+          }
+        ]
+      }
+    };
+
+    // Initialize workspace functionality
+    function initWorkspace() {
+      // DOM elements
+      const dropdown = document.getElementById("dropdown");
+      const menuToggle = document.getElementById("menuToggle");
+      const menuContent = document.getElementById("menuContent");
+      const timeElement = document.getElementById("time");
+      const dateElement = document.getElementById("date");
+      const navSections = document.querySelectorAll(".nav-section");
+      const navLinks = document.querySelectorAll(".nav-link");
+      const moduleTitle = document.getElementById("moduleTitle");
+
+      // Initialize the application
+      function initApp() {
+        setupEventListeners();
+        loadInitialSection();
+        updateClock();
+        setInterval(updateClock, 60000);
+        
+        // Set up iframe load event listeners
+        setupIframeEvents();
+      }
+
+      // Set up iframe load event listeners
+      function setupIframeEvents() {
+        iframe.addEventListener('load', function() {
+          setTimeout(() => {
+            sheetLoader.style.display = 'none';
+            if (currentSheetName) {
+              currentSheetInfo.textContent = currentSheetName;
+              currentSheetInfo.style.display = 'block';
+            }
+          }, 500);
+        });
+        
+        iframe.addEventListener('loadstart', function() {
+          sheetLoader.style.display = 'flex';
+          currentSheetInfo.style.display = 'none';
+        });
+        
+        iframe.addEventListener('error', function() {
+          sheetLoader.style.display = 'none';
+          currentSheetInfo.style.display = 'none';
+        });
+      }
+
+      // Set up all event listeners
+      function setupEventListeners() {
+        document.querySelectorAll(".nav-section-title").forEach(title => {
+          title.addEventListener("click", function(e) {
+            e.stopPropagation();
+            const section = this.parentElement;
+            navSections.forEach(s => {
+              if (s !== section) s.classList.remove("active");
+            });
+            section.classList.toggle("active");
+          });
+        });
+
+        navLinks.forEach(link => {
+          link.addEventListener("click", function(e) {
+            e.preventDefault();
+            handleNavLinkClick(this);
+          });
+        });
+
+        menuContent.addEventListener("click", function(e) {
+          if (e.target.tagName === 'A') {
+            e.preventDefault();
+            handleToolClick(e.target);
+          }
+        });
+
+        menuToggle.addEventListener("click", function(e) {
+          e.stopPropagation();
+          dropdown.classList.toggle("open");
+        });
+
+        document.addEventListener("click", function() {
+          dropdown.classList.remove("open");
+        });
+      }
+
+      function handleNavLinkClick(link) {
+        navLinks.forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+        
+        const section = link.dataset.section;
+        const data = moduleData[section];
+        
+        if (!data) {
+          console.error("No data found for section:", section);
+          return;
+        }
+        
+        moduleTitle.textContent = `Enterprise Fleet System - ${data.title}`;
+        updateToolsMenu(data.tools);
+        
+        if (data.tools.length > 0) {
+          loadToolContent(data.tools[0].sheetUrl, data.tools[0].name);
+        }
+      }
+
+      function updateToolsMenu(tools) {
+        menuContent.innerHTML = '';
+        tools.forEach(tool => {
+          const link = document.createElement('a');
+          link.href = '#';
+          link.textContent = tool.name;
+          link.dataset.link = tool.link;
+          link.dataset.sheetUrl = tool.sheetUrl;
+          link.dataset.sheetName = tool.name;
+          menuContent.appendChild(link);
+        });
+      }
+
+      function handleToolClick(toolElement) {
+        dropdown.classList.remove("open");
+        const sheetUrl = toolElement.dataset.sheetUrl;
+        const sheetName = toolElement.dataset.sheetName;
+        loadToolContent(sheetUrl, sheetName);
+      }
+
+      function loadToolContent(sheetUrl, sheetName) {
+        currentSheetName = sheetName || 'Sheet';
+        currentSheetUrl = sheetUrl;
+        
+        sheetLoaderText.textContent = `Loading ${currentSheetName}...`;
+        sheetLoader.style.display = 'flex';
+        currentSheetInfo.style.display = 'none';
+        
+        if (sheetUrl && sheetUrl.includes('docs.google.com')) {
+          const sheetId = extractSheetId(sheetUrl);
+          if (sheetId) {
+            iframe.src = '';
+            setTimeout(() => {
+              iframe.src = `https://docs.google.com/spreadsheets/d/${sheetId}/edit?usp=sharing`;
+            }, 100);
+          } else {
+            showPlaceholderContent("Invalid Google Sheet URL format");
+          }
+        } else {
+          showPlaceholderContent("No Google Sheet configured for this tool");
+        }
+      }
+
+      function showPlaceholderContent(message) {
+        sheetLoader.style.display = 'none';
+        currentSheetInfo.style.display = 'none';
+        
+        iframe.srcdoc = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                font-family: Arial, sans-serif;
+                color: #666;
+                background: #f9f9f9;
+              }
+              .content {
+                text-align: center;
+                padding: 20px;
+                max-width: 500px;
+              }
+              i {
+                font-size: 3rem;
+                color: #ddd;
+                margin-bottom: 20px;
+              }
+              h2 {
+                color: #444;
+                margin: 0 0 15px 0;
+              }
+              p {
+                margin: 5px 0;
+                line-height: 1.5;
+              }
+            </style>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+          </head>
+          <body>
+            <div class="content">
+              <i class="fas fa-exclamation-triangle"></i>
+              <h2>Content Not Available</h2>
+              <p>${message}</p>
+              ${message.includes('configured') ? '<p>Please configure a valid Google Sheet URL in the moduleData object.</p>' : ''}
+            </div>
+          </body>
+          </html>
+        `;
+      }
+
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        
+        timeElement.textContent = `${hours}:${minutes} ${ampm}`;
+        
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateElement.textContent = now.toLocaleDateString('en-US', options);
+      }
+
+      function extractSheetId(url) {
+        try {
+          const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+          return match ? match[1] : null;
+        } catch (e) {
+          console.error("Error extracting sheet ID:", e);
+          return null;
+        }
+      }
+
+      function loadInitialSection() {
+        const activeLink = document.querySelector('.nav-link.active');
+        if (activeLink) {
+          handleNavLinkClick(activeLink);
+        } else if (navLinks.length > 0) {
+          navLinks[0].classList.add("active");
+          handleNavLinkClick(navLinks[0]);
+        }
+      }
+
+      // Initialize the application
+      initApp();
+    }
+  </script>
+</body>
+</html>
