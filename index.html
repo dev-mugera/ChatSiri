@@ -528,6 +528,187 @@
             background: var(--bg-secondary);
         }
 
+        /* New Chat Modal */
+        .new-chat-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: var(--spacing-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-slow);
+        }
+
+        .new-chat-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .new-chat-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform var(--transition-slow);
+        }
+
+        .new-chat-modal.active .new-chat-content {
+            transform: translateY(0);
+        }
+
+        .new-chat-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .new-chat-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .close-modal {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .new-chat-search {
+            padding: var(--spacing);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .new-chat-search input {
+            width: 100%;
+            padding: var(--spacing) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .new-chat-search input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .new-chat-users {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .new-chat-user {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing);
+            padding: var(--spacing) var(--spacing-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .new-chat-user:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .new-chat-user:last-child {
+            border-bottom: none;
+        }
+
+        .new-chat-user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .new-chat-user-info {
+            flex: 1;
+        }
+
+        .new-chat-user-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .new-chat-user-role {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        .new-chat-user-status {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        .status-dot-sm {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-success);
+        }
+
+        .status-dot-sm.away {
+            background: var(--color-warning);
+        }
+
+        .status-dot-sm.meeting {
+            background: var(--color-danger);
+        }
+
+        .status-dot-sm.soon {
+            background: #8b5cf6;
+        }
+
+        .new-chat-footer {
+            padding: var(--spacing) var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            background: var(--bg-secondary);
+        }
+
         .status-selector {
             position: relative;
         }
@@ -706,7 +887,7 @@
         /* Main Layout */
         .main-container {
             display: grid;
-            grid-template-columns: var(--sidebar-width) 1fr 320px;
+            grid-template-columns: var(--sidebar-width) 1fr;
             min-height: 100vh;
             padding-top: var(--header-height);
             transition: all var(--transition);
@@ -719,10 +900,19 @@
             padding: var(--spacing-lg) 0;
             overflow-y: auto;
             transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-section {
             padding: 0 var(--spacing-lg) var(--spacing-xl);
+        }
+
+        .sidebar-header {
+            padding: 0 var(--spacing-lg) var(--spacing);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .sidebar-title {
@@ -732,6 +922,32 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: var(--spacing);
+        }
+
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing);
+            background: var(--color-primary);
+            border: none;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            justify-content: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .new-chat-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .new-chat-btn i {
+            font-size: 0.9rem;
         }
 
         .nav-item {
@@ -771,7 +987,9 @@
 
         /* Chat List */
         .chat-list {
+            flex: 1;
             padding: 0 var(--spacing);
+            overflow-y: auto;
         }
 
         .chat-item {
@@ -1119,105 +1337,6 @@
             cursor: not-allowed;
         }
 
-        /* Right Panel - Online Users */
-        .right-panel {
-            background: var(--bg-card);
-            border-left: 1px solid var(--border-color);
-            padding: var(--spacing-lg) 0;
-            overflow-y: auto;
-            transition: all var(--transition);
-        }
-
-        .panel-section {
-            padding: 0 var(--spacing-lg) var(--spacing-xl);
-        }
-
-        .panel-title {
-            font-weight: 600;
-            margin-bottom: var(--spacing);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        /* Online Users */
-        .online-user {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing);
-            padding: var(--spacing-sm);
-            border-radius: var(--radius);
-            margin-bottom: var(--spacing-xs);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .online-user:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .user-status {
-            position: relative;
-        }
-
-        .status-indicator-online {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 10px;
-            height: 10px;
-            background: var(--color-success);
-            border: 2px solid var(--bg-card);
-            border-radius: 50%;
-        }
-
-        .status-indicator-online.away {
-            background: var(--color-warning);
-        }
-
-        .status-indicator-online.meeting {
-            background: var(--color-danger);
-        }
-
-        .status-indicator-online.soon {
-            background: #8b5cf6;
-        }
-
-        .user-avatar-sm {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-
-        .user-info-sm {
-            flex: 1;
-        }
-
-        .user-name-sm {
-            font-weight: 500;
-            margin-bottom: 2px;
-        }
-
-        .user-role-sm {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-        }
-
-        .user-status-text {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
         /* Notifications */
         .notification {
             position: fixed;
@@ -1275,15 +1394,6 @@
         }
 
         /* Responsive */
-        @media (max-width: 1200px) {
-            .main-container {
-                grid-template-columns: var(--sidebar-width) 1fr;
-            }
-            .right-panel {
-                display: none;
-            }
-        }
-
         @media (max-width: 768px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -1441,6 +1551,27 @@
             </div>
         </div>
 
+        <!-- New Chat Modal -->
+        <div class="new-chat-modal" id="newChatModal">
+            <div class="new-chat-content">
+                <div class="new-chat-header">
+                    <div class="new-chat-title">Start New Chat</div>
+                    <button class="close-modal" id="closeNewChatModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="new-chat-search">
+                    <input type="text" id="newChatSearch" placeholder="Search users...">
+                </div>
+                <div class="new-chat-users" id="newChatUsers">
+                    <!-- Users will be loaded here dynamically -->
+                </div>
+                <div class="new-chat-footer">
+                    Select a user to start chatting
+                </div>
+            </div>
+        </div>
+
         <!-- Header -->
         <header class="header">
             <div class="header-left">
@@ -1530,6 +1661,13 @@
             <!-- Left Sidebar -->
             <aside class="sidebar">
                 <div class="sidebar-section">
+                    <button class="new-chat-btn" id="newChatBtn">
+                        <i class="fas fa-plus"></i>
+                        <span>New Chat</span>
+                    </button>
+                </div>
+                
+                <div class="sidebar-section">
                     <div class="sidebar-title">Chats</div>
                     <div class="chat-list" id="chatList">
                         <!-- Chats will be loaded here -->
@@ -1591,7 +1729,7 @@
                             <i class="fas fa-comments" style="font-size: 48px; color: var(--text-tertiary);"></i>
                         </div>
                         <h3 class="mb-2">Welcome to Enterprise Workspace</h3>
-                        <p class="text-muted">Select a user from the online list to start chatting</p>
+                        <p class="text-muted">Start a new chat to begin conversations</p>
                     </div>
                 </div>
 
@@ -1616,40 +1754,6 @@
                     </div>
                 </div>
             </main>
-
-            <!-- Right Panel - Online Users -->
-            <aside class="right-panel">
-                <div class="panel-section">
-                    <h3 class="panel-title">
-                        <i class="fas fa-users"></i>
-                        Online Users
-                    </h3>
-                    <div id="onlineUsersList">
-                        <!-- Online users will be loaded here -->
-                    </div>
-                </div>
-                
-                <div class="panel-section">
-                    <h3 class="panel-title">
-                        <i class="fas fa-bolt"></i>
-                        Quick Actions
-                    </h3>
-                    <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                        <button class="nav-item" id="newGroupBtn">
-                            <div class="nav-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <span>New Group Chat</span>
-                        </button>
-                        <button class="nav-item" id="newTaskBtn">
-                            <div class="nav-icon">
-                                <i class="fas fa-plus"></i>
-                            </div>
-                            <span>Create Task</span>
-                        </button>
-                    </div>
-                </div>
-            </aside>
         </div>
     </div>
 
@@ -1679,7 +1783,8 @@
         const appState = {
             currentUser: null,
             currentChat: null,
-            onlineUsers: new Map(),
+            allUsers: new Map(), // All organization users
+            onlineUsers: new Map(), // Online users only
             conversations: new Map(),
             firebase: null,
             auth: null,
@@ -1689,7 +1794,8 @@
             userStatus: 'available',
             currentTheme: 'navy',
             enterpriseApps: [],
-            isAppsPopupOpen: false
+            isAppsPopupOpen: false,
+            isNewChatModalOpen: false
         };
 
         // ============================
@@ -1709,7 +1815,7 @@
                 id: 'erh',
                 name: 'Resource Hub',
                 description: 'Enterprise Resource Management',
-                icon: 'https://i.postimg.cc/3rFrpW8P/20260112-1839-Image-Generation-remix-01kesdpw6ce8s88amr0e92g276-removebg-preview-removebg-preview.png',
+                icon: 'https://i.postimg.cc/3rFrpW8P/20260112_1839-Image-Generation-remix-01kesdpw6ce8s88amr0e92g276-removebg-preview-removebg-preview.png',
                 link: 'erh.html',
                 category: 'Resources',
                 color: '#10b981'
@@ -1718,7 +1824,7 @@
                 id: 'efh',
                 name: 'Finance Hub',
                 description: 'Enterprise Financial Management',
-                icon: 'https://i.postimg.cc/nLkCKS3J/20260119-1502-Image-Generation-remix-01kfb24hnje88t8jgrmchg3m4w-1-removebg-preview.png',
+                icon: 'https://i.postimg.cc/nLkCKS3J/20260119_1502-Image-Generation-remix-01kfb24hnje88t8jgrmchg3m4w-1-removebg-preview.png',
                 link: 'efh.html',
                 category: 'Finance',
                 color: '#f59e0b'
@@ -1727,7 +1833,7 @@
                 id: 'efs',
                 name: 'Fleet Hub',
                 description: 'Enterprise Fleet Management',
-                icon: 'https://i.postimg.cc/MTYB3K5P/20260119-1531-Image-Generation-remix-01kfb3rnfzfzxt9rhe0336w04w-1-removebg-preview.png',
+                icon: 'https://i.postimg.cc/MTYB3K5P/20260119_1531-Image-Generation-remix-01kfb3rnfzfzxt9rhe0336w04w-1-removebg-preview.png',
                 link: 'efs.html',
                 category: 'Operations',
                 color: '#ef4444'
@@ -1736,7 +1842,7 @@
                 id: 'eth',
                 name: 'Talent Hub',
                 description: 'Enterprise Talent Management',
-                icon: 'https://i.postimg.cc/wvFVykC1/20260119-1539-Image-Generation-remix-01kfb488qbfhz9a354vdfwrwva-1-removebg-preview.png',
+                icon: 'https://i.postimg.cc/wvFVykC1/20260119_1539-Image-Generation-remix-01kfb488qbfhz9a354vdfwrwva-1-removebg-preview.png',
                 link: 'eth.html',
                 category: 'HR',
                 color: '#8b5cf6'
@@ -1750,37 +1856,62 @@
             'office.hog@gmail.com': {
                 name: 'Central Admin',
                 role: 'System Administrator',
-                color: '#3b82f6'
+                color: '#3b82f6',
+                uid: 'user_001'
             },
             'sales.hog@gmail.com': {
                 name: 'Sales Coordinator',
                 role: 'Sales Executive',
-                color: '#8b5cf6'
+                color: '#8b5cf6',
+                uid: 'user_002'
             },
             'manager@hogcreations.com': {
                 name: 'Operations Director',
                 role: 'Operations Manager',
-                color: '#10b981'
+                color: '#10b981',
+                uid: 'user_003'
             },
             'sales@hogcreations.com': {
                 name: 'Sales Director',
                 role: 'Sales Director',
-                color: '#f59e0b'
+                color: '#f59e0b',
+                uid: 'user_004'
             },
             'finance@hogcreations.com': {
                 name: 'Finance Controller',
                 role: 'Finance Manager',
-                color: '#ef4444'
+                color: '#ef4444',
+                uid: 'user_005'
             },
             'hr@hogcreations.com': {
                 name: 'HR Manager',
                 role: 'HR Director',
-                color: '#8b5cf6'
+                color: '#8b5cf6',
+                uid: 'user_006'
             },
             'logistics@hogcreations.com': {
                 name: 'Logistics Head',
                 role: 'Logistics Manager',
-                color: '#3b82f6'
+                color: '#3b82f6',
+                uid: 'user_007'
+            },
+            'it@hogcreations.com': {
+                name: 'IT Manager',
+                role: 'IT Director',
+                color: '#3b82f6',
+                uid: 'user_008'
+            },
+            'marketing@hogcreations.com': {
+                name: 'Marketing Head',
+                role: 'Marketing Director',
+                color: '#8b5cf6',
+                uid: 'user_009'
+            },
+            'support@hogcreations.com': {
+                name: 'Support Lead',
+                role: 'Customer Support',
+                color: '#10b981',
+                uid: 'user_010'
             }
         };
 
@@ -1863,6 +1994,113 @@
         }
 
         // ============================
+        // NEW CHAT MODAL
+        // ============================
+        function toggleNewChatModal(show) {
+            const newChatModal = document.getElementById('newChatModal');
+            if (!newChatModal) return;
+            
+            if (show === undefined) {
+                appState.isNewChatModalOpen = !appState.isNewChatModalOpen;
+            } else {
+                appState.isNewChatModalOpen = show;
+            }
+            
+            if (appState.isNewChatModalOpen) {
+                newChatModal.classList.add('active');
+                document.getElementById('newChatSearch').focus();
+                loadAllUsersForNewChat();
+            } else {
+                newChatModal.classList.remove('active');
+                document.getElementById('newChatSearch').value = '';
+            }
+        }
+
+        function loadAllUsersForNewChat() {
+            const container = document.getElementById('newChatUsers');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Sort users: online first, then by name
+            const sortedUsers = Array.from(appState.allUsers.values()).sort((a, b) => {
+                // Online users first
+                const aOnline = appState.onlineUsers.has(a.uid) ? 0 : 1;
+                const bOnline = appState.onlineUsers.has(b.uid) ? 0 : 1;
+                if (aOnline !== bOnline) return aOnline - bOnline;
+                
+                // Then sort by name
+                return a.name.localeCompare(b.name);
+            });
+            
+            if (sortedUsers.length === 0) {
+                container.innerHTML = `
+                    <div class="p-4 text-center text-muted">
+                        <p>No users found in organization</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            sortedUsers.forEach(user => {
+                // Skip current user
+                if (user.uid === appState.currentUser?.uid) return;
+                
+                const isOnline = appState.onlineUsers.has(user.uid);
+                const onlineUser = appState.onlineUsers.get(user.uid);
+                const status = onlineUser?.status || 'offline';
+                const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+                
+                const userElement = document.createElement('div');
+                userElement.className = 'new-chat-user';
+                userElement.dataset.userId = user.uid;
+                userElement.innerHTML = `
+                    <div class="new-chat-user-avatar" style="background: ${user.color}">
+                        ${getInitials(user.name)}
+                    </div>
+                    <div class="new-chat-user-info">
+                        <div class="new-chat-user-name">${user.name}</div>
+                        <div class="new-chat-user-role">${user.role}</div>
+                    </div>
+                    <div class="new-chat-user-status">
+                        <span class="status-dot-sm ${isOnline ? config.colorClass : ''}"></span>
+                        <span>${isOnline ? config.text : 'Offline'}</span>
+                    </div>
+                `;
+                
+                userElement.addEventListener('click', () => {
+                    startChat(user.uid, user);
+                    toggleNewChatModal(false);
+                });
+                
+                container.appendChild(userElement);
+            });
+        }
+
+        function filterNewChatUsers(searchTerm) {
+            const container = document.getElementById('newChatUsers');
+            if (!container) return;
+            
+            const allUserElements = container.querySelectorAll('.new-chat-user');
+            if (!searchTerm) {
+                allUserElements.forEach(el => el.style.display = 'flex');
+                return;
+            }
+            
+            const term = searchTerm.toLowerCase();
+            allUserElements.forEach(el => {
+                const userName = el.querySelector('.new-chat-user-name').textContent.toLowerCase();
+                const userRole = el.querySelector('.new-chat-user-role').textContent.toLowerCase();
+                
+                if (userName.includes(term) || userRole.includes(term)) {
+                    el.style.display = 'flex';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        }
+
+        // ============================
         // APPS MANAGEMENT
         // ============================
         function initializeApps() {
@@ -1933,20 +2171,6 @@
             
             // Show notification
             showNotification('App Launched', `${app.name} opened in new tab`, 'success');
-            
-            // Track app usage in Firebase
-            if (appState.currentUser && appState.db) {
-                try {
-                    appState.db.ref(`appUsage/${appState.currentUser.uid}/${Date.now()}`).set({
-                        appId: app.id,
-                        appName: app.name,
-                        timestamp: Date.now(),
-                        user: appState.currentUser.name
-                    });
-                } catch (error) {
-                    console.error('Error tracking app usage:', error);
-                }
-            }
         }
 
         function filterApps(searchTerm) {
@@ -2103,11 +2327,12 @@
 
         async function handleUserLogin(user) {
             try {
-                // Get user data
+                // Get user data from database
                 const userData = USER_DATABASE[user.email] || {
                     name: user.displayName || user.email.split('@')[0],
                     role: 'User',
-                    color: '#64748b'
+                    color: '#64748b',
+                    uid: user.uid
                 };
                 
                 appState.currentUser = {
@@ -2119,11 +2344,13 @@
                 // Update UI
                 updateUserInterface();
                 
+                // Load all organization users
+                await loadAllUsers();
+                
                 // Set online status
                 await setOnlineStatus();
                 
-                // Load data
-                await loadOnlineUsers();
+                // Load conversations
                 await loadConversations();
                 
                 // Set up real-time listeners
@@ -2140,6 +2367,16 @@
                 console.error('Login error:', error);
                 showNotification('Error', 'Failed to load user data', 'error');
             }
+        }
+
+        async function loadAllUsers() {
+            // Load all users from USER_DATABASE
+            Object.entries(USER_DATABASE).forEach(([email, userData]) => {
+                appState.allUsers.set(userData.uid, {
+                    ...userData,
+                    email: email
+                });
+            });
         }
 
         function updateUserInterface() {
@@ -2186,84 +2423,6 @@
         }
 
         // ============================
-        // ONLINE USERS MANAGEMENT
-        // ============================
-        async function loadOnlineUsers() {
-            try {
-                const snapshot = await appState.db.ref('users')
-                    .orderByChild('status')
-                    .startAt('available')
-                    .once('value');
-                
-                const users = snapshot.val() || {};
-                
-                // Clear current online users
-                appState.onlineUsers.clear();
-                
-                // Add users to state (excluding current user)
-                Object.entries(users).forEach(([uid, user]) => {
-                    if (uid !== appState.currentUser.uid && 
-                        ['available', 'away', 'meeting', 'soon'].includes(user.status)) {
-                        appState.onlineUsers.set(uid, user);
-                    }
-                });
-                
-                // Update UI
-                updateOnlineUsersList();
-                
-            } catch (error) {
-                console.error('Error loading online users:', error);
-            }
-        }
-
-        function updateOnlineUsersList() {
-            const container = document.getElementById('onlineUsersList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (appState.onlineUsers.size === 0) {
-                container.innerHTML = `
-                    <div class="text-center p-4 text-muted">
-                        <i class="fas fa-users mb-2" style="font-size: 32px; opacity: 0.5;"></i>
-                        <p>No users online</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Sort users by status (available first, then away, etc.)
-            const sortedUsers = Array.from(appState.onlineUsers.entries()).sort((a, b) => {
-                const statusOrder = { 'available': 0, 'soon': 1, 'away': 2, 'meeting': 3 };
-                return statusOrder[a[1].status] - statusOrder[b[1].status];
-            });
-            
-            sortedUsers.forEach(([uid, user]) => {
-                const div = document.createElement('div');
-                div.className = 'online-user';
-                div.dataset.userId = uid;
-                div.innerHTML = `
-                    <div class="user-status">
-                        <div class="user-avatar-sm" style="background: ${user.color}">
-                            ${getInitials(user.name)}
-                        </div>
-                        <div class="status-indicator-online ${user.status || 'available'}"></div>
-                    </div>
-                    <div class="user-info-sm">
-                        <div class="user-name-sm">${user.name}</div>
-                        <div class="user-status-text">
-                            <span>${user.statusText || 'Available'}</span>
-                        </div>
-                    </div>
-                `;
-                
-                // Add click handler to start chat
-                div.addEventListener('click', () => startChat(uid, user));
-                container.appendChild(div);
-            });
-        }
-
-        // ============================
         // CHAT FUNCTIONALITY
         // ============================
         async function startChat(userId, userData) {
@@ -2298,6 +2457,19 @@
                 // Mark conversation as read
                 await markConversationAsRead(chatId);
                 
+                // Add to conversations if not already there
+                if (!appState.conversations.has(chatId)) {
+                    appState.conversations.set(chatId, {
+                        lastMessage: 'Start of conversation',
+                        lastMessageTime: Date.now(),
+                        participants: {
+                            [appState.currentUser.uid]: true,
+                            [userId]: true
+                        }
+                    });
+                    updateConversationsList();
+                }
+                
             } catch (error) {
                 console.error('Error starting chat:', error);
                 showNotification('Error', 'Failed to start chat', 'error');
@@ -2315,11 +2487,14 @@
             }
             if (chatTitle) chatTitle.textContent = userData.name;
             if (chatStatus) {
-                const status = userData.status || 'available';
-                const config = STATUS_CONFIG[status];
+                const isOnline = appState.onlineUsers.has(userData.uid);
+                const onlineUser = appState.onlineUsers.get(userData.uid);
+                const status = isOnline ? (onlineUser?.status || 'available') : 'offline';
+                const config = STATUS_CONFIG[status] || STATUS_CONFIG.available;
+                
                 chatStatus.innerHTML = `
                     <span class="status-dot ${config.colorClass}"></span>
-                    <span>${config.text}</span>
+                    <span>${isOnline ? config.text : 'Offline'}</span>
                 `;
             }
         }
@@ -2359,12 +2534,31 @@
                     setTimeout(() => {
                         container.scrollTop = container.scrollHeight;
                     }, 100);
+                    
+                    // Update conversation
+                    if (message.senderId !== appState.currentUser.uid) {
+                        updateConversation(chatId, message.text, message.timestamp);
+                    }
                 });
             
             // Store listener for cleanup
             appState.messageListeners.set(chatId, () => {
                 appState.db.ref(`messages/${chatId}`).off('child_added', listener);
             });
+        }
+
+        function updateConversation(chatId, lastMessage, timestamp) {
+            const conversation = appState.conversations.get(chatId) || {
+                participants: {
+                    [appState.currentUser.uid]: true,
+                    [appState.currentChat?.userId]: true
+                }
+            };
+            
+            conversation.lastMessage = lastMessage;
+            conversation.lastMessageTime = timestamp;
+            appState.conversations.set(chatId, conversation);
+            updateConversationsList();
         }
 
         function displayMessages(messages) {
@@ -2478,6 +2672,9 @@
                     }
                 });
                 
+                // Update local conversation state
+                updateConversation(appState.currentChat.chatId, text, Date.now());
+                
                 // Clear input
                 input.value = '';
                 document.getElementById('sendBtn').disabled = true;
@@ -2555,6 +2752,7 @@
                 container.innerHTML = `
                     <div class="text-center p-4 text-muted">
                         <p>No conversations yet</p>
+                        <p class="text-sm">Click "New Chat" to start a conversation</p>
                     </div>
                 `;
                 return;
@@ -2571,8 +2769,8 @@
                 
                 if (!otherParticipantId) return;
                 
-                // Get user data from online users or create placeholder
-                const user = appState.onlineUsers.get(otherParticipantId) || {
+                // Get user data from all users
+                const user = appState.allUsers.get(otherParticipantId) || {
                     name: 'Unknown User',
                     color: '#64748b'
                 };
@@ -2595,8 +2793,8 @@
                 // Add click handler
                 div.addEventListener('click', () => {
                     const userId = div.dataset.userId;
-                    if (appState.onlineUsers.has(userId)) {
-                        startChat(userId, appState.onlineUsers.get(userId));
+                    if (appState.allUsers.has(userId)) {
+                        startChat(userId, appState.allUsers.get(userId));
                     }
                 });
                 
@@ -2611,11 +2809,8 @@
             // Online users listener
             appState.db.ref('users').on('child_changed', (snapshot) => {
                 const user = snapshot.val();
-                if (['available', 'away', 'meeting', 'soon'].includes(user.status) && 
-                    snapshot.key !== appState.currentUser.uid) {
+                if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
                     appState.onlineUsers.set(snapshot.key, user);
-                    updateOnlineUsersList();
-                    updateConversationsList();
                     
                     // Update current chat status if active
                     if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
@@ -2623,24 +2818,26 @@
                     }
                 } else if (user.status === 'offline') {
                     appState.onlineUsers.delete(snapshot.key);
-                    updateOnlineUsersList();
+                    
+                    // Update current chat status if active
+                    if (appState.currentChat && appState.currentChat.userId === snapshot.key) {
+                        const offlineUser = appState.allUsers.get(snapshot.key) || user;
+                        updateChatHeader(offlineUser);
+                    }
                 }
             });
             
             // New online users
             appState.db.ref('users').on('child_added', (snapshot) => {
                 const user = snapshot.val();
-                if (['available', 'away', 'meeting', 'soon'].includes(user.status) && 
-                    snapshot.key !== appState.currentUser.uid) {
+                if (['available', 'away', 'meeting', 'soon'].includes(user.status)) {
                     appState.onlineUsers.set(snapshot.key, user);
-                    updateOnlineUsersList();
                 }
             });
             
             // User removed
             appState.db.ref('users').on('child_removed', (snapshot) => {
                 appState.onlineUsers.delete(snapshot.key);
-                updateOnlineUsersList();
             });
             
             // Conversations listener
@@ -2700,13 +2897,38 @@
                 });
             }
             
-            // Apps button - FIXED
+            // Apps button
             const appsBtn = document.getElementById('appsBtn');
-            
             if (appsBtn) {
                 appsBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     toggleAppsPopup();
+                });
+            }
+            
+            // New Chat button
+            const newChatBtn = document.getElementById('newChatBtn');
+            if (newChatBtn) {
+                newChatBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleNewChatModal(true);
+                });
+            }
+            
+            // Close New Chat Modal button
+            const closeNewChatModal = document.getElementById('closeNewChatModal');
+            if (closeNewChatModal) {
+                closeNewChatModal.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleNewChatModal(false);
+                });
+            }
+            
+            // New Chat search
+            const newChatSearch = document.getElementById('newChatSearch');
+            if (newChatSearch) {
+                newChatSearch.addEventListener('input', (e) => {
+                    filterNewChatUsers(e.target.value);
                 });
             }
             
@@ -2771,6 +2993,17 @@
                     toggleAppsPopup(false);
                 }
                 
+                // Close new chat modal if clicking outside
+                const newChatModal = document.getElementById('newChatModal');
+                const newChatContent = document.querySelector('.new-chat-content');
+                
+                if (newChatModal && newChatContent && 
+                    newChatModal.classList.contains('active') &&
+                    !newChatContent.contains(e.target) &&
+                    !e.target.closest('#newChatBtn')) {
+                    toggleNewChatModal(false);
+                }
+                
                 // Close status dropdown
                 const statusDropdown = document.getElementById('statusDropdown');
                 const statusBtn = document.getElementById('statusBtn');
@@ -2824,16 +3057,6 @@
                 showNotification('Info', 'Image upload coming soon', 'info');
             });
             
-            // New group chat
-            document.getElementById('newGroupBtn')?.addEventListener('click', () => {
-                showNotification('Info', 'Group chats coming soon', 'info');
-            });
-            
-            // New task
-            document.getElementById('newTaskBtn')?.addEventListener('click', () => {
-                showNotification('Info', 'Task management coming soon', 'info');
-            });
-            
             // User menu
             document.getElementById('userMenu')?.addEventListener('click', () => {
                 // Sign out
@@ -2847,7 +3070,7 @@
                 }
             });
             
-            // Nav items
+            // Nav items (Team Chat, Tasks, Files)
             document.querySelectorAll('.nav-item[data-section]').forEach(item => {
                 item.addEventListener('click', () => {
                     const section = item.dataset.section;
@@ -2857,6 +3080,16 @@
                         nav.classList.remove('active');
                     });
                     item.classList.add('active');
+                    
+                    // Handle section switching
+                    if (section === 'chat') {
+                        // Team Chat is already active by default
+                        showNotification('Team Chat', 'Team chat functionality is enabled', 'info');
+                    } else if (section === 'tasks') {
+                        showNotification('Tasks', 'Task management coming soon', 'info');
+                    } else if (section === 'files') {
+                        showNotification('Files', 'File management coming soon', 'info');
+                    }
                 });
             });
         }
