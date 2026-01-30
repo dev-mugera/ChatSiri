@@ -987,30 +987,183 @@
             margin-bottom: var(--spacing);
         }
 
-        .new-chat-btn {
+        /* New Chat/Channel Buttons */
+        .sidebar-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .new-chat-btn, .new-channel-btn {
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing);
-            background: var(--color-primary);
+            padding: var(--spacing) var(--spacing-md);
             border: none;
             border-radius: var(--radius);
-            color: white;
             font-weight: 500;
             font-size: 0.85rem;
             cursor: pointer;
             transition: var(--transition);
-            width: 100%;
+            flex: 1;
             justify-content: center;
-            margin-bottom: var(--spacing-lg);
+        }
+
+        .new-chat-btn {
+            background: var(--color-primary);
+            color: white;
         }
 
         .new-chat-btn:hover {
             background: var(--color-primary-dark);
         }
 
-        .new-chat-btn i {
+        .new-channel-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .new-channel-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Chat Sections */
+        .chats-section, .channels-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing);
+            padding: 0 var(--spacing-sm);
+        }
+
+        .section-header h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-count {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Chat Lists */
+        .chat-list, .channel-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: var(--spacing-sm);
+        }
+
+        .chat-list::-webkit-scrollbar,
+        .channel-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-list::-webkit-scrollbar-track,
+        .channel-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-list::-webkit-scrollbar-thumb,
+        .channel-list::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        .chat-item, .channel-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing-xs);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .chat-item:hover, .channel-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .chat-item.active, .channel-item.active {
+            background: var(--bg-tertiary);
+            border-color: var(--color-primary);
+        }
+
+        .chat-avatar, .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .chat-avatar {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        }
+
+        .channel-avatar {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .chat-info, .channel-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-name, .channel-name {
+            font-weight: 600;
             font-size: 0.9rem;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channel-name::before {
+            content: "# ";
+            color: var(--text-tertiary);
+        }
+
+        .chat-last-message, .channel-last-message {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time, .channel-time {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            flex-shrink: 0;
+        }
+
+        /* Workspace Navigation */
+        .workspace-nav {
+            margin-top: auto;
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
         }
 
         .nav-item {
@@ -1046,117 +1199,6 @@
         .nav-icon {
             width: 20px;
             text-align: center;
-        }
-
-        /* Chat List */
-        .chat-list {
-            flex: 1;
-            padding: 0 var(--spacing);
-            overflow-y: auto;
-        }
-
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing);
-            padding: var(--spacing);
-            border-radius: var(--radius);
-            margin-bottom: var(--spacing-xs);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid transparent;
-            position: relative;
-        }
-
-        .chat-item:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .chat-item.active {
-            background: var(--bg-tertiary);
-            border-color: var(--color-primary);
-        }
-
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .chat-avatar.channel {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-        }
-
-        .chat-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .chat-name {
-            font-weight: 600;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .chat-last-message {
-            font-size: 0.85rem;
-            color: var(--text-tertiary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .chat-time {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-        }
-
-        .chat-actions {
-            position: absolute;
-            right: var(--spacing);
-            top: 50%;
-            transform: translateY(-50%);
-            display: none;
-            gap: var(--spacing-xs);
-        }
-
-        .chat-item:hover .chat-actions {
-            display: flex;
-        }
-
-        .chat-action-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.8rem;
-        }
-
-        .chat-action-btn:hover {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .chat-action-btn.delete:hover {
-            background: var(--color-danger);
-            color: white;
-            border-color: var(--color-danger);
         }
 
         /* Main Chat Area */
@@ -2048,20 +2090,50 @@
             <!-- Left Sidebar -->
             <aside class="sidebar">
                 <div class="sidebar-section">
-                    <button class="new-chat-btn" id="newChatBtn">
-                        <i class="fas fa-plus"></i>
-                        <span>New Chat</span>
-                    </button>
-                </div>
-                
-                <div class="sidebar-section">
-                    <div class="sidebar-title">Chats</div>
-                    <div class="chat-list" id="chatList">
-                        <!-- Chats will be loaded here -->
+                    <div class="sidebar-actions">
+                        <button class="new-chat-btn" id="newChatBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>Chat</span>
+                        </button>
+                        <button class="new-channel-btn" id="newChannelBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>Channel</span>
+                        </button>
                     </div>
                 </div>
                 
-                <div class="sidebar-section">
+                <!-- Chats Section -->
+                <div class="sidebar-section chats-section">
+                    <div class="section-header">
+                        <h3>Direct Messages</h3>
+                        <span class="section-count" id="chatsCount">0</span>
+                    </div>
+                    <div class="chat-list" id="chatList">
+                        <!-- Individual chats will be loaded here -->
+                        <div class="text-center p-2 text-muted" id="noChatsMessage">
+                            <p>No chats yet</p>
+                            <p class="text-sm">Start a new chat</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Channels Section -->
+                <div class="sidebar-section channels-section">
+                    <div class="section-header">
+                        <h3>Channels</h3>
+                        <span class="section-count" id="channelsCount">0</span>
+                    </div>
+                    <div class="channel-list" id="channelList">
+                        <!-- Channels will be loaded here -->
+                        <div class="text-center p-2 text-muted" id="noChannelsMessage">
+                            <p>No channels yet</p>
+                            <p class="text-sm">Create a new channel</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Workspace Navigation -->
+                <div class="sidebar-section workspace-nav">
                     <div class="sidebar-title">Workspace</div>
                     <button class="nav-item active" data-section="chat">
                         <div class="nav-icon">
@@ -2106,7 +2178,7 @@
                             <!-- Recent chats will be loaded here -->
                         </div>
                         
-                        <div class="no-chats-message" id="noChatsMessage" style="display: none;">
+                        <div class="no-chats-message" id="noRecentChatsMessage" style="display: none;">
                             <div class="no-chats-icon">
                                 <i class="fas fa-comments"></i>
                             </div>
@@ -2201,6 +2273,7 @@
         onlineUsers: new Set(),
         conversations: new Map(),
         channels: new Map(),
+        individualChats: new Map(),
         apps: [],
         firebase: null,
         auth: null,
@@ -2419,6 +2492,9 @@
             await loadAllUsers();
             await loadConversations();
             await loadChannels();
+            
+            // Separate individual chats from channels
+            separateChatsAndChannels();
             
             // Setup real-time listeners
             setupRealtimeListeners();
@@ -2647,8 +2723,122 @@
     }
     
     // ============================
-    // CHAT MANAGEMENT
+    // CHAT MANAGEMENT - SEPARATED SECTIONS
     // ============================
+    function separateChatsAndChannels() {
+        state.individualChats.clear();
+        
+        state.conversations.forEach((conversation, chatId) => {
+            if (conversation.type === 'individual') {
+                state.individualChats.set(chatId, conversation);
+            }
+        });
+        
+        updateChatsList();
+        updateChannelsList();
+    }
+    
+    function updateChatsList() {
+        const container = document.getElementById('chatList');
+        const noChatsMessage = document.getElementById('noChatsMessage');
+        const chatsCount = document.getElementById('chatsCount');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (state.individualChats.size === 0) {
+            noChatsMessage.style.display = 'block';
+            chatsCount.textContent = '0';
+            return;
+        }
+        
+        noChatsMessage.style.display = 'none';
+        chatsCount.textContent = state.individualChats.size;
+        
+        const sortedChats = Array.from(state.individualChats.entries())
+            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
+            .slice(0, 10);
+        
+        sortedChats.forEach(([chatId, data]) => {
+            const otherUserId = Object.keys(data.participants || {})
+                .find(id => id !== state.currentUser.uid);
+            
+            if (!otherUserId) return;
+            
+            const user = state.users.get(otherUserId) || { name: 'Unknown User', color: getRandomColor() };
+            const div = createChatListItem(chatId, user, data);
+            container.appendChild(div);
+        });
+    }
+    
+    function updateChannelsList() {
+        const container = document.getElementById('channelList');
+        const noChannelsMessage = document.getElementById('noChannelsMessage');
+        const channelsCount = document.getElementById('channelsCount');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (state.channels.size === 0) {
+            noChannelsMessage.style.display = 'block';
+            channelsCount.textContent = '0';
+            return;
+        }
+        
+        noChannelsMessage.style.display = 'none';
+        channelsCount.textContent = state.channels.size;
+        
+        const sortedChannels = Array.from(state.channels.entries())
+            .sort(([, a], [, b]) => (b.createdAt || 0) - (a.createdAt || 0))
+            .slice(0, 10);
+        
+        sortedChannels.forEach(([channelId, channel]) => {
+            const conversation = state.conversations.get(channelId);
+            const div = createChannelListItem(channelId, channel, conversation);
+            container.appendChild(div);
+        });
+    }
+    
+    function createChatListItem(chatId, user, conversation) {
+        const div = document.createElement('div');
+        div.className = 'chat-item';
+        div.innerHTML = `
+            <div class="chat-avatar" style="background: ${user.color || getRandomColor()}">
+                ${getInitials(user.name)}
+            </div>
+            <div class="chat-info">
+                <div class="chat-name">${user.name}</div>
+                <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+        `;
+        
+        div.addEventListener('click', () => startIndividualChat(user));
+        
+        return div;
+    }
+    
+    function createChannelListItem(channelId, channel, conversation) {
+        const div = document.createElement('div');
+        div.className = 'channel-item';
+        div.innerHTML = `
+            <div class="channel-avatar">
+                <i class="fas fa-hashtag"></i>
+            </div>
+            <div class="channel-info">
+                <div class="channel-name">${channel.name}</div>
+                <div class="channel-last-message">${conversation?.lastMessage || 'No messages yet'}</div>
+            </div>
+            <div class="channel-time">${conversation?.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
+        `;
+        
+        div.addEventListener('click', () => startChannelChat(channel));
+        
+        return div;
+    }
+    
     async function startIndividualChat(user) {
         try {
             // Generate chat ID
@@ -2687,9 +2877,10 @@
                 
                 await state.db.ref(`conversations/${chatId}`).set(conversationData);
                 state.conversations.set(chatId, conversationData);
+                state.individualChats.set(chatId, conversationData);
+                updateChatsList();
             }
             
-            updateConversationsList();
             updateRecentChats();
             
         } catch (error) {
@@ -2740,7 +2931,7 @@
                 <span>${state.onlineUsers.has(data.uid) ? 'Online' : 'Offline'}</span>
             `;
         } else if (type === 'channel') {
-            chatHeaderAvatar.textContent = '#';
+            chatHeaderAvatar.innerHTML = '<i class="fas fa-hashtag"></i>';
             chatHeaderAvatar.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
             chatHeaderAvatar.classList.add('channel');
             chatTitle.textContent = data.name;
@@ -2845,7 +3036,7 @@
             state.conversations.set(channelId, conversationData);
             
             // Update UI
-            updateConversationsList();
+            updateChannelsList();
             updateRecentChats();
             
             showNotification('Success', `Channel "${channelName}" created`, 'success');
@@ -3093,6 +3284,13 @@
                 conversation.lastMessageSender = state.currentUser.name;
             }
             
+            // Update individual chats or channels list
+            if (state.currentChat.type === 'individual') {
+                separateChatsAndChannels();
+            } else {
+                updateChannelsList();
+            }
+            
             // Clear input
             input.value = '';
             document.getElementById('sendBtn').disabled = true;
@@ -3101,7 +3299,6 @@
             input.style.height = 'auto';
             
             // Update UI
-            updateConversationsList();
             updateRecentChats();
             
         } catch (error) {
@@ -3116,7 +3313,14 @@
             conversation.lastMessage = lastMessage;
             conversation.lastMessageTime = timestamp;
             state.conversations.set(chatId, conversation);
-            updateConversationsList();
+            
+            // Update appropriate list
+            if (conversation.type === 'individual') {
+                separateChatsAndChannels();
+            } else {
+                updateChannelsList();
+            }
+            
             updateRecentChats();
         }
     }
@@ -3141,7 +3345,7 @@
                 }
             });
             
-            updateConversationsList();
+            separateChatsAndChannels();
             updateRecentChats();
             
         } catch (error) {
@@ -3149,98 +3353,20 @@
         }
     }
     
-    function updateConversationsList() {
-        const container = document.getElementById('chatList');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        if (state.conversations.size === 0) {
-            container.innerHTML = `
-                <div class="text-center p-4 text-muted">
-                    <p>No conversations yet</p>
-                    <p class="text-sm">Click "New Chat" to start a conversation</p>
-                </div>
-            `;
-            return;
-        }
-        
-        const sortedConversations = Array.from(state.conversations.entries())
-            .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
-            .slice(0, 20);
-        
-        sortedConversations.forEach(([chatId, data]) => {
-            if (data.type === 'channel') {
-                const channel = state.channels.get(chatId);
-                if (!channel) return;
-                
-                const div = createChannelListItem(chatId, channel, data);
-                container.appendChild(div);
-            } else {
-                const otherUserId = Object.keys(data.participants || {})
-                    .find(id => id !== state.currentUser.uid);
-                
-                if (!otherUserId) return;
-                
-                const user = state.users.get(otherUserId) || { name: 'Unknown User', color: getRandomColor() };
-                const div = createIndividualChatListItem(chatId, user, data);
-                container.appendChild(div);
-            }
-        });
-    }
-    
-    function createChannelListItem(chatId, channel, conversation) {
-        const div = document.createElement('div');
-        div.className = 'chat-item';
-        div.innerHTML = `
-            <div class="chat-avatar channel">
-                <i class="fas fa-hashtag"></i>
-            </div>
-            <div class="chat-info">
-                <div class="chat-name">${channel.name}</div>
-                <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
-            </div>
-            <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
-        `;
-        
-        div.addEventListener('click', () => startChannelChat(channel));
-        
-        return div;
-    }
-    
-    function createIndividualChatListItem(chatId, user, conversation) {
-        const div = document.createElement('div');
-        div.className = 'chat-item';
-        div.innerHTML = `
-            <div class="chat-avatar" style="background: ${user.color || getRandomColor()}">
-                ${getInitials(user.name)}
-            </div>
-            <div class="chat-info">
-                <div class="chat-name">${user.name}</div>
-                <div class="chat-last-message">${conversation.lastMessage || 'No messages yet'}</div>
-            </div>
-            <div class="chat-time">${conversation.lastMessageTime ? formatTime(conversation.lastMessageTime) : ''}</div>
-        `;
-        
-        div.addEventListener('click', () => startIndividualChat(user));
-        
-        return div;
-    }
-    
     function updateRecentChats() {
         const container = document.getElementById('recentChatsGrid');
-        const noChatsMessage = document.getElementById('noChatsMessage');
+        const noRecentChatsMessage = document.getElementById('noRecentChatsMessage');
         
         if (!container) return;
         
         container.innerHTML = '';
         
         if (state.conversations.size === 0) {
-            if (noChatsMessage) noChatsMessage.style.display = 'block';
+            if (noRecentChatsMessage) noRecentChatsMessage.style.display = 'block';
             return;
         }
         
-        if (noChatsMessage) noChatsMessage.style.display = 'none';
+        if (noRecentChatsMessage) noRecentChatsMessage.style.display = 'none';
         
         const sortedConversations = Array.from(state.conversations.entries())
             .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
@@ -3329,7 +3455,7 @@
             const conversation = snapshot.val();
             if (conversation.participants && conversation.participants[state.currentUser.uid]) {
                 state.conversations.set(snapshot.key, conversation);
-                updateConversationsList();
+                separateChatsAndChannels();
                 updateRecentChats();
             }
         });
@@ -3339,7 +3465,7 @@
             const conversation = snapshot.val();
             if (conversation.participants && conversation.participants[state.currentUser.uid]) {
                 state.conversations.set(snapshot.key, conversation);
-                updateConversationsList();
+                separateChatsAndChannels();
                 updateRecentChats();
             }
         });
@@ -3349,7 +3475,7 @@
             const channel = snapshot.val();
             if (channel.members && channel.members[state.currentUser.uid]) {
                 state.channels.set(snapshot.key, channel);
-                updateConversationsList();
+                updateChannelsList();
                 updateRecentChats();
             }
         });
@@ -3509,24 +3635,15 @@
         const newChatBtn = document.getElementById('newChatBtn');
         if (newChatBtn) {
             newChatBtn.addEventListener('click', () => {
-                showModal('channelSelectionModal');
-            });
-        }
-        
-        // Channel selection options
-        const newMessageOption = document.getElementById('newMessageOption');
-        if (newMessageOption) {
-            newMessageOption.addEventListener('click', () => {
-                hideModal('channelSelectionModal');
                 showModal('newChatModal');
                 loadUsersForNewChat();
             });
         }
         
-        const newChannelOption = document.getElementById('newChannelOption');
-        if (newChannelOption) {
-            newChannelOption.addEventListener('click', () => {
-                hideModal('channelSelectionModal');
+        // New Channel button
+        const newChannelBtn = document.getElementById('newChannelBtn');
+        if (newChannelBtn) {
+            newChannelBtn.addEventListener('click', () => {
                 showModal('newChannelModal');
                 loadUsersForChannel();
             });
@@ -3657,7 +3774,10 @@
                         
                         await Promise.all(promises);
                         state.conversations.clear();
-                        updateConversationsList();
+                        state.individualChats.clear();
+                        state.channels.clear();
+                        updateChatsList();
+                        updateChannelsList();
                         updateRecentChats();
                         showHomepage();
                         showNotification('Success', 'All chats cleared', 'success');
