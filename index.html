@@ -2253,6 +2253,9 @@
     // ============================
     // FIREBASE CONFIGURATION
     // ============================
+    // ============================
+    // FIREBASE CONFIGURATION
+    // ============================
     const firebaseConfig = {
         apiKey: "AIzaSyCOb4BqfiN3vt1Y13UTEpA_boCqNRH6rrQ",
         authDomain: "dsog-stores-dashboard.firebaseapp.com",
@@ -2280,11 +2283,12 @@
         db: null,
         messageListeners: {},
         userStatus: 'available',
-        lastMessageTimes: {}
+        lastMessageTimes: {},
+        initialized: false
     };
     
     // ============================
-    // ENTERPRISE APPS - UPDATED WITH BETTER IMAGE SOURCES
+    // ENTERPRISE APPS
     // ============================
     const ENTERPRISE_APPS = [
         {
@@ -2425,22 +2429,31 @@
     // ============================
     async function initializeFirebase() {
         try {
-            // Initialize Firebase
-            const app = firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
-            const db = firebase.database();
+            // Check if Firebase is already initialized
+            if (firebase.apps.length > 0) {
+                state.firebase = firebase.apps[0];
+            } else {
+                state.firebase = firebase.initializeApp(firebaseConfig);
+            }
             
-            state.firebase = app;
-            state.auth = auth;
-            state.db = db;
+            state.auth = firebase.auth();
+            state.db = firebase.database();
             
             // Check auth state
-            auth.onAuthStateChanged(handleAuthStateChanged);
+            state.auth.onAuthStateChanged(handleAuthStateChanged);
             
+            state.initialized = true;
             return true;
         } catch (error) {
             console.error('Firebase initialization failed:', error);
-            showNotification('Error', 'Failed to initialize Firebase. Please check your configuration.', 'error');
+            
+            // Show error notification
+            showNotification('Error', 'Failed to initialize Firebase. Please check your connection.', 'error');
+            
+            // Hide loading screen and show login
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+            
             return false;
         }
     }
@@ -2452,6 +2465,7 @@
         if (user) {
             await handleUserLogin(user);
         } else {
+            // Show login screen
             document.getElementById('loginContainer').classList.remove('hidden');
             document.getElementById('workspace').classList.add('hidden');
             document.getElementById('loadingScreen').classList.add('hidden');
@@ -2512,6 +2526,9 @@
         } catch (error) {
             console.error('Login error:', error);
             showNotification('Error', 'Failed to load user data', 'error');
+            
+            // Sign out on error
+            await state.auth.signOut();
         }
     }
     
@@ -2748,13 +2765,13 @@
         container.innerHTML = '';
         
         if (state.individualChats.size === 0) {
-            noChatsMessage.style.display = 'block';
-            chatsCount.textContent = '0';
+            if (noChatsMessage) noChatsMessage.style.display = 'block';
+            if (chatsCount) chatsCount.textContent = '0';
             return;
         }
         
-        noChatsMessage.style.display = 'none';
-        chatsCount.textContent = state.individualChats.size;
+        if (noChatsMessage) noChatsMessage.style.display = 'none';
+        if (chatsCount) chatsCount.textContent = state.individualChats.size;
         
         const sortedChats = Array.from(state.individualChats.entries())
             .sort(([, a], [, b]) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
@@ -2782,13 +2799,13 @@
         container.innerHTML = '';
         
         if (state.channels.size === 0) {
-            noChannelsMessage.style.display = 'block';
-            channelsCount.textContent = '0';
+            if (noChannelsMessage) noChannelsMessage.style.display = 'block';
+            if (channelsCount) channelsCount.textContent = '0';
             return;
         }
         
-        noChannelsMessage.style.display = 'none';
-        channelsCount.textContent = state.channels.size;
+        if (noChannelsMessage) noChannelsMessage.style.display = 'none';
+        if (channelsCount) channelsCount.textContent = state.channels.size;
         
         const sortedChannels = Array.from(state.channels.entries())
             .sort(([, a], [, b]) => (b.createdAt || 0) - (a.createdAt || 0))
@@ -3482,7 +3499,7 @@
     }
     
     // ============================
-    // APPS MANAGEMENT - UPDATED WITH SIMPLIFIED CARDS
+    // APPS MANAGEMENT
     // ============================
     function initializeApps() {
         state.apps = ENTERPRISE_APPS;
@@ -3616,12 +3633,19 @@
                 const password = document.getElementById('password').value;
                 const loginBtn = document.getElementById('loginBtn');
                 
+                // Basic validation
+                if (!email || !password) {
+                    document.getElementById('loginError').style.display = 'block';
+                    return;
+                }
+                
                 loginBtn.disabled = true;
                 loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Signing in...</span>';
                 
                 try {
                     await state.auth.signInWithEmailAndPassword(email, password);
                     loginForm.reset();
+                    document.getElementById('loginError').style.display = 'none';
                 } catch (error) {
                     console.error('Login error:', error);
                     document.getElementById('loginError').style.display = 'block';
@@ -3880,15 +3904,33 @@
         // Setup event listeners
         setupEventListeners();
         
-        // Initialize Firebase
-        const firebaseInitialized = await initializeFirebase();
-        
-        if (!firebaseInitialized) {
-            // Show error and hide loading
+        // Initialize Firebase with error handling
+        try {
+            const firebaseInitialized = await initializeFirebase();
+            
+            if (!firebaseInitialized) {
+                // Show error state
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('loginContainer').classList.remove('hidden');
+                
+                // Add retry button
+                const loginCard = document.querySelector('.login-card');
+                if (loginCard) {
+                    const retryBtn = document.createElement('button');
+                    retryBtn.className = 'login-btn mt-2';
+                    retryBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Connection';
+                    retryBtn.addEventListener('click', () => {
+                        location.reload();
+                    });
+                    loginCard.appendChild(retryBtn);
+                }
+            }
+        } catch (error) {
+            console.error('Initialization error:', error);
             document.getElementById('loadingScreen').classList.add('hidden');
-            showNotification('Error', 'Firebase initialization failed. Please check console for details.', 'error');
+            document.getElementById('loginContainer').classList.remove('hidden');
         }
-    });
+    });    
     </script>
 </body>
 </html>
