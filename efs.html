@@ -15,10 +15,12 @@
       --soft-teal: #81c8be;
       --text-primary: #f0e6ef;
       --text-secondary: #b8b8d1;
-      --cell-border: #2d3b54;
-      --cell-bg: #1d2a40;
-      --cell-selected: #233554;
-      --header-bg: #152238;
+      --card-bg: #1d2a40;
+      --border-color: #2d3b54;
+      --input-bg: #152238;
+      --success-green: #4CAF50;
+      --warning-orange: #ff9800;
+      --error-red: #f44336;
     }
 
     body, html {
@@ -88,62 +90,6 @@
     @keyframes pulse {
       0%, 100% { opacity: 0.7; }
       50% { opacity: 1; }
-    }
-
-    /* Sheet Loader */
-    .sheet-loader {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--medium-blue);
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      text-align: center;
-      padding: 20px;
-    }
-    
-    .sheet-loader-text {
-      color: var(--light-blue);
-      margin-top: 25px;
-      font-size: 1.1rem;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      animation: pulse 1.5s ease-in-out infinite;
-      max-width: 80%;
-      text-align: center;
-    }
-    
-    .sheet-loader small {
-      color: var(--text-secondary);
-      margin-top: 10px;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-
-    /* Loader animation */
-    .loader {
-      width: 45px;
-      aspect-ratio: 1;
-      --c: no-repeat linear-gradient(var(--light-blue) 0 0);
-      background: var(--c), var(--c), var(--c), var(--c), var(--c), var(--c);
-      animation: 
-        l14-1 .5s infinite alternate,
-        l14-2 2s infinite;
-    }
-    
-    @keyframes l14-1 {
-      0%,10% { background-size: 20% 100%; }
-      100% { background-size: 20% 20%; }
-    }
-    
-    @keyframes l14-2 {
-      0%,49.9% { background-position: 0 0, 0 100%, 50% 50%, 50% 50%, 100% 0, 100% 100%; }
-      50%,100% { background-position: 0 50%, 0 50%, 50% 0, 50% 100%, 100% 50%, 100% 50%; }
     }
 
     /* Access Denied Message */
@@ -534,333 +480,373 @@
       position: relative;
     }
 
-    /* Spreadsheet Container */
-    .spreadsheet-container {
+    /* Data Entry Container */
+    .data-entry-container {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
       width: 100%;
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: var(--cell-bg);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      position: relative;
     }
 
-    /* Spreadsheet Toolbar */
-    .spreadsheet-toolbar {
+    /* Control Panel */
+    .control-panel {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      padding: 10px 15px;
-      background: var(--header-bg);
-      border-bottom: 1px solid var(--cell-border);
+      background: var(--card-bg);
+      padding: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      flex-wrap: wrap;
       gap: 15px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--light-blue);
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    .toolbar-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-right: 15px;
-      border-right: 1px solid var(--cell-border);
-    }
-
-    .toolbar-group:last-child {
-      border-right: none;
-    }
-
-    .toolbar-btn {
-      background: rgba(100, 255, 218, 0.1);
-      color: var(--light-blue);
-      border: 1px solid rgba(100, 255, 218, 0.2);
-      padding: 6px 12px;
-      border-radius: 4px;
+    .btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 13px;
+      gap: 8px;
       transition: all 0.3s ease;
-    }
-
-    .toolbar-btn:hover {
-      background: rgba(100, 255, 218, 0.2);
-    }
-
-    .toolbar-btn i {
       font-size: 14px;
     }
 
-    .cell-reference {
-      background: var(--cell-bg);
-      border: 1px solid var(--cell-border);
-      color: var(--text-primary);
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-family: monospace;
-      min-width: 80px;
-      text-align: center;
+    .btn-primary {
+      background: var(--light-blue);
+      color: var(--dark-blue);
     }
 
-    .sheet-name-input {
-      background: var(--cell-bg);
-      border: 1px solid var(--cell-border);
-      color: var(--light-blue);
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 14px;
-      min-width: 200px;
+    .btn-primary:hover {
+      background: var(--accent-gold);
+      transform: translateY(-2px);
     }
 
-    .sheet-name-input:focus {
-      outline: none;
-      border-color: var(--light-blue);
+    .btn-secondary {
+      background: var(--soft-teal);
+      color: var(--dark-blue);
+    }
+
+    .btn-secondary:hover {
+      background: var(--light-blue);
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: var(--error-red);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
     }
 
     .sync-status {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      color: var(--text-secondary);
+      gap: 8px;
+      padding: 8px 15px;
+      background: rgba(100, 255, 218, 0.1);
+      border-radius: 6px;
+      border: 1px solid rgba(100, 255, 218, 0.2);
     }
 
     .sync-indicator {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: var(--soft-teal);
       animation: pulse 1.5s infinite;
     }
 
     .sync-indicator.synced {
-      background: #4CAF50;
+      background: var(--success-green);
       animation: none;
     }
 
     .sync-indicator.error {
-      background: #f44336;
+      background: var(--error-red);
       animation: none;
     }
 
-    /* Spreadsheet Grid */
-    .spreadsheet-grid {
-      flex: 1;
-      overflow: auto;
-      position: relative;
+    /* Data Entry Form */
+    .data-entry-form {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      display: none;
     }
 
-    .grid-container {
-      position: relative;
-      width: max-content;
-      min-width: 100%;
-      min-height: 100%;
-    }
-
-    /* Column Headers */
-    .column-headers {
-      display: flex;
-      position: sticky;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      background: var(--header-bg);
-    }
-
-    .header-corner {
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      background: var(--header-bg);
-      border-right: 1px solid var(--cell-border);
-      border-bottom: 1px solid var(--cell-border);
+    .form-title {
+      color: var(--light-blue);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: var(--light-blue);
-      position: sticky;
-      left: 0;
-      top: 0;
-      z-index: 20;
+      gap: 10px;
     }
 
-    .column-header {
-      width: 120px;
-      min-width: 120px;
-      height: 40px;
-      background: var(--header-bg);
-      border-right: 1px solid var(--cell-border);
-      border-bottom: 1px solid var(--cell-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: var(--light-blue);
-      user-select: none;
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
     }
 
-    .column-header:hover {
-      background: rgba(100, 255, 218, 0.1);
-    }
-
-    /* Row Headers */
-    .row-headers {
-      position: sticky;
-      left: 0;
-      z-index: 10;
-      background: var(--header-bg);
-    }
-
-    .row-header {
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      background: var(--header-bg);
-      border-right: 1px solid var(--cell-border);
-      border-bottom: 1px solid var(--cell-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: var(--light-blue);
-      position: sticky;
-      left: 0;
-      z-index: 20;
-    }
-
-    /* Grid Cells */
-    .grid-rows {
+    .form-group {
       display: flex;
       flex-direction: column;
-      position: absolute;
-      top: 40px;
-      left: 40px;
+      gap: 8px;
     }
 
-    .grid-row {
-      display: flex;
-    }
-
-    .grid-cell {
-      width: 120px;
-      min-width: 120px;
-      height: 40px;
-      background: var(--cell-bg);
-      border-right: 1px solid var(--cell-border);
-      border-bottom: 1px solid var(--cell-border);
-      padding: 5px;
-      outline: none;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      font-size: 14px;
+    .form-label {
       color: var(--text-primary);
-      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 14px;
     }
 
-    .grid-cell.selected {
-      background: var(--cell-selected);
-      box-shadow: inset 0 0 0 2px var(--light-blue);
-      z-index: 5;
+    .form-input {
+      padding: 12px 15px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.3s ease;
     }
 
-    .grid-cell.editing {
-      background: var(--dark-blue);
-      z-index: 10;
-      box-shadow: 0 0 0 2px var(--light-blue);
-      position: relative;
+    .form-input:focus {
+      outline: none;
+      border-color: var(--light-blue);
+      box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.1);
     }
 
-    .cell-formula {
-      position: absolute;
-      bottom: -25px;
-      left: 0;
-      background: var(--header-bg);
-      color: var(--text-secondary);
-      padding: 3px 8px;
-      font-size: 12px;
-      font-family: monospace;
-      border-radius: 3px;
-      white-space: nowrap;
-      z-index: 100;
-      border: 1px solid var(--cell-border);
+    .form-select {
+      padding: 12px 15px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.3s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364ffda' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 12px;
     }
 
-    /* Spreadsheet Info */
-    .spreadsheet-info {
-      padding: 8px 15px;
-      background: var(--header-bg);
-      border-top: 1px solid var(--cell-border);
-      color: var(--text-secondary);
-      font-size: 12px;
+    .form-select:focus {
+      outline: none;
+      border-color: var(--light-blue);
+      box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.1);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* Data Table */
+    .data-table-container {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
     }
 
-    .user-count {
+    .table-title {
+      color: var(--light-blue);
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .table-controls {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 15px;
     }
 
-    .user-count i {
-      color: var(--soft-teal);
+    .search-box {
+      position: relative;
+      min-width: 200px;
     }
 
-    /* Sheet Tabs */
-    .sheet-tabs {
-      display: flex;
-      background: var(--header-bg);
-      border-bottom: 1px solid var(--cell-border);
-      padding: 0 10px;
-      overflow-x: auto;
-    }
-
-    .sheet-tab {
-      padding: 10px 20px;
-      background: transparent;
-      color: var(--text-secondary);
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-
-    .sheet-tab:hover {
+    .search-input {
+      padding: 10px 15px 10px 40px;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
       color: var(--text-primary);
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--light-blue);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .table-wrapper {
+      flex: 1;
+      overflow: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    .data-table thead {
+      background: var(--header-bg);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .data-table th {
+      padding: 15px;
+      text-align: left;
+      color: var(--light-blue);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .data-table tbody tr:hover {
       background: rgba(100, 255, 218, 0.05);
     }
 
-    .sheet-tab.active {
-      color: var(--light-blue);
-      border-bottom-color: var(--light-blue);
-      background: rgba(100, 255, 218, 0.1);
+    .data-table td {
+      padding: 15px;
+      color: var(--text-primary);
+      vertical-align: top;
     }
 
-    .add-sheet-tab {
-      padding: 10px 15px;
-      background: transparent;
-      color: var(--light-blue);
-      border: none;
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-active {
+      background: rgba(76, 175, 80, 0.1);
+      color: #4CAF50;
+    }
+
+    .status-inactive {
+      background: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+    }
+
+    .status-maintenance {
+      background: rgba(255, 152, 0, 0.1);
+      color: #ff9800;
+    }
+
+    .action-buttons-cell {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-primary);
       cursor: pointer;
-      font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 40px;
+      transition: all 0.3s ease;
     }
 
-    .add-sheet-tab:hover {
+    .icon-btn:hover {
       background: rgba(100, 255, 218, 0.1);
+      border-color: var(--light-blue);
+      color: var(--light-blue);
     }
 
-    /* Current Sheet Info */
-    .current-sheet-info {
+    .icon-btn.delete:hover {
+      background: rgba(244, 67, 54, 0.1);
+      border-color: var(--error-red);
+      color: var(--error-red);
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .no-data i {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: var(--border-color);
+    }
+
+    .no-data h3 {
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    /* Current Entry Info */
+    .current-entry-info {
       position: absolute;
       top: 10px;
       left: 10px;
@@ -888,6 +874,68 @@
       flex-shrink: 0;
     }
 
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      padding: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      max-width: 400px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast i {
+      font-size: 18px;
+    }
+
+    .toast.success {
+      border-left: 4px solid var(--success-green);
+    }
+
+    .toast.success i {
+      color: var(--success-green);
+    }
+
+    .toast.warning {
+      border-left: 4px solid var(--warning-orange);
+    }
+
+    .toast.warning i {
+      color: var(--warning-orange);
+    }
+
+    .toast.error {
+      border-left: 4px solid var(--error-red);
+    }
+
+    .toast.error i {
+      color: var(--error-red);
+    }
+
+    .toast.info {
+      border-left: 4px solid var(--light-blue);
+    }
+
+    .toast.info i {
+      color: var(--light-blue);
+    }
+
     /* Responsive styles */
     @media (max-width: 1200px) {
       .sidenav {
@@ -898,9 +946,8 @@
         gap: 15px;
       }
       
-      .grid-cell, .column-header {
-        width: 100px;
-        min-width: 100px;
+      .form-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       }
     }
 
@@ -956,23 +1003,24 @@
         justify-content: center;
       }
       
-      .current-sheet-info {
+      .current-entry-info {
         font-size: 0.8rem;
         padding: 6px 12px;
         max-width: 70%;
       }
       
-      .grid-cell, .column-header {
-        width: 80px;
-        min-width: 80px;
+      .control-panel {
+        flex-direction: column;
+        align-items: flex-start;
       }
       
-      .toolbar-group {
-        padding-right: 10px;
+      .action-buttons {
+        width: 100%;
+        justify-content: space-between;
       }
       
-      .sheet-name-input {
-        min-width: 150px;
+      .form-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1076,7 +1124,7 @@
         padding: 15px;
       }
       
-      .current-sheet-info {
+      .current-entry-info {
         top: 5px;
         left: 5px;
         font-size: 0.75rem;
@@ -1084,33 +1132,15 @@
         max-width: 60%;
       }
       
-      .grid-cell, .column-header {
-        width: 70px;
-        min-width: 70px;
-        height: 35px;
-        font-size: 12px;
+      .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
       }
       
-      .row-header, .column-header, .header-corner {
-        height: 35px;
-        width: 35px;
-        min-width: 35px;
-      }
-      
-      .spreadsheet-toolbar {
-        padding: 8px 10px;
-        gap: 10px;
-      }
-      
-      .toolbar-btn {
-        padding: 4px 8px;
-        font-size: 11px;
-      }
-      
-      .sheet-name-input {
-        min-width: 120px;
-        padding: 4px 8px;
-        font-size: 12px;
+      .table-controls {
+        width: 100%;
+        justify-content: space-between;
       }
     }
 
@@ -1131,37 +1161,26 @@
         align-items: flex-start;
       }
       
-      .sheet-loader-text {
-        font-size: 1rem;
-        max-width: 90%;
+      .action-buttons {
+        flex-direction: column;
       }
       
-      .grid-cell, .column-header {
-        width: 60px;
-        min-width: 60px;
-        height: 30px;
-        font-size: 11px;
-      }
-      
-      .row-header, .column-header, .header-corner {
-        height: 30px;
-        width: 30px;
-        min-width: 30px;
-        font-size: 12px;
-      }
-      
-      .toolbar-group {
-        padding-right: 5px;
-      }
-      
-      .toolbar-btn span {
-        display: none;
-      }
-      
-      .toolbar-btn {
-        padding: 4px;
-        min-width: 30px;
+      .btn {
+        width: 100%;
         justify-content: center;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .table-controls {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .search-box {
+        width: 100%;
       }
     }
     
@@ -1188,44 +1207,28 @@
         font-size: 11px;
       }
       
-      .current-sheet-info {
+      .current-entry-info {
         font-size: 0.7rem;
         padding: 4px 8px;
         max-width: 50%;
       }
       
-      .sheet-loader-text {
-        font-size: 0.9rem;
+      .section-title {
+        font-size: 1.2rem;
       }
       
-      .grid-cell, .column-header {
-        width: 50px;
-        min-width: 50px;
-        height: 25px;
-        font-size: 10px;
-        padding: 2px;
+      .form-title {
+        font-size: 1.1rem;
       }
       
-      .row-header, .column-header, .header-corner {
-        height: 25px;
-        width: 25px;
-        min-width: 25px;
-        font-size: 10px;
+      .data-table th,
+      .data-table td {
+        padding: 10px;
+        font-size: 13px;
       }
       
-      .spreadsheet-toolbar {
-        padding: 5px 8px;
-        gap: 5px;
-      }
-      
-      .toolbar-group {
-        padding-right: 3px;
-      }
-      
-      .sheet-name-input {
-        min-width: 80px;
-        padding: 3px 6px;
-        font-size: 11px;
+      .action-buttons-cell {
+        flex-direction: column;
       }
     }
   </style>
@@ -1234,20 +1237,29 @@
   <div class="background"></div>
   <div class="background-pattern"></div>
 
-  <!-- Authentication Loader (Shows first) -->
+  <!-- Authentication Loader -->
   <div class="auth-loader" id="authLoader">
     <div class="loader"></div>
     <div class="auth-loader-text">Verifying your access...</div>
   </div>
 
-  <!-- Access Denied Message (Shows when not logged in) -->
+  <!-- Access Denied Message -->
   <div class="access-denied" id="accessDenied">
     <h2>🔒 Access Restricted</h2>
     <p>You need to be logged in to access the Enterprise Fleet System. Please sign in through the main dashboard first.</p>
     <a href="index.html" class="access-denied-btn">Go to Dashboard</a>
   </div>
 
-  <!-- Workspace Content (Shows when logged in) -->
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <i class="fas fa-info-circle"></i>
+    <div class="toast-content">
+      <div class="toast-title">Notification</div>
+      <div class="toast-message" id="toastMessage">Message will appear here</div>
+    </div>
+  </div>
+
+  <!-- Workspace Content -->
   <div class="app-container" id="workspaceContainer">
     
     <!-- Side Navigation -->
@@ -1345,61 +1357,6 @@
             </li>
           </ul>
         </li>
-        
-        <!-- Compliance Section -->
-        <li class="nav-section">
-          <div class="nav-section-title">
-            <i class="fas fa-clipboard-check"></i>
-            <span>Compliance</span>
-          </div>
-          <ul class="nav-submenu">
-            <li>
-              <a href="#" class="nav-link" data-section="safety-compliance">
-                <span>Safety Compliance</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="nav-link" data-section="regulatory-documents">
-                <span>Regulatory Documents</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="nav-link" data-section="vehicle-inspections">
-                <span>Vehicle Inspections</span>
-              </a>
-            </li>
-          </ul>
-        </li>
-        
-        <!-- Analytics Section -->
-        <li class="nav-section">
-          <div class="nav-section-title">
-            <i class="fas fa-chart-line"></i>
-            <span>Analytics</span>
-          </div>
-          <ul class="nav-submenu">
-            <li>
-              <a href="#" class="nav-link" data-section="fleet-analytics">
-                <span>Fleet Analytics</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="nav-link" data-section="warehouse-analytics">
-                <span>Warehouse Analytics</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="nav-link" data-section="cost-analysis">
-                <span>Cost Analysis</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="nav-link" data-section="kpi-dashboard">
-                <span>KPI Dashboard</span>
-              </a>
-            </li>
-          </ul>
-        </li>
       </ul>
     </nav>
 
@@ -1425,20 +1382,6 @@
             <div id="time">10:45 AM</div>
             <div id="date">Friday, June 10, 2023</div>
           </div>
-
-          <div class="dropdown" id="dropdown">
-            <button class="menu-button" id="menuToggle">
-              <i class="fas fa-tools"></i>
-              <span>Tools</span>
-            </button>
-            <div class="dropdown-content" id="menuContent">
-              <a href="#" data-link="vehicle-directory">Vehicle Directory</a>
-              <a href="#" data-link="vehicle-details">Vehicle Details</a>
-              <a href="#" data-link="registration">Registration & Licensing</a>
-              <a href="#" data-link="insurance">Insurance Management</a>
-              <a href="#" data-link="utilization">Vehicle Utilization</a>
-            </div>
-          </div>
           
           <div class="dashboard-nav">
             <a href="index.html" id="homeButton">Home</a>
@@ -1448,108 +1391,77 @@
       </header>
 
       <main>
-        <!-- Sheet Loader -->
-        <div class="sheet-loader" id="sheetLoader">
-          <div class="loader"></div>
-          <div class="sheet-loader-text" id="sheetLoaderText">Loading sheet...</div>
-          <small>This may take a moment for larger sheets</small>
-        </div>
+        <!-- Current Entry Info -->
+        <div class="current-entry-info" id="currentEntryInfo"></div>
         
-        <!-- Current Sheet Info -->
-        <div class="current-sheet-info" id="currentSheetInfo"></div>
-        
-        <!-- Spreadsheet Container -->
-        <div class="spreadsheet-container" id="spreadsheetContainer">
-          <!-- Sheet Tabs -->
-          <div class="sheet-tabs" id="sheetTabs">
-            <button class="sheet-tab active" data-sheet-id="sheet1">Sheet 1</button>
-            <button class="sheet-tab" data-sheet-id="sheet2">Sheet 2</button>
-            <button class="add-sheet-tab" id="addSheetBtn">+</button>
-          </div>
-          
-          <!-- Spreadsheet Toolbar -->
-          <div class="spreadsheet-toolbar">
-            <div class="toolbar-group">
-              <button class="toolbar-btn" id="undoBtn" title="Undo">
-                <i class="fas fa-undo"></i>
-                <span>Undo</span>
+        <!-- Data Entry Container -->
+        <div class="data-entry-container" id="dataEntryContainer">
+          <!-- Control Panel -->
+          <div class="control-panel">
+            <h2 class="section-title" id="dataSectionTitle">Vehicle Management</h2>
+            <div class="action-buttons">
+              <button class="btn btn-primary" id="createEntryBtn">
+                <i class="fas fa-plus"></i>
+                <span>Create New Entry</span>
               </button>
-              <button class="toolbar-btn" id="redoBtn" title="Redo">
-                <i class="fas fa-redo"></i>
-                <span>Redo</span>
+              <button class="btn btn-secondary" id="refreshDataBtn">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh Data</span>
               </button>
-            </div>
-            
-            <div class="toolbar-group">
-              <button class="toolbar-btn" id="boldBtn" title="Bold">
-                <i class="fas fa-bold"></i>
-                <span>Bold</span>
-              </button>
-              <button class="toolbar-btn" id="italicBtn" title="Italic">
-                <i class="fas fa-italic"></i>
-                <span>Italic</span>
-              </button>
-              <button class="toolbar-btn" id="underlineBtn" title="Underline">
-                <i class="fas fa-underline"></i>
-                <span>Underline</span>
-              </button>
-            </div>
-            
-            <div class="toolbar-group">
-              <select class="toolbar-btn" id="fontSizeSelect" style="padding: 6px;">
-                <option value="12">12</option>
-                <option value="14">14</option>
-                <option value="16">16</option>
-                <option value="18">18</option>
-              </select>
-              <select class="toolbar-btn" id="fontFamilySelect" style="padding: 6px;">
-                <option value="Arial">Arial</option>
-                <option value="Poppins">Poppins</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Times New Roman">Times New Roman</option>
-              </select>
-            </div>
-            
-            <div class="toolbar-group">
-              <button class="toolbar-btn" id="alignLeftBtn" title="Align Left">
-                <i class="fas fa-align-left"></i>
-              </button>
-              <button class="toolbar-btn" id="alignCenterBtn" title="Align Center">
-                <i class="fas fa-align-center"></i>
-              </button>
-              <button class="toolbar-btn" id="alignRightBtn" title="Align Right">
-                <i class="fas fa-align-right"></i>
-              </button>
-            </div>
-            
-            <div class="toolbar-group">
-              <div class="cell-reference" id="cellReference">A1</div>
-            </div>
-            
-            <div class="toolbar-group">
-              <input type="text" class="sheet-name-input" id="sheetNameInput" value="Vehicle Management" placeholder="Sheet name">
-            </div>
-            
-            <div class="sync-status" id="syncStatus">
-              <div class="sync-indicator" id="syncIndicator"></div>
-              <span id="syncText">Syncing...</span>
+              <div class="sync-status">
+                <div class="sync-indicator" id="syncIndicator"></div>
+                <span id="syncText">Last synced: Just now</span>
+              </div>
             </div>
           </div>
-          
-          <!-- Spreadsheet Grid -->
-          <div class="spreadsheet-grid" id="spreadsheetGrid">
-            <div class="grid-container" id="gridContainer">
-              <!-- Grid content will be generated dynamically -->
-            </div>
+
+          <!-- Data Entry Form -->
+          <div class="data-entry-form" id="dataEntryForm">
+            <h3 class="form-title">
+              <i class="fas fa-plus-circle"></i>
+              <span id="formTitle">Create New Vehicle Entry</span>
+            </h3>
+            <form id="entryForm">
+              <div class="form-grid" id="formFields">
+                <!-- Form fields will be dynamically generated -->
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancelFormBtn">
+                  <i class="fas fa-times"></i>
+                  <span>Cancel</span>
+                </button>
+                <button type="submit" class="btn btn-primary" id="submitFormBtn">
+                  <i class="fas fa-save"></i>
+                  <span id="submitBtnText">Save Entry</span>
+                </button>
+              </div>
+            </form>
           </div>
-          
-          <!-- Spreadsheet Info -->
-          <div class="spreadsheet-info">
-            <div class="user-count" id="userCount">
-              <i class="fas fa-users"></i>
-              <span>1 user online</span>
+
+          <!-- Data Table -->
+          <div class="data-table-container">
+            <div class="table-header">
+              <h3 class="table-title" id="tableTitle">Vehicle Records</h3>
+              <div class="table-controls">
+                <div class="search-box">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-input" id="searchInput" placeholder="Search records...">
+                </div>
+                <div class="entries-count">
+                  <span id="entriesCount">0 entries</span>
+                </div>
+              </div>
             </div>
-            <div id="spreadsheetStats">100 rows × 26 columns</div>
+            <div class="table-wrapper">
+              <table class="data-table" id="dataTable">
+                <thead>
+                  <!-- Table headers will be dynamically generated -->
+                </thead>
+                <tbody id="tableBody">
+                  <!-- Table rows will be dynamically generated -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </main>
@@ -1584,38 +1496,404 @@
     const authLoader = document.getElementById('authLoader');
     const accessDenied = document.getElementById('accessDenied');
     const workspaceContainer = document.getElementById('workspaceContainer');
-    const sheetLoader = document.getElementById('sheetLoader');
-    const sheetLoaderText = document.getElementById('sheetLoaderText');
-    const currentSheetInfo = document.getElementById('currentSheetInfo');
-    const spreadsheetContainer = document.getElementById('spreadsheetContainer');
+    const dataEntryContainer = document.getElementById('dataEntryContainer');
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
     
-    // Spreadsheet state
-    let currentSheet = {
-      id: 'sheet1',
-      name: 'Vehicle Management',
-      data: {},
-      users: {},
-      lastSaved: null
-    };
-    
-    let selectedCell = { row: 1, col: 1 };
-    let editingCell = null;
-    let undoStack = [];
-    let redoStack = [];
-    let connectedUsers = {};
+    // Application state
+    let currentSection = 'vehicle-management';
+    let currentData = [];
+    let editingEntry = null;
+    let lastSyncTime = null;
+    let isFormVisible = false;
     let currentUser = null;
     
+    // Data templates for each section
+    const dataTemplates = {
+      "vehicle-management": {
+        title: "Vehicle Management",
+        fields: [
+          {
+            id: "vehicle_id",
+            label: "Vehicle ID",
+            type: "text",
+            required: true,
+            placeholder: "VH001",
+            validation: /^[A-Z]{2}\d{3}$/
+          },
+          {
+            id: "license_plate",
+            label: "License Plate",
+            type: "text",
+            required: true,
+            placeholder: "ABC-123"
+          },
+          {
+            id: "make",
+            label: "Make",
+            type: "text",
+            required: true,
+            placeholder: "Ford"
+          },
+          {
+            id: "model",
+            label: "Model",
+            type: "text",
+            required: true,
+            placeholder: "Transit"
+          },
+          {
+            id: "year",
+            label: "Year",
+            type: "number",
+            required: true,
+            min: 2000,
+            max: 2025
+          },
+          {
+            id: "type",
+            label: "Vehicle Type",
+            type: "select",
+            required: true,
+            options: ["Van", "Truck", "Pickup", "SUV", "Car", "Trailer"]
+          },
+          {
+            id: "status",
+            label: "Status",
+            type: "select",
+            required: true,
+            options: ["Active", "Inactive", "Maintenance", "Reserved"]
+          },
+          {
+            id: "driver",
+            label: "Assigned Driver",
+            type: "text",
+            placeholder: "John Doe"
+          },
+          {
+            id: "location",
+            label: "Current Location",
+            type: "text",
+            placeholder: "Warehouse A"
+          },
+          {
+            id: "last_service",
+            label: "Last Service Date",
+            type: "date"
+          },
+          {
+            id: "next_service",
+            label: "Next Service Due",
+            type: "date"
+          },
+          {
+            id: "fuel_type",
+            label: "Fuel Type",
+            type: "select",
+            options: ["Diesel", "Petrol", "Electric", "Hybrid", "CNG"]
+          },
+          {
+            id: "mpg",
+            label: "MPG (Miles per Gallon)",
+            type: "number",
+            step: "0.1"
+          },
+          {
+            id: "insurance_expiry",
+            label: "Insurance Expiry",
+            type: "date"
+          },
+          {
+            id: "registration_expiry",
+            label: "Registration Expiry",
+            type: "date"
+          }
+        ]
+      },
+      "maintenance": {
+        title: "Maintenance Records",
+        fields: [
+          {
+            id: "vehicle_id",
+            label: "Vehicle ID",
+            type: "text",
+            required: true,
+            placeholder: "VH001"
+          },
+          {
+            id: "service_date",
+            label: "Service Date",
+            type: "date",
+            required: true
+          },
+          {
+            id: "service_type",
+            label: "Service Type",
+            type: "select",
+            required: true,
+            options: ["Oil Change", "Brake Service", "Tire Rotation", "Engine Repair", "Regular Maintenance", "Emergency Repair"]
+          },
+          {
+            id: "description",
+            label: "Description",
+            type: "textarea",
+            required: true,
+            placeholder: "Describe the service performed..."
+          },
+          {
+            id: "cost",
+            label: "Cost ($)",
+            type: "number",
+            required: true,
+            step: "0.01"
+          },
+          {
+            id: "vendor",
+            label: "Vendor/Mechanic",
+            type: "text"
+          },
+          {
+            id: "next_service",
+            label: "Next Service Due",
+            type: "date"
+          },
+          {
+            id: "mileage",
+            label: "Mileage at Service",
+            type: "number"
+          },
+          {
+            id: "status",
+            label: "Status",
+            type: "select",
+            required: true,
+            options: ["Completed", "In Progress", "Scheduled", "Cancelled"]
+          },
+          {
+            id: "technician",
+            label: "Technician Name",
+            type: "text"
+          }
+        ]
+      },
+      "fuel-management": {
+        title: "Fuel Management",
+        fields: [
+          {
+            id: "date",
+            label: "Date",
+            type: "date",
+            required: true
+          },
+          {
+            id: "vehicle_id",
+            label: "Vehicle ID",
+            type: "text",
+            required: true,
+            placeholder: "VH001"
+          },
+          {
+            id: "fuel_type",
+            label: "Fuel Type",
+            type: "select",
+            required: true,
+            options: ["Diesel", "Petrol", "Electric", "CNG"]
+          },
+          {
+            id: "quantity",
+            label: "Quantity (Liters)",
+            type: "number",
+            required: true,
+            step: "0.1"
+          },
+          {
+            id: "cost",
+            label: "Cost ($)",
+            type: "number",
+            required: true,
+            step: "0.01"
+          },
+          {
+            id: "station",
+            label: "Fuel Station",
+            type: "text",
+            placeholder: "Shell Station, Main Street"
+          },
+          {
+            id: "odometer",
+            label: "Odometer Reading",
+            type: "number",
+            required: true
+          },
+          {
+            id: "driver",
+            label: "Driver",
+            type: "text"
+          },
+          {
+            id: "receipt_number",
+            label: "Receipt #",
+            type: "text"
+          },
+          {
+            id: "mpg",
+            label: "MPG Calculated",
+            type: "number",
+            step: "0.1"
+          }
+        ]
+      },
+      "driver-management": {
+        title: "Driver Management",
+        fields: [
+          {
+            id: "driver_id",
+            label: "Driver ID",
+            type: "text",
+            required: true,
+            placeholder: "DRV001"
+          },
+          {
+            id: "full_name",
+            label: "Full Name",
+            type: "text",
+            required: true,
+            placeholder: "John Doe"
+          },
+          {
+            id: "license_number",
+            label: "License Number",
+            type: "text",
+            required: true
+          },
+          {
+            id: "license_expiry",
+            label: "License Expiry",
+            type: "date",
+            required: true
+          },
+          {
+            id: "phone",
+            label: "Phone Number",
+            type: "tel",
+            required: true
+          },
+          {
+            id: "email",
+            label: "Email",
+            type: "email"
+          },
+          {
+            id: "status",
+            label: "Status",
+            type: "select",
+            required: true,
+            options: ["Active", "On Leave", "Suspended", "Inactive"]
+          },
+          {
+            id: "vehicle_assigned",
+            label: "Vehicle Assigned",
+            type: "text",
+            placeholder: "VH001"
+          },
+          {
+            id: "hire_date",
+            label: "Hire Date",
+            type: "date"
+          },
+          {
+            id: "training_completed",
+            label: "Training Completed",
+            type: "checkbox"
+          },
+          {
+            id: "emergency_contact",
+            label: "Emergency Contact",
+            type: "text"
+          },
+          {
+            id: "notes",
+            label: "Notes",
+            type: "textarea",
+            placeholder: "Additional information..."
+          }
+        ]
+      }
+    };
+
+    // Sample data for each section
+    const sampleData = {
+      "vehicle-management": [
+        {
+          id: "entry1",
+          vehicle_id: "VH001",
+          license_plate: "ABC-123",
+          make: "Ford",
+          model: "Transit",
+          year: 2022,
+          type: "Van",
+          status: "Active",
+          driver: "John Doe",
+          location: "Warehouse A",
+          last_service: "2024-01-15",
+          next_service: "2024-04-15",
+          fuel_type: "Diesel",
+          mpg: 22,
+          insurance_expiry: "2024-12-31",
+          registration_expiry: "2024-12-31",
+          created_by: "admin@efs.com",
+          created_at: "2024-01-01T10:00:00Z",
+          updated_at: "2024-01-01T10:00:00Z"
+        },
+        {
+          id: "entry2",
+          vehicle_id: "VH002",
+          license_plate: "DEF-456",
+          make: "Mercedes",
+          model: "Sprinter",
+          year: 2023,
+          type: "Truck",
+          status: "Active",
+          driver: "Jane Smith",
+          location: "Route 5",
+          last_service: "2024-02-20",
+          next_service: "2024-05-20",
+          fuel_type: "Diesel",
+          mpg: 18,
+          insurance_expiry: "2024-11-30",
+          registration_expiry: "2024-11-30",
+          created_by: "admin@efs.com",
+          created_at: "2024-01-02T14:30:00Z",
+          updated_at: "2024-01-02T14:30:00Z"
+        }
+      ],
+      "maintenance": [
+        {
+          id: "entry1",
+          vehicle_id: "VH001",
+          service_date: "2024-01-15",
+          service_type: "Oil Change",
+          description: "Regular oil change and filter replacement",
+          cost: 150,
+          vendor: "AutoCare Center",
+          next_service: "2024-04-15",
+          mileage: 45200,
+          status: "Completed",
+          technician: "John Mechanic",
+          created_by: "admin@efs.com",
+          created_at: "2024-01-15T09:00:00Z",
+          updated_at: "2024-01-15T09:00:00Z"
+        }
+      ]
+    };
+
     // Show auth loader initially
     authLoader.style.display = 'flex';
     accessDenied.style.display = 'none';
     workspaceContainer.style.display = 'none';
     
     // Authentication state observer
-    let authCheckTimeout;
-    
     auth.onAuthStateChanged((user) => {
-      clearTimeout(authCheckTimeout);
-      
       if (user) {
         setTimeout(() => {
           handleUserSignedIn(user);
@@ -1626,13 +1904,6 @@
         }, 800);
       }
     });
-    
-    authCheckTimeout = setTimeout(() => {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        handleUserSignedOut();
-      }
-    }, 3000);
 
     function handleUserSignedIn(user) {
       console.log("User signed in:", user.email);
@@ -1661,802 +1932,635 @@
         })
         .catch((error) => {
           console.error("Logout error:", error);
+          showToast("Error logging out", "error");
         });
     });
 
-    // Spreadsheet data structure for each module
-    const spreadsheetTemplates = {
-      "vehicle-management": {
-        name: "Vehicle Management",
-        columns: [
-          { header: "Vehicle ID", width: 120 },
-          { header: "License Plate", width: 120 },
-          { header: "Make", width: 100 },
-          { header: "Model", width: 100 },
-          { header: "Year", width: 80 },
-          { header: "Type", width: 100 },
-          { header: "Status", width: 100 },
-          { header: "Driver", width: 120 },
-          { header: "Location", width: 150 },
-          { header: "Last Service", width: 120 },
-          { header: "Next Service Due", width: 120 },
-          { header: "Fuel Type", width: 100 },
-          { header: "MPG", width: 80 },
-          { header: "Insurance Expiry", width: 120 },
-          { header: "Registration Expiry", width: 120 }
-        ],
-        sampleData: [
-          ["VH001", "ABC-123", "Ford", "Transit", "2022", "Van", "Active", "John Doe", "Warehouse A", "2024-01-15", "2024-04-15", "Diesel", "22", "2024-12-31", "2024-12-31"],
-          ["VH002", "DEF-456", "Mercedes", "Sprinter", "2023", "Truck", "Active", "Jane Smith", "Route 5", "2024-02-20", "2024-05-20", "Diesel", "18", "2024-11-30", "2024-11-30"],
-          ["VH003", "GHI-789", "Toyota", "Hilux", "2021", "Pickup", "Maintenance", "Mike Johnson", "Garage", "2024-03-10", "2024-06-10", "Petrol", "25", "2024-10-31", "2024-10-31"]
-        ]
-      },
-      "maintenance": {
-        name: "Maintenance Log",
-        columns: [
-          { header: "Vehicle ID", width: 100 },
-          { header: "Service Date", width: 120 },
-          { header: "Service Type", width: 120 },
-          { header: "Description", width: 200 },
-          { header: "Cost", width: 100 },
-          { header: "Vendor", width: 150 },
-          { header: "Next Service", width: 120 },
-          { header: "Mileage", width: 100 },
-          { header: "Status", width: 100 },
-          { header: "Technician", width: 120 }
-        ],
-        sampleData: [
-          ["VH001", "2024-01-15", "Oil Change", "Regular oil change and filter replacement", "$150", "AutoCare Center", "2024-04-15", "45,200", "Completed", "John Mechanic"],
-          ["VH002", "2024-02-20", "Brake Service", "Brake pads and rotors replacement", "$450", "QuickFix Garage", "2024-05-20", "38,750", "Completed", "Mike Specialist"],
-          ["VH003", "2024-03-10", "Engine Repair", "Engine overheating diagnosis and repair", "$850", "Precision Motors", "2024-06-10", "52,100", "In Progress", "Sarah Engineer"]
-        ]
-      },
-      "fuel-management": {
-        name: "Fuel Tracking",
-        columns: [
-          { header: "Date", width: 120 },
-          { header: "Vehicle ID", width: 100 },
-          { header: "Fuel Type", width: 100 },
-          { header: "Quantity (L)", width: 100 },
-          { header: "Cost", width: 100 },
-          { header: "Station", width: 150 },
-          { header: "Odometer", width: 100 },
-          { header: "Driver", width: 120 },
-          { header: "Receipt #", width: 100 },
-          { header: "MPG", width: 80 }
-        ],
-        sampleData: [
-          ["2024-03-01", "VH001", "Diesel", "45.2", "$67.80", "Shell Station", "45,200", "John Doe", "RCT00123", "22.5"],
-          ["2024-03-02", "VH002", "Diesel", "38.5", "$57.75", "BP Station", "38,750", "Jane Smith", "RCT00124", "18.2"],
-          ["2024-03-03", "VH003", "Petrol", "32.8", "$49.20", "Exxon Station", "52,100", "Mike Johnson", "RCT00125", "25.1"]
-        ]
-      },
-      "inventory-control": {
-        name: "Inventory Control",
-        columns: [
-          { header: "Item ID", width: 100 },
-          { header: "Item Name", width: 150 },
-          { header: "Category", width: 120 },
-          { header: "Quantity", width: 100 },
-          { header: "Reorder Level", width: 100 },
-          { header: "Unit Cost", width: 100 },
-          { header: "Total Value", width: 100 },
-          { header: "Location", width: 120 },
-          { header: "Supplier", width: 150 },
-          { header: "Last Ordered", width: 120 }
-        ],
-        sampleData: [
-          ["ITM001", "Engine Oil 5W-30", "Lubricants", "45", "10", "$25.00", "$1,125.00", "Shelf A1", "AutoParts Inc.", "2024-02-15"],
-          ["ITM002", "Brake Pads Set", "Brakes", "22", "5", "$45.00", "$990.00", "Shelf B3", "Brake Masters", "2024-02-20"],
-          ["ITM003", "Air Filter", "Filters", "38", "15", "$15.00", "$570.00", "Shelf C2", "Filter World", "2024-02-25"]
-        ]
-      }
-    };
-
     // Initialize workspace functionality
     function initWorkspace() {
-      // DOM elements for spreadsheet
-      const gridContainer = document.getElementById('gridContainer');
-      const cellReference = document.getElementById('cellReference');
-      const sheetNameInput = document.getElementById('sheetNameInput');
-      const syncIndicator = document.getElementById('syncIndicator');
-      const syncText = document.getElementById('syncText');
-      const userCount = document.getElementById('userCount');
-      const spreadsheetStats = document.getElementById('spreadsheetStats');
-      const addSheetBtn = document.getElementById('addSheetBtn');
-      const sheetTabs = document.getElementById('sheetTabs');
-      
-      // Toolbar buttons
-      const undoBtn = document.getElementById('undoBtn');
-      const redoBtn = document.getElementById('redoBtn');
-      const boldBtn = document.getElementById('boldBtn');
-      const italicBtn = document.getElementById('italicBtn');
-      const underlineBtn = document.getElementById('underlineBtn');
-      const fontSizeSelect = document.getElementById('fontSizeSelect');
-      const fontFamilySelect = document.getElementById('fontFamilySelect');
-      const alignLeftBtn = document.getElementById('alignLeftBtn');
-      const alignCenterBtn = document.getElementById('alignCenterBtn');
-      const alignRightBtn = document.getElementById('alignRightBtn');
-      
-      // Initialize the spreadsheet
-      function initSpreadsheet() {
-        setupEventListeners();
-        loadInitialSection();
-        updateClock();
-        setInterval(updateClock, 60000);
-        
-        // Set up real-time listeners
-        setupRealtimeListeners();
-      }
-      
-      // Set up real-time Firebase listeners
-      function setupRealtimeListeners() {
-        if (!currentUser) return;
-        
-        const userRef = database.ref(`spreadsheets/${currentSheet.id}/users/${currentUser.uid}`);
-        const dataRef = database.ref(`spreadsheets/${currentSheet.id}/data`);
-        
-        // Update user presence
-        userRef.set({
-          email: currentUser.email,
-          name: currentUser.displayName || currentUser.email.split('@')[0],
-          lastActive: firebase.database.ServerValue.TIMESTAMP,
-          cell: selectedCell
-        });
-        
-        // Remove user when they disconnect
-        userRef.onDisconnect().remove();
-        
-        // Listen for user changes
-        database.ref(`spreadsheets/${currentSheet.id}/users`).on('value', (snapshot) => {
-          const users = snapshot.val() || {};
-          connectedUsers = users;
-          updateUserCount();
-        });
-        
-        // Listen for data changes
-        dataRef.on('value', (snapshot) => {
-          const data = snapshot.val() || {};
-          if (JSON.stringify(data) !== JSON.stringify(currentSheet.data)) {
-            currentSheet.data = data;
-            renderGrid();
-            updateSyncStatus(true);
-          }
-        });
-      }
-      
-      // Update user count display
-      function updateUserCount() {
-        const userCountElement = userCount.querySelector('span');
-        const count = Object.keys(connectedUsers).length;
-        userCountElement.textContent = `${count} user${count !== 1 ? 's' : ''} online`;
-      }
-      
-      // Update sync status
-      function updateSyncStatus(synced = false) {
-        const indicator = syncIndicator;
-        const text = syncText;
-        
-        if (synced) {
-          indicator.className = 'sync-indicator synced';
-          text.textContent = 'Synced';
-          setTimeout(() => {
-            indicator.className = 'sync-indicator';
-            text.textContent = 'Syncing...';
-          }, 3000);
-        } else {
-          indicator.className = 'sync-indicator';
-          text.textContent = 'Syncing...';
-        }
-      }
-      
-      // Save data to Firebase
-      function saveToFirebase() {
-        if (!currentUser) return;
-        
-        database.ref(`spreadsheets/${currentSheet.id}/data`).set(currentSheet.data)
-          .then(() => {
-            updateSyncStatus(true);
-            currentSheet.lastSaved = new Date();
-          })
-          .catch((error) => {
-            console.error("Save error:", error);
-            syncIndicator.className = 'sync-indicator error';
-            syncText.textContent = 'Sync failed';
-          });
-      }
+      // Show data entry container
+      dataEntryContainer.style.display = 'flex';
       
       // Set up event listeners
-      function setupEventListeners() {
-        // Navigation links
-        document.querySelectorAll(".nav-link").forEach(link => {
-          link.addEventListener("click", function(e) {
-            e.preventDefault();
-            handleNavLinkClick(this);
-          });
-        });
-        
-        // Tools menu
-        const menuContent = document.getElementById("menuContent");
-        const menuToggle = document.getElementById("menuToggle");
-        const dropdown = document.getElementById("dropdown");
-        
-        menuContent.addEventListener("click", function(e) {
-          if (e.target.tagName === 'A') {
-            e.preventDefault();
-            dropdown.classList.remove("open");
-          }
-        });
-        
-        menuToggle.addEventListener("click", function(e) {
-          e.stopPropagation();
-          dropdown.classList.toggle("open");
-        });
-        
-        document.addEventListener("click", function() {
-          dropdown.classList.remove("open");
-        });
-        
-        // Toolbar buttons
-        undoBtn.addEventListener('click', undo);
-        redoBtn.addEventListener('click', redo);
-        boldBtn.addEventListener('click', toggleBold);
-        italicBtn.addEventListener('click', toggleItalic);
-        underlineBtn.addEventListener('click', toggleUnderline);
-        fontSizeSelect.addEventListener('change', updateFontSize);
-        fontFamilySelect.addEventListener('change', updateFontFamily);
-        alignLeftBtn.addEventListener('click', () => updateAlignment('left'));
-        alignCenterBtn.addEventListener('click', () => updateAlignment('center'));
-        alignRightBtn.addEventListener('click', () => updateAlignment('right'));
-        
-        // Sheet name input
-        sheetNameInput.addEventListener('change', updateSheetName);
-        sheetNameInput.addEventListener('blur', updateSheetName);
-        
-        // Add sheet button
-        addSheetBtn.addEventListener('click', addNewSheet);
-        
-        // Sheet tabs
-        sheetTabs.addEventListener('click', function(e) {
-          if (e.target.classList.contains('sheet-tab')) {
-            switchSheet(e.target.dataset.sheetId);
-          }
-        });
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', handleKeyboardShortcuts);
-      }
-      
-      // Handle navigation link clicks
-      function handleNavLinkClick(link) {
-        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-        link.classList.add("active");
-        
-        const section = link.dataset.section;
-        loadSpreadsheet(section);
-      }
-      
-      // Load spreadsheet for a section
-      function loadSpreadsheet(section) {
-        sheetLoaderText.textContent = `Loading ${section.replace('-', ' ')}...`;
-        sheetLoader.style.display = 'flex';
-        
-        const template = spreadsheetTemplates[section] || spreadsheetTemplates["vehicle-management"];
-        currentSheet.name = template.name;
-        
-        // Update UI
-        document.getElementById('moduleTitle').textContent = `Enterprise Fleet System - ${template.name}`;
-        sheetNameInput.value = template.name;
-        currentSheetInfo.textContent = template.name;
-        currentSheetInfo.style.display = 'block';
-        
-        // Initialize or load data
-        setTimeout(() => {
-          if (Object.keys(currentSheet.data).length === 0) {
-            initializeSheetData(template);
-          }
-          renderGrid();
-          sheetLoader.style.display = 'none';
-        }, 500);
-      }
-      
-      // Initialize sheet data from template
-      function initializeSheetData(template) {
-        currentSheet.data = {};
-        
-        // Add column headers
-        for (let col = 0; col < template.columns.length; col++) {
-          const cellId = `1:${col + 1}`;
-          currentSheet.data[cellId] = {
-            value: template.columns[col].header,
-            bold: true,
-            alignment: 'center'
-          };
-        }
-        
-        // Add sample data
-        for (let row = 0; row < template.sampleData.length; row++) {
-          for (let col = 0; col < template.sampleData[row].length; col++) {
-            const cellId = `${row + 2}:${col + 1}`;
-            currentSheet.data[cellId] = {
-              value: template.sampleData[row][col]
-            };
-          }
-        }
-        
-        saveToFirebase();
-      }
-      
-      // Render the grid
-      function renderGrid() {
-        const template = spreadsheetTemplates[currentSheet.id.split('-')[0]] || spreadsheetTemplates["vehicle-management"];
-        const columns = template.columns;
-        const rowCount = 100;
-        const colCount = columns.length;
-        
-        // Update stats
-        spreadsheetStats.textContent = `${rowCount} rows × ${colCount} columns`;
-        
-        // Clear grid
-        gridContainer.innerHTML = '';
-        
-        // Create column headers
-        const columnHeaders = document.createElement('div');
-        columnHeaders.className = 'column-headers';
-        
-        // Corner cell
-        const corner = document.createElement('div');
-        corner.className = 'header-corner';
-        corner.textContent = '';
-        columnHeaders.appendChild(corner);
-        
-        // Column headers
-        for (let col = 1; col <= colCount; col++) {
-          const header = document.createElement('div');
-          header.className = 'column-header';
-          header.textContent = getColumnLetter(col);
-          header.style.width = `${columns[col-1]?.width || 120}px`;
-          header.style.minWidth = `${columns[col-1]?.width || 120}px`;
-          columnHeaders.appendChild(header);
-        }
-        
-        gridContainer.appendChild(columnHeaders);
-        
-        // Create grid rows
-        const gridRows = document.createElement('div');
-        gridRows.className = 'grid-rows';
-        
-        for (let row = 1; row <= rowCount; row++) {
-          const gridRow = document.createElement('div');
-          gridRow.className = 'grid-row';
-          
-          // Row header
-          const rowHeader = document.createElement('div');
-          rowHeader.className = 'row-header';
-          rowHeader.textContent = row;
-          gridRow.appendChild(rowHeader);
-          
-          // Cells
-          for (let col = 1; col <= colCount; col++) {
-            const cell = document.createElement('div');
-            cell.className = 'grid-cell';
-            cell.contentEditable = true;
-            cell.dataset.row = row;
-            cell.dataset.col = col;
-            cell.style.width = `${columns[col-1]?.width || 120}px`;
-            cell.style.minWidth = `${columns[col-1]?.width || 120}px`;
-            
-            // Get cell data
-            const cellId = `${row}:${col}`;
-            const cellData = currentSheet.data[cellId];
-            
-            if (cellData) {
-              cell.textContent = cellData.value;
-              
-              // Apply formatting
-              if (cellData.bold) cell.style.fontWeight = 'bold';
-              if (cellData.italic) cell.style.fontStyle = 'italic';
-              if (cellData.underline) cell.style.textDecoration = 'underline';
-              if (cellData.fontSize) cell.style.fontSize = `${cellData.fontSize}px`;
-              if (cellData.fontFamily) cell.style.fontFamily = cellData.fontFamily;
-              if (cellData.alignment) cell.style.textAlign = cellData.alignment;
-              if (cellData.color) cell.style.color = cellData.color;
-              if (cellData.bgColor) cell.style.backgroundColor = cellData.bgColor;
-            }
-            
-            // Selection and editing
-            cell.addEventListener('click', () => selectCell(row, col));
-            cell.addEventListener('dblclick', () => startEditing(row, col));
-            cell.addEventListener('focus', () => startEditing(row, col));
-            cell.addEventListener('blur', () => stopEditing(row, col));
-            cell.addEventListener('input', () => updateCellValue(row, col, cell.textContent));
-            
-            // Keyboard navigation in cell
-            cell.addEventListener('keydown', (e) => handleCellKeydown(e, row, col));
-            
-            gridRow.appendChild(cell);
-          }
-          
-          gridRows.appendChild(gridRow);
-        }
-        
-        gridContainer.appendChild(gridRows);
-        
-        // Select initial cell
-        selectCell(1, 1);
-      }
-      
-      // Select a cell
-      function selectCell(row, col) {
-        // Remove previous selection
-        document.querySelectorAll('.grid-cell.selected').forEach(cell => {
-          cell.classList.remove('selected');
-        });
-        
-        // Add new selection
-        const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
-        if (cell) {
-          cell.classList.add('selected');
-          cell.focus();
-        }
-        
-        selectedCell = { row, col };
-        cellReference.textContent = `${getColumnLetter(col)}${row}`;
-        
-        // Update user presence
-        if (currentUser) {
-          database.ref(`spreadsheets/${currentSheet.id}/users/${currentUser.uid}/cell`).set(selectedCell);
-        }
-      }
-      
-      // Start editing a cell
-      function startEditing(row, col) {
-        if (editingCell) return;
-        
-        editingCell = { row, col };
-        const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
-        if (cell) {
-          cell.classList.add('editing');
-        }
-      }
-      
-      // Stop editing a cell
-      function stopEditing(row, col) {
-        if (!editingCell || editingCell.row !== row || editingCell.col !== col) return;
-        
-        const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
-        if (cell) {
-          cell.classList.remove('editing');
-        }
-        
-        editingCell = null;
-      }
-      
-      // Update cell value
-      function updateCellValue(row, col, value) {
-        const cellId = `${row}:${col}`;
-        const oldValue = currentSheet.data[cellId]?.value || '';
-        
-        if (value !== oldValue) {
-          // Save to undo stack
-          undoStack.push({
-            type: 'cell',
-            cellId,
-            oldValue: currentSheet.data[cellId] || null,
-            newValue: { ...(currentSheet.data[cellId] || {}), value }
-          });
-          
-          // Clear redo stack
-          redoStack = [];
-          
-          // Update data
-          if (!currentSheet.data[cellId]) {
-            currentSheet.data[cellId] = { value };
-          } else {
-            currentSheet.data[cellId].value = value;
-          }
-          
-          // Save to Firebase
-          saveToFirebase();
-        }
-      }
-      
-      // Handle keyboard shortcuts
-      function handleKeyboardShortcuts(e) {
-        if (e.ctrlKey || e.metaKey) {
-          switch(e.key) {
-            case 'z':
-              if (e.shiftKey) redo();
-              else undo();
-              e.preventDefault();
-              break;
-            case 'y':
-              redo();
-              e.preventDefault();
-              break;
-            case 'b':
-              toggleBold();
-              e.preventDefault();
-              break;
-            case 'i':
-              toggleItalic();
-              e.preventDefault();
-              break;
-            case 'u':
-              toggleUnderline();
-              e.preventDefault();
-              break;
-          }
-        }
-        
-        // Navigation keys
-        if (!editingCell) {
-          switch(e.key) {
-            case 'ArrowUp':
-              if (selectedCell.row > 1) selectCell(selectedCell.row - 1, selectedCell.col);
-              e.preventDefault();
-              break;
-            case 'ArrowDown':
-              selectCell(selectedCell.row + 1, selectedCell.col);
-              e.preventDefault();
-              break;
-            case 'ArrowLeft':
-              if (selectedCell.col > 1) selectCell(selectedCell.row, selectedCell.col - 1);
-              e.preventDefault();
-              break;
-            case 'ArrowRight':
-              selectCell(selectedCell.row, selectedCell.col + 1);
-              e.preventDefault();
-              break;
-            case 'Enter':
-              startEditing(selectedCell.row, selectedCell.col);
-              e.preventDefault();
-              break;
-          }
-        }
-      }
-      
-      // Handle cell keydown for navigation
-      function handleCellKeydown(e, row, col) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          stopEditing(row, col);
-          selectCell(row + 1, col);
-        } else if (e.key === 'Tab') {
-          e.preventDefault();
-          stopEditing(row, col);
-          selectCell(row, col + (e.shiftKey ? -1 : 1));
-        }
-      }
-      
-      // Formatting functions
-      function toggleBold() {
-        applyFormatting('bold', !getCurrentFormatting().bold);
-      }
-      
-      function toggleItalic() {
-        applyFormatting('italic', !getCurrentFormatting().italic);
-      }
-      
-      function toggleUnderline() {
-        applyFormatting('underline', !getCurrentFormatting().underline);
-      }
-      
-      function updateFontSize() {
-        applyFormatting('fontSize', fontSizeSelect.value);
-      }
-      
-      function updateFontFamily() {
-        applyFormatting('fontFamily', fontFamilySelect.value);
-      }
-      
-      function updateAlignment(alignment) {
-        applyFormatting('alignment', alignment);
-      }
-      
-      function getCurrentFormatting() {
-        const cellId = `${selectedCell.row}:${selectedCell.col}`;
-        return currentSheet.data[cellId] || {};
-      }
-      
-      function applyFormatting(property, value) {
-        const cellId = `${selectedCell.row}:${selectedCell.col}`;
-        const oldFormatting = currentSheet.data[cellId] || {};
-        
-        // Save to undo stack
-        undoStack.push({
-          type: 'format',
-          cellId,
-          oldValue: oldFormatting,
-          newValue: { ...oldFormatting, [property]: value }
-        });
-        
-        // Clear redo stack
-        redoStack = [];
-        
-        // Update formatting
-        if (!currentSheet.data[cellId]) {
-          currentSheet.data[cellId] = { value: '', [property]: value };
-        } else {
-          currentSheet.data[cellId][property] = value;
-        }
-        
-        // Update cell display
-        const cell = document.querySelector(`.grid-cell[data-row="${selectedCell.row}"][data-col="${selectedCell.col}"]`);
-        if (cell) {
-          switch(property) {
-            case 'bold':
-              cell.style.fontWeight = value ? 'bold' : 'normal';
-              break;
-            case 'italic':
-              cell.style.fontStyle = value ? 'italic' : 'normal';
-              break;
-            case 'underline':
-              cell.style.textDecoration = value ? 'underline' : 'none';
-              break;
-            case 'fontSize':
-              cell.style.fontSize = `${value}px`;
-              break;
-            case 'fontFamily':
-              cell.style.fontFamily = value;
-              break;
-            case 'alignment':
-              cell.style.textAlign = value;
-              break;
-          }
-        }
-        
-        // Save to Firebase
-        saveToFirebase();
-      }
-      
-      // Undo/Redo functions
-      function undo() {
-        if (undoStack.length === 0) return;
-        
-        const action = undoStack.pop();
-        redoStack.push({
-          ...action,
-          oldValue: currentSheet.data[action.cellId],
-          newValue: action.oldValue
-        });
-        
-        // Apply undo
-        if (action.oldValue === null) {
-          delete currentSheet.data[action.cellId];
-        } else {
-          currentSheet.data[action.cellId] = action.oldValue;
-        }
-        
-        // Update display
-        renderGrid();
-        selectCell(selectedCell.row, selectedCell.col);
-        saveToFirebase();
-      }
-      
-      function redo() {
-        if (redoStack.length === 0) return;
-        
-        const action = redoStack.pop();
-        undoStack.push({
-          ...action,
-          oldValue: currentSheet.data[action.cellId],
-          newValue: action.newValue
-        });
-        
-        // Apply redo
-        currentSheet.data[action.cellId] = action.newValue;
-        
-        // Update display
-        renderGrid();
-        selectCell(selectedCell.row, selectedCell.col);
-        saveToFirebase();
-      }
-      
-      // Update sheet name
-      function updateSheetName() {
-        const newName = sheetNameInput.value.trim();
-        if (newName && newName !== currentSheet.name) {
-          currentSheet.name = newName;
-          document.getElementById('moduleTitle').textContent = `Enterprise Fleet System - ${newName}`;
-          currentSheetInfo.textContent = newName;
-          saveToFirebase();
-        }
-      }
-      
-      // Switch sheet
-      function switchSheet(sheetId) {
-        // Update tabs
-        document.querySelectorAll('.sheet-tab').forEach(tab => {
-          tab.classList.toggle('active', tab.dataset.sheetId === sheetId);
-        });
-        
-        // Save current sheet
-        saveToFirebase();
-        
-        // Switch to new sheet
-        currentSheet.id = sheetId;
-        currentSheet.name = `Sheet ${sheetId.replace('sheet', '')}`;
-        currentSheet.data = {};
-        
-        // Update UI
-        sheetNameInput.value = currentSheet.name;
-        sheetLoaderText.textContent = `Loading ${currentSheet.name}...`;
-        sheetLoader.style.display = 'flex';
-        
-        // Load sheet data from Firebase
-        database.ref(`spreadsheets/${sheetId}/data`).once('value')
-          .then((snapshot) => {
-            currentSheet.data = snapshot.val() || {};
-            renderGrid();
-            sheetLoader.style.display = 'none';
-            
-            // Update realtime listeners
-            setupRealtimeListeners();
-          })
-          .catch((error) => {
-            console.error("Load error:", error);
-            sheetLoader.style.display = 'none';
-          });
-      }
-      
-      // Add new sheet
-      function addNewSheet() {
-        const sheetCount = document.querySelectorAll('.sheet-tab').length;
-        const newSheetId = `sheet${sheetCount + 1}`;
-        
-        // Add tab
-        const newTab = document.createElement('button');
-        newTab.className = 'sheet-tab';
-        newTab.dataset.sheetId = newSheetId;
-        newTab.textContent = `Sheet ${sheetCount + 1}`;
-        
-        // Insert before add button
-        sheetTabs.insertBefore(newTab, addSheetBtn);
-        
-        // Switch to new sheet
-        switchSheet(newSheetId);
-      }
-      
-      // Helper function to get column letter from number
-      function getColumnLetter(col) {
-        let letter = '';
-        while (col > 0) {
-          const remainder = (col - 1) % 26;
-          letter = String.fromCharCode(65 + remainder) + letter;
-          col = Math.floor((col - 1) / 26);
-        }
-        return letter;
-      }
-      
-      // Update clock
-      function updateClock() {
-        const now = new Date();
-        let hours = now.getHours();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        
-        document.getElementById('time').textContent = `${hours}:${minutes} ${ampm}`;
-        
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
-      }
+      setupEventListeners();
       
       // Load initial section
-      function loadInitialSection() {
-        const activeLink = document.querySelector('.nav-link.active');
-        if (activeLink) {
-          loadSpreadsheet(activeLink.dataset.section);
-        } else {
-          document.querySelector('.nav-link').classList.add("active");
-          loadSpreadsheet("vehicle-management");
-        }
+      loadSection('vehicle-management');
+      
+      // Update clock
+      updateClock();
+      setInterval(updateClock, 60000);
+      
+      // Initialize sync status
+      updateSyncStatus();
+    }
+
+    function setupEventListeners() {
+      // Navigation links
+      document.querySelectorAll(".nav-link").forEach(link => {
+        link.addEventListener("click", function(e) {
+          e.preventDefault();
+          handleNavLinkClick(this);
+        });
+      });
+
+      // Action buttons
+      document.getElementById('createEntryBtn').addEventListener('click', showCreateForm);
+      document.getElementById('refreshDataBtn').addEventListener('click', refreshData);
+      document.getElementById('cancelFormBtn').addEventListener('click', hideForm);
+      document.getElementById('entryForm').addEventListener('submit', handleFormSubmit);
+      
+      // Search input
+      document.getElementById('searchInput').addEventListener('input', handleSearch);
+      
+      // Sync indicator click
+      document.getElementById('syncIndicator').addEventListener('click', refreshData);
+    }
+
+    function handleNavLinkClick(link) {
+      // Update active nav link
+      document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      
+      // Load the selected section
+      const section = link.dataset.section;
+      loadSection(section);
+    }
+
+    function loadSection(section) {
+      currentSection = section;
+      const template = dataTemplates[section];
+      
+      if (!template) {
+        showToast("Section not found", "error");
+        return;
       }
       
-      // Initialize the application
-      initSpreadsheet();
+      // Update UI titles
+      document.getElementById('moduleTitle').textContent = `Enterprise Fleet System - ${template.title}`;
+      document.getElementById('dataSectionTitle').textContent = template.title;
+      document.getElementById('tableTitle').textContent = `${template.title} Records`;
+      document.getElementById('currentEntryInfo').textContent = template.title;
+      document.getElementById('currentEntryInfo').style.display = 'block';
+      
+      // Hide form if visible
+      hideForm();
+      
+      // Load data from Firebase
+      loadData();
+      
+      // Generate table headers
+      generateTableHeaders(template);
+    }
+
+    function loadData() {
+      const dataRef = database.ref(`data/${currentSection}`);
+      
+      dataRef.once('value')
+        .then((snapshot) => {
+          const data = snapshot.val();
+          
+          if (data) {
+            // Convert object to array
+            currentData = Object.keys(data).map(key => ({
+              id: key,
+              ...data[key]
+            }));
+          } else {
+            // Use sample data if no data exists
+            currentData = sampleData[currentSection] || [];
+            
+            // Save sample data to Firebase if empty
+            if (currentData.length > 0 && Object.keys(data || {}).length === 0) {
+              saveSampleData();
+            }
+          }
+          
+          renderTable();
+          updateEntriesCount();
+          updateSyncStatus(true);
+        })
+        .catch((error) => {
+          console.error("Error loading data:", error);
+          showToast("Error loading data", "error");
+        });
+    }
+
+    function saveSampleData() {
+      const dataRef = database.ref(`data/${currentSection}`);
+      const updates = {};
+      
+      currentData.forEach(entry => {
+        updates[entry.id] = entry;
+      });
+      
+      dataRef.update(updates)
+        .then(() => {
+          updateSyncStatus(true);
+        })
+        .catch((error) => {
+          console.error("Error saving sample data:", error);
+        });
+    }
+
+    function generateTableHeaders(template) {
+      const thead = document.querySelector('#dataTable thead');
+      thead.innerHTML = '';
+      
+      // Create header row
+      let headerRow = '<tr>';
+      
+      // Add field headers
+      template.fields.forEach(field => {
+        if (field.id !== 'notes' && field.id !== 'description') { // Skip long text fields in table
+          headerRow += `<th>${field.label}</th>`;
+        }
+      });
+      
+      // Add action column header
+      headerRow += '<th>Actions</th>';
+      headerRow += '</tr>';
+      
+      thead.innerHTML = headerRow;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      const template = dataTemplates[currentSection];
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      
+      if (currentData.length === 0) {
+        const colSpan = template.fields.filter(f => f.id !== 'notes' && f.id !== 'description').length + 1;
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="${colSpan}" class="no-data">
+              <i class="fas fa-inbox"></i>
+              <h3>No Data Available</h3>
+              <p>Click "Create New Entry" to add your first record.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      // Filter data based on search term
+      const filteredData = currentData.filter(entry => {
+        if (!searchTerm) return true;
+        
+        return template.fields.some(field => {
+          const value = entry[field.id];
+          if (value && typeof value === 'string') {
+            return value.toLowerCase().includes(searchTerm);
+          } else if (value && typeof value === 'number') {
+            return value.toString().includes(searchTerm);
+          }
+          return false;
+        });
+      });
+      
+      // Render filtered data
+      filteredData.forEach(entry => {
+        let row = '<tr>';
+        
+        // Add field values
+        template.fields.forEach(field => {
+          if (field.id !== 'notes' && field.id !== 'description') {
+            let value = entry[field.id] || '';
+            
+            // Format special fields
+            if (field.id === 'status') {
+              value = `<span class="status-badge status-${value.toLowerCase()}">${value}</span>`;
+            } else if (field.type === 'date' && value) {
+              value = formatDate(value);
+            } else if (field.type === 'checkbox') {
+              value = value ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-secondary"></i>';
+            } else if (field.type === 'number' && field.id === 'cost') {
+              value = `$${parseFloat(value).toFixed(2)}`;
+            } else if (field.type === 'number' && field.id === 'mpg') {
+              value = parseFloat(value).toFixed(1);
+            }
+            
+            row += `<td>${value}</td>`;
+          }
+        });
+        
+        // Add action buttons
+        row += `
+          <td class="action-buttons-cell">
+            <button class="icon-btn edit-btn" data-id="${entry.id}" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="icon-btn delete-btn" data-id="${entry.id}" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="icon-btn view-btn" data-id="${entry.id}" title="View Details">
+              <i class="fas fa-eye"></i>
+            </button>
+          </td>
+        `;
+        
+        row += '</tr>';
+        html += row;
+      });
+      
+      tbody.innerHTML = html;
+      
+      // Add event listeners to action buttons
+      tbody.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => editEntry(btn.dataset.id));
+      });
+      
+      tbody.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteEntry(btn.dataset.id));
+      });
+      
+      tbody.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => viewEntry(btn.dataset.id));
+      });
+    }
+
+    function showCreateForm() {
+      editingEntry = null;
+      isFormVisible = true;
+      
+      const template = dataTemplates[currentSection];
+      const formTitle = document.getElementById('formTitle');
+      const submitBtnText = document.getElementById('submitBtnText');
+      const formFields = document.getElementById('formFields');
+      
+      // Update form title and button text
+      formTitle.textContent = `Create New ${template.title} Entry`;
+      submitBtnText.textContent = 'Save Entry';
+      
+      // Generate form fields
+      generateFormFields(template);
+      
+      // Show form
+      document.getElementById('dataEntryForm').style.display = 'block';
+      
+      // Scroll to form
+      document.getElementById('dataEntryForm').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generateFormFields(template, entry = null) {
+      const formFields = document.getElementById('formFields');
+      let html = '';
+      
+      template.fields.forEach(field => {
+        const value = entry ? entry[field.id] || '' : '';
+        const required = field.required ? 'required' : '';
+        
+        let fieldHtml = '';
+        
+        switch(field.type) {
+          case 'select':
+            fieldHtml = `
+              <div class="form-group">
+                <label for="${field.id}" class="form-label">${field.label}${field.required ? ' *' : ''}</label>
+                <select id="${field.id}" name="${field.id}" class="form-select" ${required}>
+                  <option value="">Select ${field.label.toLowerCase()}</option>
+                  ${field.options.map(option => `
+                    <option value="${option}" ${value === option ? 'selected' : ''}>${option}</option>
+                  `).join('')}
+                </select>
+              </div>
+            `;
+            break;
+            
+          case 'textarea':
+            fieldHtml = `
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="${field.id}" class="form-label">${field.label}${field.required ? ' *' : ''}</label>
+                <textarea id="${field.id}" name="${field.id}" class="form-input" rows="4" 
+                  placeholder="${field.placeholder || ''}" ${required}>${value}</textarea>
+              </div>
+            `;
+            break;
+            
+          case 'checkbox':
+            fieldHtml = `
+              <div class="form-group">
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 20px;">
+                  <input type="checkbox" id="${field.id}" name="${field.id}" 
+                    class="form-input" ${value ? 'checked' : ''} style="width: auto;">
+                  <label for="${field.id}" class="form-label">${field.label}</label>
+                </div>
+              </div>
+            `;
+            break;
+            
+          default:
+            const inputType = field.type === 'number' ? 'number' : 
+                            field.type === 'email' ? 'email' : 
+                            field.type === 'tel' ? 'tel' : 
+                            field.type === 'date' ? 'date' : 'text';
+            
+            let inputAttrs = '';
+            if (field.min) inputAttrs += ` min="${field.min}"`;
+            if (field.max) inputAttrs += ` max="${field.max}"`;
+            if (field.step) inputAttrs += ` step="${field.step}"`;
+            
+            fieldHtml = `
+              <div class="form-group">
+                <label for="${field.id}" class="form-label">${field.label}${field.required ? ' *' : ''}</label>
+                <input type="${inputType}" id="${field.id}" name="${field.id}" 
+                  class="form-input" value="${value}" 
+                  placeholder="${field.placeholder || ''}" 
+                  ${inputAttrs} ${required}>
+              </div>
+            `;
+        }
+        
+        html += fieldHtml;
+      });
+      
+      formFields.innerHTML = html;
+    }
+
+    function editEntry(entryId) {
+      const entry = currentData.find(e => e.id === entryId);
+      if (!entry) {
+        showToast("Entry not found", "error");
+        return;
+      }
+      
+      editingEntry = entry;
+      isFormVisible = true;
+      
+      const template = dataTemplates[currentSection];
+      const formTitle = document.getElementById('formTitle');
+      const submitBtnText = document.getElementById('submitBtnText');
+      
+      // Update form title and button text
+      formTitle.textContent = `Edit ${template.title} Entry`;
+      submitBtnText.textContent = 'Update Entry';
+      
+      // Generate form fields with existing data
+      generateFormFields(template, entry);
+      
+      // Show form
+      document.getElementById('dataEntryForm').style.display = 'block';
+      
+      // Scroll to form
+      document.getElementById('dataEntryForm').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function viewEntry(entryId) {
+      const entry = currentData.find(e => e.id === entryId);
+      if (!entry) {
+        showToast("Entry not found", "error");
+        return;
+      }
+      
+      // Show entry details in a modal or separate view
+      const template = dataTemplates[currentSection];
+      let details = `<h3 style="color: var(--light-blue); margin-bottom: 20px;">Entry Details</h3>`;
+      details += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">`;
+      
+      template.fields.forEach(field => {
+        let value = entry[field.id] || 'N/A';
+        
+        if (field.type === 'date' && value && value !== 'N/A') {
+          value = formatDate(value);
+        } else if (field.type === 'checkbox') {
+          value = value ? 'Yes' : 'No';
+        } else if (field.type === 'number' && field.id === 'cost') {
+          value = `$${parseFloat(value).toFixed(2)}`;
+        }
+        
+        details += `
+          <div style="margin-bottom: 10px;">
+            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">${field.label}</div>
+            <div style="color: var(--text-primary); font-weight: 500;">${value}</div>
+          </div>
+        `;
+      });
+      
+      details += `</div>`;
+      
+      // Show in toast notification for now
+      showToast(details, "info", 10000);
+    }
+
+    function hideForm() {
+      isFormVisible = false;
+      editingEntry = null;
+      document.getElementById('dataEntryForm').style.display = 'none';
+      document.getElementById('entryForm').reset();
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      const template = dataTemplates[currentSection];
+      const formData = new FormData(e.target);
+      const entryData = {};
+      let isValid = true;
+      
+      // Validate and collect form data
+      template.fields.forEach(field => {
+        const value = field.type === 'checkbox' 
+          ? document.getElementById(field.id).checked
+          : formData.get(field.id);
+        
+        // Validate required fields
+        if (field.required && (!value || value.toString().trim() === '')) {
+          isValid = false;
+          showToast(`${field.label} is required`, "error");
+          document.getElementById(field.id).focus();
+        }
+        
+        // Validate format
+        if (field.validation && value && !field.validation.test(value)) {
+          isValid = false;
+          showToast(`${field.label} format is invalid`, "error");
+          document.getElementById(field.id).focus();
+        }
+        
+        entryData[field.id] = value;
+      });
+      
+      if (!isValid) return;
+      
+      // Add metadata
+      const now = new Date().toISOString();
+      entryData.updated_at = now;
+      entryData.updated_by = currentUser.email;
+      
+      if (editingEntry) {
+        // Update existing entry
+        entryData.created_at = editingEntry.created_at;
+        entryData.created_by = editingEntry.created_by;
+        updateEntry(editingEntry.id, entryData);
+      } else {
+        // Create new entry
+        entryData.created_at = now;
+        entryData.created_by = currentUser.email;
+        createEntry(entryData);
+      }
+    }
+
+    function createEntry(data) {
+      const entryId = `entry_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const entryRef = database.ref(`data/${currentSection}/${entryId}`);
+      
+      entryRef.set({
+        id: entryId,
+        ...data
+      })
+      .then(() => {
+        showToast("Entry created successfully", "success");
+        hideForm();
+        refreshData();
+      })
+      .catch((error) => {
+        console.error("Error creating entry:", error);
+        showToast("Error creating entry", "error");
+      });
+    }
+
+    function updateEntry(entryId, data) {
+      const entryRef = database.ref(`data/${currentSection}/${entryId}`);
+      
+      entryRef.update(data)
+      .then(() => {
+        showToast("Entry updated successfully", "success");
+        hideForm();
+        refreshData();
+      })
+      .catch((error) => {
+        console.error("Error updating entry:", error);
+        showToast("Error updating entry", "error");
+      });
+    }
+
+    function deleteEntry(entryId) {
+      if (!confirm("Are you sure you want to delete this entry? This action cannot be undone.")) {
+        return;
+      }
+      
+      const entryRef = database.ref(`data/${currentSection}/${entryId}`);
+      
+      entryRef.remove()
+      .then(() => {
+        showToast("Entry deleted successfully", "success");
+        refreshData();
+      })
+      .catch((error) => {
+        console.error("Error deleting entry:", error);
+        showToast("Error deleting entry", "error");
+      });
+    }
+
+    function refreshData() {
+      showToast("Refreshing data...", "info", 2000);
+      loadData();
+    }
+
+    function handleSearch() {
+      renderTable();
+      updateEntriesCount();
+    }
+
+    function updateEntriesCount() {
+      const count = currentData.length;
+      const searchTerm = document.getElementById('searchInput').value;
+      const filteredCount = searchTerm ? 
+        currentData.filter(entry => {
+          const template = dataTemplates[currentSection];
+          return template.fields.some(field => {
+            const value = entry[field.id];
+            if (value && typeof value === 'string') {
+              return value.toLowerCase().includes(searchTerm.toLowerCase());
+            } else if (value && typeof value === 'number') {
+              return value.toString().includes(searchTerm);
+            }
+            return false;
+          });
+        }).length : count;
+      
+      document.getElementById('entriesCount').textContent = 
+        `${filteredCount} of ${count} entries`;
+    }
+
+    function updateSyncStatus(synced = false) {
+      const indicator = document.getElementById('syncIndicator');
+      const text = document.getElementById('syncText');
+      
+      if (synced) {
+        indicator.className = 'sync-indicator synced';
+        lastSyncTime = new Date();
+        const timeStr = lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        text.textContent = `Synced at ${timeStr}`;
+        
+        // Reset indicator after 3 seconds
+        setTimeout(() => {
+          indicator.className = 'sync-indicator';
+          text.textContent = 'Click to refresh';
+        }, 3000);
+      } else {
+        indicator.className = 'sync-indicator';
+        text.textContent = 'Syncing...';
+      }
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      
+      document.getElementById('time').textContent = `${hours}:${minutes} ${ampm}`;
+      
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    function showToast(message, type = "info", duration = 5000) {
+      // Update toast content
+      toastMessage.innerHTML = message;
+      toast.className = `toast ${type}`;
+      
+      // Update icon based on type
+      const icon = toast.querySelector('i');
+      switch(type) {
+        case 'success':
+          icon.className = 'fas fa-check-circle';
+          break;
+        case 'error':
+          icon.className = 'fas fa-exclamation-circle';
+          break;
+        case 'warning':
+          icon.className = 'fas fa-exclamation-triangle';
+          break;
+        default:
+          icon.className = 'fas fa-info-circle';
+      }
+      
+      // Show toast
+      toast.classList.add('show');
+      
+      // Auto-hide after duration
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
     }
   </script>
 </body>
