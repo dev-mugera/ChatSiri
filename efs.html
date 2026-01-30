@@ -15,6 +15,10 @@
       --soft-teal: #81c8be;
       --text-primary: #f0e6ef;
       --text-secondary: #b8b8d1;
+      --cell-border: #2d3b54;
+      --cell-bg: #1d2a40;
+      --cell-selected: #233554;
+      --header-bg: #152238;
     }
 
     body, html {
@@ -412,7 +416,6 @@
       display: flex;
       align-items: center;
       gap: 15px;
-      margin-right: 20px;
     }
 
     .user-email {
@@ -531,24 +534,329 @@
       position: relative;
     }
 
-    .iframe-container {
+    /* Spreadsheet Container */
+    .spreadsheet-container {
       width: 100%;
       height: 100%;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column;
+      background: var(--cell-bg);
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       position: relative;
     }
 
-    iframe {
+    /* Spreadsheet Toolbar */
+    .spreadsheet-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--cell-border);
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-right: 15px;
+      border-right: 1px solid var(--cell-border);
+    }
+
+    .toolbar-group:last-child {
+      border-right: none;
+    }
+
+    .toolbar-btn {
+      background: rgba(100, 255, 218, 0.1);
+      color: var(--light-blue);
+      border: 1px solid rgba(100, 255, 218, 0.2);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    .toolbar-btn:hover {
+      background: rgba(100, 255, 218, 0.2);
+    }
+
+    .toolbar-btn i {
+      font-size: 14px;
+    }
+
+    .cell-reference {
+      background: var(--cell-bg);
+      border: 1px solid var(--cell-border);
+      color: var(--text-primary);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .sheet-name-input {
+      background: var(--cell-bg);
+      border: 1px solid var(--cell-border);
+      color: var(--light-blue);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 200px;
+    }
+
+    .sheet-name-input:focus {
+      outline: none;
+      border-color: var(--light-blue);
+    }
+
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .sync-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--soft-teal);
+      animation: pulse 1.5s infinite;
+    }
+
+    .sync-indicator.synced {
+      background: #4CAF50;
+      animation: none;
+    }
+
+    .sync-indicator.error {
+      background: #f44336;
+      animation: none;
+    }
+
+    /* Spreadsheet Grid */
+    .spreadsheet-grid {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+    }
+
+    .grid-container {
+      position: relative;
+      width: max-content;
+      min-width: 100%;
+      min-height: 100%;
+    }
+
+    /* Column Headers */
+    .column-headers {
+      display: flex;
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      background: var(--header-bg);
+    }
+
+    .header-corner {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      background: var(--header-bg);
+      border-right: 1px solid var(--cell-border);
+      border-bottom: 1px solid var(--cell-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--light-blue);
+      position: sticky;
+      left: 0;
+      top: 0;
+      z-index: 20;
+    }
+
+    .column-header {
+      width: 120px;
+      min-width: 120px;
+      height: 40px;
+      background: var(--header-bg);
+      border-right: 1px solid var(--cell-border);
+      border-bottom: 1px solid var(--cell-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--light-blue);
+      user-select: none;
+    }
+
+    .column-header:hover {
+      background: rgba(100, 255, 218, 0.1);
+    }
+
+    /* Row Headers */
+    .row-headers {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: var(--header-bg);
+    }
+
+    .row-header {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      background: var(--header-bg);
+      border-right: 1px solid var(--cell-border);
+      border-bottom: 1px solid var(--cell-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--light-blue);
+      position: sticky;
+      left: 0;
+      z-index: 20;
+    }
+
+    /* Grid Cells */
+    .grid-rows {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 40px;
+      left: 40px;
+    }
+
+    .grid-row {
+      display: flex;
+    }
+
+    .grid-cell {
+      width: 120px;
+      min-width: 120px;
+      height: 40px;
+      background: var(--cell-bg);
+      border-right: 1px solid var(--cell-border);
+      border-bottom: 1px solid var(--cell-border);
+      padding: 5px;
+      outline: none;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .grid-cell.selected {
+      background: var(--cell-selected);
+      box-shadow: inset 0 0 0 2px var(--light-blue);
+      z-index: 5;
+    }
+
+    .grid-cell.editing {
+      background: var(--dark-blue);
+      z-index: 10;
+      box-shadow: 0 0 0 2px var(--light-blue);
+      position: relative;
+    }
+
+    .cell-formula {
+      position: absolute;
+      bottom: -25px;
+      left: 0;
+      background: var(--header-bg);
+      color: var(--text-secondary);
+      padding: 3px 8px;
+      font-size: 12px;
+      font-family: monospace;
+      border-radius: 3px;
+      white-space: nowrap;
+      z-index: 100;
+      border: 1px solid var(--cell-border);
+    }
+
+    /* Spreadsheet Info */
+    .spreadsheet-info {
+      padding: 8px 15px;
+      background: var(--header-bg);
+      border-top: 1px solid var(--cell-border);
+      color: var(--text-secondary);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-count {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .user-count i {
+      color: var(--soft-teal);
+    }
+
+    /* Sheet Tabs */
+    .sheet-tabs {
+      display: flex;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--cell-border);
+      padding: 0 10px;
+      overflow-x: auto;
+    }
+
+    .sheet-tab {
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--text-secondary);
       border: none;
-      width: 100%;
-      height: 100%;
-      min-height: 500px;
-      background-color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .sheet-tab:hover {
+      color: var(--text-primary);
+      background: rgba(100, 255, 218, 0.05);
+    }
+
+    .sheet-tab.active {
+      color: var(--light-blue);
+      border-bottom-color: var(--light-blue);
+      background: rgba(100, 255, 218, 0.1);
+    }
+
+    .add-sheet-tab {
+      padding: 10px 15px;
+      background: transparent;
+      color: var(--light-blue);
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+    }
+
+    .add-sheet-tab:hover {
+      background: rgba(100, 255, 218, 0.1);
     }
 
     /* Current Sheet Info */
@@ -588,6 +896,11 @@
       
       .header-actions {
         gap: 15px;
+      }
+      
+      .grid-cell, .column-header {
+        width: 100px;
+        min-width: 100px;
       }
     }
 
@@ -647,6 +960,19 @@
         font-size: 0.8rem;
         padding: 6px 12px;
         max-width: 70%;
+      }
+      
+      .grid-cell, .column-header {
+        width: 80px;
+        min-width: 80px;
+      }
+      
+      .toolbar-group {
+        padding-right: 10px;
+      }
+      
+      .sheet-name-input {
+        min-width: 150px;
       }
     }
 
@@ -757,6 +1083,35 @@
         padding: 5px 10px;
         max-width: 60%;
       }
+      
+      .grid-cell, .column-header {
+        width: 70px;
+        min-width: 70px;
+        height: 35px;
+        font-size: 12px;
+      }
+      
+      .row-header, .column-header, .header-corner {
+        height: 35px;
+        width: 35px;
+        min-width: 35px;
+      }
+      
+      .spreadsheet-toolbar {
+        padding: 8px 10px;
+        gap: 10px;
+      }
+      
+      .toolbar-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+      }
+      
+      .sheet-name-input {
+        min-width: 120px;
+        padding: 4px 8px;
+        font-size: 12px;
+      }
     }
 
     @media (max-width: 600px) {
@@ -779,6 +1134,34 @@
       .sheet-loader-text {
         font-size: 1rem;
         max-width: 90%;
+      }
+      
+      .grid-cell, .column-header {
+        width: 60px;
+        min-width: 60px;
+        height: 30px;
+        font-size: 11px;
+      }
+      
+      .row-header, .column-header, .header-corner {
+        height: 30px;
+        width: 30px;
+        min-width: 30px;
+        font-size: 12px;
+      }
+      
+      .toolbar-group {
+        padding-right: 5px;
+      }
+      
+      .toolbar-btn span {
+        display: none;
+      }
+      
+      .toolbar-btn {
+        padding: 4px;
+        min-width: 30px;
+        justify-content: center;
       }
     }
     
@@ -813,6 +1196,36 @@
       
       .sheet-loader-text {
         font-size: 0.9rem;
+      }
+      
+      .grid-cell, .column-header {
+        width: 50px;
+        min-width: 50px;
+        height: 25px;
+        font-size: 10px;
+        padding: 2px;
+      }
+      
+      .row-header, .column-header, .header-corner {
+        height: 25px;
+        width: 25px;
+        min-width: 25px;
+        font-size: 10px;
+      }
+      
+      .spreadsheet-toolbar {
+        padding: 5px 8px;
+        gap: 5px;
+      }
+      
+      .toolbar-group {
+        padding-right: 3px;
+      }
+      
+      .sheet-name-input {
+        min-width: 80px;
+        padding: 3px 6px;
+        font-size: 11px;
       }
     }
   </style>
@@ -995,7 +1408,7 @@
       <header>
         <div class="hub-info">
           <h1 class="hub-name" id="moduleTitle">Enterprise Fleet System - Workspace</h1>
-          <div class="hub-status">Fleet System • All Systems Operational</div>
+          <div class="hub-status" id="hubStatus">Fleet System • All Systems Operational</div>
         </div>
 
         <div class="header-actions">
@@ -1035,18 +1448,109 @@
       </header>
 
       <main>
-        <div class="iframe-container">
-          <!-- Sheet Loader -->
-          <div class="sheet-loader" id="sheetLoader">
-            <div class="loader"></div>
-            <div class="sheet-loader-text" id="sheetLoaderText">Loading sheet...</div>
-            <small>This may take a moment for larger sheets</small>
+        <!-- Sheet Loader -->
+        <div class="sheet-loader" id="sheetLoader">
+          <div class="loader"></div>
+          <div class="sheet-loader-text" id="sheetLoaderText">Loading sheet...</div>
+          <small>This may take a moment for larger sheets</small>
+        </div>
+        
+        <!-- Current Sheet Info -->
+        <div class="current-sheet-info" id="currentSheetInfo"></div>
+        
+        <!-- Spreadsheet Container -->
+        <div class="spreadsheet-container" id="spreadsheetContainer">
+          <!-- Sheet Tabs -->
+          <div class="sheet-tabs" id="sheetTabs">
+            <button class="sheet-tab active" data-sheet-id="sheet1">Sheet 1</button>
+            <button class="sheet-tab" data-sheet-id="sheet2">Sheet 2</button>
+            <button class="add-sheet-tab" id="addSheetBtn">+</button>
           </div>
           
-          <!-- Current Sheet Info -->
-          <div class="current-sheet-info" id="currentSheetInfo"></div>
+          <!-- Spreadsheet Toolbar -->
+          <div class="spreadsheet-toolbar">
+            <div class="toolbar-group">
+              <button class="toolbar-btn" id="undoBtn" title="Undo">
+                <i class="fas fa-undo"></i>
+                <span>Undo</span>
+              </button>
+              <button class="toolbar-btn" id="redoBtn" title="Redo">
+                <i class="fas fa-redo"></i>
+                <span>Redo</span>
+              </button>
+            </div>
+            
+            <div class="toolbar-group">
+              <button class="toolbar-btn" id="boldBtn" title="Bold">
+                <i class="fas fa-bold"></i>
+                <span>Bold</span>
+              </button>
+              <button class="toolbar-btn" id="italicBtn" title="Italic">
+                <i class="fas fa-italic"></i>
+                <span>Italic</span>
+              </button>
+              <button class="toolbar-btn" id="underlineBtn" title="Underline">
+                <i class="fas fa-underline"></i>
+                <span>Underline</span>
+              </button>
+            </div>
+            
+            <div class="toolbar-group">
+              <select class="toolbar-btn" id="fontSizeSelect" style="padding: 6px;">
+                <option value="12">12</option>
+                <option value="14">14</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+              </select>
+              <select class="toolbar-btn" id="fontFamilySelect" style="padding: 6px;">
+                <option value="Arial">Arial</option>
+                <option value="Poppins">Poppins</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Times New Roman">Times New Roman</option>
+              </select>
+            </div>
+            
+            <div class="toolbar-group">
+              <button class="toolbar-btn" id="alignLeftBtn" title="Align Left">
+                <i class="fas fa-align-left"></i>
+              </button>
+              <button class="toolbar-btn" id="alignCenterBtn" title="Align Center">
+                <i class="fas fa-align-center"></i>
+              </button>
+              <button class="toolbar-btn" id="alignRightBtn" title="Align Right">
+                <i class="fas fa-align-right"></i>
+              </button>
+            </div>
+            
+            <div class="toolbar-group">
+              <div class="cell-reference" id="cellReference">A1</div>
+            </div>
+            
+            <div class="toolbar-group">
+              <input type="text" class="sheet-name-input" id="sheetNameInput" value="Vehicle Management" placeholder="Sheet name">
+            </div>
+            
+            <div class="sync-status" id="syncStatus">
+              <div class="sync-indicator" id="syncIndicator"></div>
+              <span id="syncText">Syncing...</span>
+            </div>
+          </div>
           
-          <iframe id="iframe" loading="lazy" title="EFS Workspace Content"></iframe>
+          <!-- Spreadsheet Grid -->
+          <div class="spreadsheet-grid" id="spreadsheetGrid">
+            <div class="grid-container" id="gridContainer">
+              <!-- Grid content will be generated dynamically -->
+            </div>
+          </div>
+          
+          <!-- Spreadsheet Info -->
+          <div class="spreadsheet-info">
+            <div class="user-count" id="userCount">
+              <i class="fas fa-users"></i>
+              <span>1 user online</span>
+            </div>
+            <div id="spreadsheetStats">100 rows × 26 columns</div>
+          </div>
         </div>
       </main>
 
@@ -1074,6 +1578,7 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const database = firebase.database();
     
     // DOM elements
     const authLoader = document.getElementById('authLoader');
@@ -1082,38 +1587,46 @@
     const sheetLoader = document.getElementById('sheetLoader');
     const sheetLoaderText = document.getElementById('sheetLoaderText');
     const currentSheetInfo = document.getElementById('currentSheetInfo');
-    const iframe = document.getElementById('iframe');
+    const spreadsheetContainer = document.getElementById('spreadsheetContainer');
+    
+    // Spreadsheet state
+    let currentSheet = {
+      id: 'sheet1',
+      name: 'Vehicle Management',
+      data: {},
+      users: {},
+      lastSaved: null
+    };
+    
+    let selectedCell = { row: 1, col: 1 };
+    let editingCell = null;
+    let undoStack = [];
+    let redoStack = [];
+    let connectedUsers = {};
+    let currentUser = null;
     
     // Show auth loader initially
     authLoader.style.display = 'flex';
     accessDenied.style.display = 'none';
     workspaceContainer.style.display = 'none';
     
-    // Track current sheet info
-    let currentSheetName = '';
-    let currentSheetUrl = '';
-    
     // Authentication state observer
     let authCheckTimeout;
     
     auth.onAuthStateChanged((user) => {
-      // Clear any existing timeout
       clearTimeout(authCheckTimeout);
       
       if (user) {
-        // User is signed in - show workspace after a short delay
         setTimeout(() => {
           handleUserSignedIn(user);
         }, 800);
       } else {
-        // User is signed out - show access denied after a short delay
         setTimeout(() => {
           handleUserSignedOut();
         }, 800);
       }
     });
     
-    // Set a timeout in case Firebase auth takes too long
     authCheckTimeout = setTimeout(() => {
       const currentUser = auth.currentUser;
       if (!currentUser) {
@@ -1123,30 +1636,20 @@
 
     function handleUserSignedIn(user) {
       console.log("User signed in:", user.email);
+      currentUser = user;
       
-      // Hide auth loader
       authLoader.style.display = 'none';
-      
-      // Show workspace content
       workspaceContainer.style.display = 'flex';
-      
-      // Update user email display
       document.getElementById('userEmail').textContent = user.email;
       
-      // Initialize the workspace functionality
       initWorkspace();
     }
 
     function handleUserSignedOut() {
       console.log("User signed out");
       
-      // Hide auth loader
       authLoader.style.display = 'none';
-      
-      // Show access denied message
       accessDenied.style.display = 'flex';
-      
-      // Hide workspace content
       workspaceContainer.style.display = 'none';
     }
 
@@ -1161,681 +1664,772 @@
         });
     });
 
-    // Data for each section with sheet URLs for each tool
-    const moduleData = {
-      // Fleet Management
+    // Spreadsheet data structure for each module
+    const spreadsheetTemplates = {
       "vehicle-management": {
-        title: "Vehicle Management",
-        tools: [
-          { 
-            name: "Vehicle Directory", 
-            link: "vehicle-directory",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_DIRECTORY_SHEET_ID/edit" 
-          },
-          { 
-            name: "Vehicle Details", 
-            link: "vehicle-details",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_DETAILS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Registration & Licensing", 
-            link: "registration",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1REGISTRATION_SHEET_ID/edit" 
-          },
-          { 
-            name: "Insurance Management", 
-            link: "insurance",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSURANCE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Vehicle Utilization", 
-            link: "utilization",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1UTILIZATION_SHEET_ID/edit" 
-          }
+        name: "Vehicle Management",
+        columns: [
+          { header: "Vehicle ID", width: 120 },
+          { header: "License Plate", width: 120 },
+          { header: "Make", width: 100 },
+          { header: "Model", width: 100 },
+          { header: "Year", width: 80 },
+          { header: "Type", width: 100 },
+          { header: "Status", width: 100 },
+          { header: "Driver", width: 120 },
+          { header: "Location", width: 150 },
+          { header: "Last Service", width: 120 },
+          { header: "Next Service Due", width: 120 },
+          { header: "Fuel Type", width: 100 },
+          { header: "MPG", width: 80 },
+          { header: "Insurance Expiry", width: 120 },
+          { header: "Registration Expiry", width: 120 }
+        ],
+        sampleData: [
+          ["VH001", "ABC-123", "Ford", "Transit", "2022", "Van", "Active", "John Doe", "Warehouse A", "2024-01-15", "2024-04-15", "Diesel", "22", "2024-12-31", "2024-12-31"],
+          ["VH002", "DEF-456", "Mercedes", "Sprinter", "2023", "Truck", "Active", "Jane Smith", "Route 5", "2024-02-20", "2024-05-20", "Diesel", "18", "2024-11-30", "2024-11-30"],
+          ["VH003", "GHI-789", "Toyota", "Hilux", "2021", "Pickup", "Maintenance", "Mike Johnson", "Garage", "2024-03-10", "2024-06-10", "Petrol", "25", "2024-10-31", "2024-10-31"]
         ]
       },
       "maintenance": {
-        title: "Maintenance",
-        tools: [
-          { 
-            name: "Maintenance Schedule", 
-            link: "maintenance-schedule",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1MAINTENANCE_SCHEDULE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Service History", 
-            link: "service-history",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1SERVICE_HISTORY_SHEET_ID/edit" 
-          },
-          { 
-            name: "Repair Requests", 
-            link: "repair-requests",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1REPAIR_REQUESTS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Parts Inventory", 
-            link: "parts-inventory",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1PARTS_INVENTORY_SHEET_ID/edit" 
-          },
-          { 
-            name: "Maintenance Costs", 
-            link: "maintenance-costs",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1MAINTENANCE_COSTS_SHEET_ID/edit" 
-          }
+        name: "Maintenance Log",
+        columns: [
+          { header: "Vehicle ID", width: 100 },
+          { header: "Service Date", width: 120 },
+          { header: "Service Type", width: 120 },
+          { header: "Description", width: 200 },
+          { header: "Cost", width: 100 },
+          { header: "Vendor", width: 150 },
+          { header: "Next Service", width: 120 },
+          { header: "Mileage", width: 100 },
+          { header: "Status", width: 100 },
+          { header: "Technician", width: 120 }
+        ],
+        sampleData: [
+          ["VH001", "2024-01-15", "Oil Change", "Regular oil change and filter replacement", "$150", "AutoCare Center", "2024-04-15", "45,200", "Completed", "John Mechanic"],
+          ["VH002", "2024-02-20", "Brake Service", "Brake pads and rotors replacement", "$450", "QuickFix Garage", "2024-05-20", "38,750", "Completed", "Mike Specialist"],
+          ["VH003", "2024-03-10", "Engine Repair", "Engine overheating diagnosis and repair", "$850", "Precision Motors", "2024-06-10", "52,100", "In Progress", "Sarah Engineer"]
         ]
       },
       "fuel-management": {
-        title: "Fuel Management",
-        tools: [
-          { 
-            name: "Fuel Consumption", 
-            link: "fuel-consumption",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_CONSUMPTION_SHEET_ID/edit" 
-          },
-          { 
-            name: "Fuel Cards", 
-            link: "fuel-cards",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_CARDS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Fuel Expenses", 
-            link: "fuel-expenses",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_EXPENSES_SHEET_ID/edit" 
-          },
-          { 
-            name: "MPG Analysis", 
-            link: "mpg-analysis",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1MPG_ANALYSIS_SHEET_ID/edit" 
-          }
+        name: "Fuel Tracking",
+        columns: [
+          { header: "Date", width: 120 },
+          { header: "Vehicle ID", width: 100 },
+          { header: "Fuel Type", width: 100 },
+          { header: "Quantity (L)", width: 100 },
+          { header: "Cost", width: 100 },
+          { header: "Station", width: 150 },
+          { header: "Odometer", width: 100 },
+          { header: "Driver", width: 120 },
+          { header: "Receipt #", width: 100 },
+          { header: "MPG", width: 80 }
+        ],
+        sampleData: [
+          ["2024-03-01", "VH001", "Diesel", "45.2", "$67.80", "Shell Station", "45,200", "John Doe", "RCT00123", "22.5"],
+          ["2024-03-02", "VH002", "Diesel", "38.5", "$57.75", "BP Station", "38,750", "Jane Smith", "RCT00124", "18.2"],
+          ["2024-03-03", "VH003", "Petrol", "32.8", "$49.20", "Exxon Station", "52,100", "Mike Johnson", "RCT00125", "25.1"]
         ]
       },
-      "driver-management": {
-        title: "Driver Management",
-        tools: [
-          { 
-            name: "Driver Directory", 
-            link: "driver-directory",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_DIRECTORY_SHEET_ID/edit" 
-          },
-          { 
-            name: "Driver Schedule", 
-            link: "driver-schedule",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_SCHEDULE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Driver Performance", 
-            link: "driver-performance",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_PERFORMANCE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Driver Compliance", 
-            link: "driver-compliance",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DRIVER_COMPLIANCE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Training Records", 
-            link: "training-records",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1TRAINING_RECORDS_SHEET_ID/edit" 
-          }
-        ]
-      },
-      
-      // Warehouse Management
       "inventory-control": {
-        title: "Inventory Control",
-        tools: [
-          { 
-            name: "Stock Levels", 
-            link: "stock-levels",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1STOCK_LEVELS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Inventory Valuation", 
-            link: "inventory-valuation",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1INVENTORY_VALUATION_SHEET_ID/edit" 
-          },
-          { 
-            name: "Stock Alerts", 
-            link: "stock-alerts",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1STOCK_ALERTS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Cycle Counting", 
-            link: "cycle-counting",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1CYCLE_COUNTING_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "stock-movements": {
-        title: "Stock Movements",
-        tools: [
-          { 
-            name: "Receipts", 
-            link: "receipts",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1RECEIPTS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Issues", 
-            link: "issues",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1ISSUES_SHEET_ID/edit" 
-          },
-          { 
-            name: "Transfers", 
-            link: "transfers",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1TRANSFERS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Adjustments", 
-            link: "adjustments",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1ADJUSTMENTS_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "warehouse-management": {
-        title: "Warehouse Management",
-        tools: [
-          { 
-            name: "Location Management", 
-            link: "locations",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1LOCATIONS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Bin Management", 
-            link: "bin-management",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1BIN_MANAGEMENT_SHEET_ID/edit" 
-          },
-          { 
-            name: "Putaway Strategy", 
-            link: "putaway",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1PUTAWAY_SHEET_ID/edit" 
-          },
-          { 
-            name: "Picking Strategy", 
-            link: "picking",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1PICKING_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "receiving-shipping": {
-        title: "Receiving & Shipping",
-        tools: [
-          { 
-            name: "Receiving Schedule", 
-            link: "receiving-schedule",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1RECEIVING_SCHEDULE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Shipping Schedule", 
-            link: "shipping-schedule",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1SHIPPING_SCHEDULE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Dock Management", 
-            link: "dock-management",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DOCK_MANAGEMENT_SHEET_ID/edit" 
-          },
-          { 
-            name: "Loading/Unloading", 
-            link: "loading-unloading",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1LOADING_UNLOADING_SHEET_ID/edit" 
-          }
-        ]
-      },
-      
-      // Route Planning
-      "route-optimization": {
-        title: "Route Optimization",
-        tools: [
-          { 
-            name: "Route Planning", 
-            link: "route-planning",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1ROUTE_PLANNING_SHEET_ID/edit" 
-          },
-          { 
-            name: "Route Analysis", 
-            link: "route-analysis",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1ROUTE_ANALYSIS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Traffic Patterns", 
-            link: "traffic-patterns",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1TRAFFIC_PATTERNS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Optimization Results", 
-            link: "optimization-results",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1OPTIMIZATION_RESULTS_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "delivery-scheduling": {
-        title: "Delivery Scheduling",
-        tools: [
-          { 
-            name: "Delivery Calendar", 
-            link: "delivery-calendar",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DELIVERY_CALENDAR_SHEET_ID/edit" 
-          },
-          { 
-            name: "Time Windows", 
-            link: "time-windows",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1TIME_WINDOWS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Scheduling Rules", 
-            link: "scheduling-rules",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1SCHEDULING_RULES_SHEET_ID/edit" 
-          },
-          { 
-            name: "Delivery Performance", 
-            link: "delivery-performance",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DELIVERY_PERFORMANCE_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "gps-tracking": {
-        title: "GPS Tracking",
-        tools: [
-          { 
-            name: "Live Tracking", 
-            link: "live-tracking",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1LIVE_TRACKING_SHEET_ID/edit" 
-          },
-          { 
-            name: "Historical Routes", 
-            link: "historical-routes",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1HISTORICAL_ROUTES_SHEET_ID/edit" 
-          },
-          { 
-            name: "Geofencing", 
-            link: "geofencing",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1GEOFENCING_SHEET_ID/edit" 
-          },
-          { 
-            name: "Vehicle Locations", 
-            link: "vehicle-locations",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_LOCATIONS_SHEET_ID/edit" 
-          }
-        ]
-      },
-      
-      // Compliance
-      "safety-compliance": {
-        title: "Safety Compliance",
-        tools: [
-          { 
-            name: "Safety Policies", 
-            link: "safety-policies",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1SAFETY_POLICIES_SHEET_ID/edit" 
-          },
-          { 
-            name: "Incident Reports", 
-            link: "incident-reports",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1INCIDENT_REPORTS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Safety Training", 
-            link: "safety-training",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1SAFETY_TRAINING_SHEET_ID/edit" 
-          },
-          { 
-            name: "Compliance Checklist", 
-            link: "compliance-checklist",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1COMPLIANCE_CHECKLIST_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "regulatory-documents": {
-        title: "Regulatory Documents",
-        tools: [
-          { 
-            name: "Document Repository", 
-            link: "document-repository",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DOCUMENT_REPOSITORY_SHEET_ID/edit" 
-          },
-          { 
-            name: "Expiration Tracking", 
-            link: "expiration-tracking",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1EXPIRATION_TRACKING_SHEET_ID/edit" 
-          },
-          { 
-            name: "Audit Trail", 
-            link: "audit-trail",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1AUDIT_TRAIL_SHEET_ID/edit" 
-          },
-          { 
-            name: "Regulatory Updates", 
-            link: "regulatory-updates",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1REGULATORY_UPDATES_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "vehicle-inspections": {
-        title: "Vehicle Inspections",
-        tools: [
-          { 
-            name: "Inspection Schedule", 
-            link: "inspection-schedule",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSPECTION_SCHEDULE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Inspection Forms", 
-            link: "inspection-forms",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSPECTION_FORMS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Defect Tracking", 
-            link: "defect-tracking",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1DEFECT_TRACKING_SHEET_ID/edit" 
-          },
-          { 
-            name: "Inspection History", 
-            link: "inspection-history",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1INSPECTION_HISTORY_SHEET_ID/edit" 
-          }
-        ]
-      },
-      
-      // Analytics
-      "fleet-analytics": {
-        title: "Fleet Analytics",
-        tools: [
-          { 
-            name: "Fleet Utilization", 
-            link: "fleet-utilization",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1FLEET_UTILIZATION_SHEET_ID/edit" 
-          },
-          { 
-            name: "Cost per Mile", 
-            link: "cost-per-mile",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1COST_PER_MILE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Vehicle Lifecycle", 
-            link: "vehicle-lifecycle",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1VEHICLE_LIFECYCLE_SHEET_ID/edit" 
-          },
-          { 
-            name: "Fuel Efficiency", 
-            link: "fuel-efficiency",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1FUEL_EFFICIENCY_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "warehouse-analytics": {
-        title: "Warehouse Analytics",
-        tools: [
-          { 
-            name: "Space Utilization", 
-            link: "space-utilization",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1SPACE_UTILIZATION_SHEET_ID/edit" 
-          },
-          { 
-            name: "Throughput Analysis", 
-            link: "throughput-analysis",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1THROUGHPUT_ANALYSIS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Order Accuracy", 
-            link: "order-accuracy",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1ORDER_ACCURACY_SHEET_ID/edit" 
-          },
-          { 
-            name: "Labor Productivity", 
-            link: "labor-productivity",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1LABOR_PRODUCTIVITY_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "cost-analysis": {
-        title: "Cost Analysis",
-        tools: [
-          { 
-            name: "Total Cost Analysis", 
-            link: "total-cost",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1TOTAL_COST_SHEET_ID/edit" 
-          },
-          { 
-            name: "Cost Breakdown", 
-            link: "cost-breakdown",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1COST_BREAKDOWN_SHEET_ID/edit" 
-          },
-          { 
-            name: "Cost Optimization", 
-            link: "cost-optimization",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1COST_OPTIMIZATION_SHEET_ID/edit" 
-          },
-          { 
-            name: "Cost Benchmarking", 
-            link: "benchmarking",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1BENCHMARKING_SHEET_ID/edit" 
-          }
-        ]
-      },
-      "kpi-dashboard": {
-        title: "KPI Dashboard",
-        tools: [
-          { 
-            name: "Fleet KPIs", 
-            link: "fleet-kpis",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1FLEET_KPIS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Warehouse KPIs", 
-            link: "warehouse-kpis",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1WAREHOUSE_KPIS_SHEET_ID/edit" 
-          },
-          { 
-            name: "Operational KPIs", 
-            link: "operational",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1OPERATIONAL_SHEET_ID/edit" 
-          },
-          { 
-            name: "Custom KPIs", 
-            link: "custom",
-            sheetUrl: "https://docs.google.com/spreadsheets/d/1CUSTOM_SHEET_ID/edit" 
-          }
+        name: "Inventory Control",
+        columns: [
+          { header: "Item ID", width: 100 },
+          { header: "Item Name", width: 150 },
+          { header: "Category", width: 120 },
+          { header: "Quantity", width: 100 },
+          { header: "Reorder Level", width: 100 },
+          { header: "Unit Cost", width: 100 },
+          { header: "Total Value", width: 100 },
+          { header: "Location", width: 120 },
+          { header: "Supplier", width: 150 },
+          { header: "Last Ordered", width: 120 }
+        ],
+        sampleData: [
+          ["ITM001", "Engine Oil 5W-30", "Lubricants", "45", "10", "$25.00", "$1,125.00", "Shelf A1", "AutoParts Inc.", "2024-02-15"],
+          ["ITM002", "Brake Pads Set", "Brakes", "22", "5", "$45.00", "$990.00", "Shelf B3", "Brake Masters", "2024-02-20"],
+          ["ITM003", "Air Filter", "Filters", "38", "15", "$15.00", "$570.00", "Shelf C2", "Filter World", "2024-02-25"]
         ]
       }
     };
 
     // Initialize workspace functionality
     function initWorkspace() {
-      // DOM elements
-      const dropdown = document.getElementById("dropdown");
-      const menuToggle = document.getElementById("menuToggle");
-      const menuContent = document.getElementById("menuContent");
-      const timeElement = document.getElementById("time");
-      const dateElement = document.getElementById("date");
-      const navSections = document.querySelectorAll(".nav-section");
-      const navLinks = document.querySelectorAll(".nav-link");
-      const moduleTitle = document.getElementById("moduleTitle");
-
-      // Initialize the application
-      function initApp() {
+      // DOM elements for spreadsheet
+      const gridContainer = document.getElementById('gridContainer');
+      const cellReference = document.getElementById('cellReference');
+      const sheetNameInput = document.getElementById('sheetNameInput');
+      const syncIndicator = document.getElementById('syncIndicator');
+      const syncText = document.getElementById('syncText');
+      const userCount = document.getElementById('userCount');
+      const spreadsheetStats = document.getElementById('spreadsheetStats');
+      const addSheetBtn = document.getElementById('addSheetBtn');
+      const sheetTabs = document.getElementById('sheetTabs');
+      
+      // Toolbar buttons
+      const undoBtn = document.getElementById('undoBtn');
+      const redoBtn = document.getElementById('redoBtn');
+      const boldBtn = document.getElementById('boldBtn');
+      const italicBtn = document.getElementById('italicBtn');
+      const underlineBtn = document.getElementById('underlineBtn');
+      const fontSizeSelect = document.getElementById('fontSizeSelect');
+      const fontFamilySelect = document.getElementById('fontFamilySelect');
+      const alignLeftBtn = document.getElementById('alignLeftBtn');
+      const alignCenterBtn = document.getElementById('alignCenterBtn');
+      const alignRightBtn = document.getElementById('alignRightBtn');
+      
+      // Initialize the spreadsheet
+      function initSpreadsheet() {
         setupEventListeners();
         loadInitialSection();
         updateClock();
         setInterval(updateClock, 60000);
         
-        // Set up iframe load event listeners
-        setupIframeEvents();
+        // Set up real-time listeners
+        setupRealtimeListeners();
       }
-
-      // Set up iframe load event listeners
-      function setupIframeEvents() {
-        iframe.addEventListener('load', function() {
+      
+      // Set up real-time Firebase listeners
+      function setupRealtimeListeners() {
+        if (!currentUser) return;
+        
+        const userRef = database.ref(`spreadsheets/${currentSheet.id}/users/${currentUser.uid}`);
+        const dataRef = database.ref(`spreadsheets/${currentSheet.id}/data`);
+        
+        // Update user presence
+        userRef.set({
+          email: currentUser.email,
+          name: currentUser.displayName || currentUser.email.split('@')[0],
+          lastActive: firebase.database.ServerValue.TIMESTAMP,
+          cell: selectedCell
+        });
+        
+        // Remove user when they disconnect
+        userRef.onDisconnect().remove();
+        
+        // Listen for user changes
+        database.ref(`spreadsheets/${currentSheet.id}/users`).on('value', (snapshot) => {
+          const users = snapshot.val() || {};
+          connectedUsers = users;
+          updateUserCount();
+        });
+        
+        // Listen for data changes
+        dataRef.on('value', (snapshot) => {
+          const data = snapshot.val() || {};
+          if (JSON.stringify(data) !== JSON.stringify(currentSheet.data)) {
+            currentSheet.data = data;
+            renderGrid();
+            updateSyncStatus(true);
+          }
+        });
+      }
+      
+      // Update user count display
+      function updateUserCount() {
+        const userCountElement = userCount.querySelector('span');
+        const count = Object.keys(connectedUsers).length;
+        userCountElement.textContent = `${count} user${count !== 1 ? 's' : ''} online`;
+      }
+      
+      // Update sync status
+      function updateSyncStatus(synced = false) {
+        const indicator = syncIndicator;
+        const text = syncText;
+        
+        if (synced) {
+          indicator.className = 'sync-indicator synced';
+          text.textContent = 'Synced';
           setTimeout(() => {
-            sheetLoader.style.display = 'none';
-            if (currentSheetName) {
-              currentSheetInfo.textContent = currentSheetName;
-              currentSheetInfo.style.display = 'block';
-            }
-          }, 500);
-        });
-        
-        iframe.addEventListener('loadstart', function() {
-          sheetLoader.style.display = 'flex';
-          currentSheetInfo.style.display = 'none';
-        });
-        
-        iframe.addEventListener('error', function() {
-          sheetLoader.style.display = 'none';
-          currentSheetInfo.style.display = 'none';
-        });
+            indicator.className = 'sync-indicator';
+            text.textContent = 'Syncing...';
+          }, 3000);
+        } else {
+          indicator.className = 'sync-indicator';
+          text.textContent = 'Syncing...';
+        }
       }
-
-      // Set up all event listeners
-      function setupEventListeners() {
-        document.querySelectorAll(".nav-section-title").forEach(title => {
-          title.addEventListener("click", function(e) {
-            e.stopPropagation();
-            const section = this.parentElement;
-            navSections.forEach(s => {
-              if (s !== section) s.classList.remove("active");
-            });
-            section.classList.toggle("active");
+      
+      // Save data to Firebase
+      function saveToFirebase() {
+        if (!currentUser) return;
+        
+        database.ref(`spreadsheets/${currentSheet.id}/data`).set(currentSheet.data)
+          .then(() => {
+            updateSyncStatus(true);
+            currentSheet.lastSaved = new Date();
+          })
+          .catch((error) => {
+            console.error("Save error:", error);
+            syncIndicator.className = 'sync-indicator error';
+            syncText.textContent = 'Sync failed';
           });
-        });
-
-        navLinks.forEach(link => {
+      }
+      
+      // Set up event listeners
+      function setupEventListeners() {
+        // Navigation links
+        document.querySelectorAll(".nav-link").forEach(link => {
           link.addEventListener("click", function(e) {
             e.preventDefault();
             handleNavLinkClick(this);
           });
         });
-
+        
+        // Tools menu
+        const menuContent = document.getElementById("menuContent");
+        const menuToggle = document.getElementById("menuToggle");
+        const dropdown = document.getElementById("dropdown");
+        
         menuContent.addEventListener("click", function(e) {
           if (e.target.tagName === 'A') {
             e.preventDefault();
-            handleToolClick(e.target);
+            dropdown.classList.remove("open");
           }
         });
-
+        
         menuToggle.addEventListener("click", function(e) {
           e.stopPropagation();
           dropdown.classList.toggle("open");
         });
-
+        
         document.addEventListener("click", function() {
           dropdown.classList.remove("open");
         });
+        
+        // Toolbar buttons
+        undoBtn.addEventListener('click', undo);
+        redoBtn.addEventListener('click', redo);
+        boldBtn.addEventListener('click', toggleBold);
+        italicBtn.addEventListener('click', toggleItalic);
+        underlineBtn.addEventListener('click', toggleUnderline);
+        fontSizeSelect.addEventListener('change', updateFontSize);
+        fontFamilySelect.addEventListener('change', updateFontFamily);
+        alignLeftBtn.addEventListener('click', () => updateAlignment('left'));
+        alignCenterBtn.addEventListener('click', () => updateAlignment('center'));
+        alignRightBtn.addEventListener('click', () => updateAlignment('right'));
+        
+        // Sheet name input
+        sheetNameInput.addEventListener('change', updateSheetName);
+        sheetNameInput.addEventListener('blur', updateSheetName);
+        
+        // Add sheet button
+        addSheetBtn.addEventListener('click', addNewSheet);
+        
+        // Sheet tabs
+        sheetTabs.addEventListener('click', function(e) {
+          if (e.target.classList.contains('sheet-tab')) {
+            switchSheet(e.target.dataset.sheetId);
+          }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', handleKeyboardShortcuts);
       }
-
+      
+      // Handle navigation link clicks
       function handleNavLinkClick(link) {
-        navLinks.forEach(l => l.classList.remove("active"));
+        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
         link.classList.add("active");
         
         const section = link.dataset.section;
-        const data = moduleData[section];
-        
-        if (!data) {
-          console.error("No data found for section:", section);
-          return;
-        }
-        
-        moduleTitle.textContent = `Enterprise Fleet System - ${data.title}`;
-        updateToolsMenu(data.tools);
-        
-        if (data.tools.length > 0) {
-          loadToolContent(data.tools[0].sheetUrl, data.tools[0].name);
-        }
+        loadSpreadsheet(section);
       }
-
-      function updateToolsMenu(tools) {
-        menuContent.innerHTML = '';
-        tools.forEach(tool => {
-          const link = document.createElement('a');
-          link.href = '#';
-          link.textContent = tool.name;
-          link.dataset.link = tool.link;
-          link.dataset.sheetUrl = tool.sheetUrl;
-          link.dataset.sheetName = tool.name;
-          menuContent.appendChild(link);
-        });
-      }
-
-      function handleToolClick(toolElement) {
-        dropdown.classList.remove("open");
-        const sheetUrl = toolElement.dataset.sheetUrl;
-        const sheetName = toolElement.dataset.sheetName;
-        loadToolContent(sheetUrl, sheetName);
-      }
-
-      function loadToolContent(sheetUrl, sheetName) {
-        currentSheetName = sheetName || 'Sheet';
-        currentSheetUrl = sheetUrl;
-        
-        sheetLoaderText.textContent = `Loading ${currentSheetName}...`;
+      
+      // Load spreadsheet for a section
+      function loadSpreadsheet(section) {
+        sheetLoaderText.textContent = `Loading ${section.replace('-', ' ')}...`;
         sheetLoader.style.display = 'flex';
-        currentSheetInfo.style.display = 'none';
         
-        if (sheetUrl && sheetUrl.includes('docs.google.com')) {
-          const sheetId = extractSheetId(sheetUrl);
-          if (sheetId) {
-            iframe.src = '';
-            setTimeout(() => {
-              iframe.src = `https://docs.google.com/spreadsheets/d/${sheetId}/edit?usp=sharing`;
-            }, 100);
-          } else {
-            showPlaceholderContent("Invalid Google Sheet URL format");
+        const template = spreadsheetTemplates[section] || spreadsheetTemplates["vehicle-management"];
+        currentSheet.name = template.name;
+        
+        // Update UI
+        document.getElementById('moduleTitle').textContent = `Enterprise Fleet System - ${template.name}`;
+        sheetNameInput.value = template.name;
+        currentSheetInfo.textContent = template.name;
+        currentSheetInfo.style.display = 'block';
+        
+        // Initialize or load data
+        setTimeout(() => {
+          if (Object.keys(currentSheet.data).length === 0) {
+            initializeSheetData(template);
           }
-        } else {
-          showPlaceholderContent("No Google Sheet configured for this tool");
+          renderGrid();
+          sheetLoader.style.display = 'none';
+        }, 500);
+      }
+      
+      // Initialize sheet data from template
+      function initializeSheetData(template) {
+        currentSheet.data = {};
+        
+        // Add column headers
+        for (let col = 0; col < template.columns.length; col++) {
+          const cellId = `1:${col + 1}`;
+          currentSheet.data[cellId] = {
+            value: template.columns[col].header,
+            bold: true,
+            alignment: 'center'
+          };
+        }
+        
+        // Add sample data
+        for (let row = 0; row < template.sampleData.length; row++) {
+          for (let col = 0; col < template.sampleData[row].length; col++) {
+            const cellId = `${row + 2}:${col + 1}`;
+            currentSheet.data[cellId] = {
+              value: template.sampleData[row][col]
+            };
+          }
+        }
+        
+        saveToFirebase();
+      }
+      
+      // Render the grid
+      function renderGrid() {
+        const template = spreadsheetTemplates[currentSheet.id.split('-')[0]] || spreadsheetTemplates["vehicle-management"];
+        const columns = template.columns;
+        const rowCount = 100;
+        const colCount = columns.length;
+        
+        // Update stats
+        spreadsheetStats.textContent = `${rowCount} rows × ${colCount} columns`;
+        
+        // Clear grid
+        gridContainer.innerHTML = '';
+        
+        // Create column headers
+        const columnHeaders = document.createElement('div');
+        columnHeaders.className = 'column-headers';
+        
+        // Corner cell
+        const corner = document.createElement('div');
+        corner.className = 'header-corner';
+        corner.textContent = '';
+        columnHeaders.appendChild(corner);
+        
+        // Column headers
+        for (let col = 1; col <= colCount; col++) {
+          const header = document.createElement('div');
+          header.className = 'column-header';
+          header.textContent = getColumnLetter(col);
+          header.style.width = `${columns[col-1]?.width || 120}px`;
+          header.style.minWidth = `${columns[col-1]?.width || 120}px`;
+          columnHeaders.appendChild(header);
+        }
+        
+        gridContainer.appendChild(columnHeaders);
+        
+        // Create grid rows
+        const gridRows = document.createElement('div');
+        gridRows.className = 'grid-rows';
+        
+        for (let row = 1; row <= rowCount; row++) {
+          const gridRow = document.createElement('div');
+          gridRow.className = 'grid-row';
+          
+          // Row header
+          const rowHeader = document.createElement('div');
+          rowHeader.className = 'row-header';
+          rowHeader.textContent = row;
+          gridRow.appendChild(rowHeader);
+          
+          // Cells
+          for (let col = 1; col <= colCount; col++) {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            cell.contentEditable = true;
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            cell.style.width = `${columns[col-1]?.width || 120}px`;
+            cell.style.minWidth = `${columns[col-1]?.width || 120}px`;
+            
+            // Get cell data
+            const cellId = `${row}:${col}`;
+            const cellData = currentSheet.data[cellId];
+            
+            if (cellData) {
+              cell.textContent = cellData.value;
+              
+              // Apply formatting
+              if (cellData.bold) cell.style.fontWeight = 'bold';
+              if (cellData.italic) cell.style.fontStyle = 'italic';
+              if (cellData.underline) cell.style.textDecoration = 'underline';
+              if (cellData.fontSize) cell.style.fontSize = `${cellData.fontSize}px`;
+              if (cellData.fontFamily) cell.style.fontFamily = cellData.fontFamily;
+              if (cellData.alignment) cell.style.textAlign = cellData.alignment;
+              if (cellData.color) cell.style.color = cellData.color;
+              if (cellData.bgColor) cell.style.backgroundColor = cellData.bgColor;
+            }
+            
+            // Selection and editing
+            cell.addEventListener('click', () => selectCell(row, col));
+            cell.addEventListener('dblclick', () => startEditing(row, col));
+            cell.addEventListener('focus', () => startEditing(row, col));
+            cell.addEventListener('blur', () => stopEditing(row, col));
+            cell.addEventListener('input', () => updateCellValue(row, col, cell.textContent));
+            
+            // Keyboard navigation in cell
+            cell.addEventListener('keydown', (e) => handleCellKeydown(e, row, col));
+            
+            gridRow.appendChild(cell);
+          }
+          
+          gridRows.appendChild(gridRow);
+        }
+        
+        gridContainer.appendChild(gridRows);
+        
+        // Select initial cell
+        selectCell(1, 1);
+      }
+      
+      // Select a cell
+      function selectCell(row, col) {
+        // Remove previous selection
+        document.querySelectorAll('.grid-cell.selected').forEach(cell => {
+          cell.classList.remove('selected');
+        });
+        
+        // Add new selection
+        const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
+        if (cell) {
+          cell.classList.add('selected');
+          cell.focus();
+        }
+        
+        selectedCell = { row, col };
+        cellReference.textContent = `${getColumnLetter(col)}${row}`;
+        
+        // Update user presence
+        if (currentUser) {
+          database.ref(`spreadsheets/${currentSheet.id}/users/${currentUser.uid}/cell`).set(selectedCell);
         }
       }
-
-      function showPlaceholderContent(message) {
-        sheetLoader.style.display = 'none';
-        currentSheetInfo.style.display = 'none';
+      
+      // Start editing a cell
+      function startEditing(row, col) {
+        if (editingCell) return;
         
-        iframe.srcdoc = `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <style>
-              body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100%;
-                font-family: Arial, sans-serif;
-                color: #666;
-                background: #f9f9f9;
-              }
-              .content {
-                text-align: center;
-                padding: 20px;
-                max-width: 500px;
-              }
-              i {
-                font-size: 3rem;
-                color: #ddd;
-                margin-bottom: 20px;
-              }
-              h2 {
-                color: #444;
-                margin: 0 0 15px 0;
-              }
-              p {
-                margin: 5px 0;
-                line-height: 1.5;
-              }
-            </style>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-          </head>
-          <body>
-            <div class="content">
-              <i class="fas fa-exclamation-triangle"></i>
-              <h2>Content Not Available</h2>
-              <p>${message}</p>
-              ${message.includes('configured') ? '<p>Please configure a valid Google Sheet URL in the moduleData object.</p>' : ''}
-            </div>
-          </body>
-          </html>
-        `;
+        editingCell = { row, col };
+        const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
+        if (cell) {
+          cell.classList.add('editing');
+        }
       }
-
+      
+      // Stop editing a cell
+      function stopEditing(row, col) {
+        if (!editingCell || editingCell.row !== row || editingCell.col !== col) return;
+        
+        const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
+        if (cell) {
+          cell.classList.remove('editing');
+        }
+        
+        editingCell = null;
+      }
+      
+      // Update cell value
+      function updateCellValue(row, col, value) {
+        const cellId = `${row}:${col}`;
+        const oldValue = currentSheet.data[cellId]?.value || '';
+        
+        if (value !== oldValue) {
+          // Save to undo stack
+          undoStack.push({
+            type: 'cell',
+            cellId,
+            oldValue: currentSheet.data[cellId] || null,
+            newValue: { ...(currentSheet.data[cellId] || {}), value }
+          });
+          
+          // Clear redo stack
+          redoStack = [];
+          
+          // Update data
+          if (!currentSheet.data[cellId]) {
+            currentSheet.data[cellId] = { value };
+          } else {
+            currentSheet.data[cellId].value = value;
+          }
+          
+          // Save to Firebase
+          saveToFirebase();
+        }
+      }
+      
+      // Handle keyboard shortcuts
+      function handleKeyboardShortcuts(e) {
+        if (e.ctrlKey || e.metaKey) {
+          switch(e.key) {
+            case 'z':
+              if (e.shiftKey) redo();
+              else undo();
+              e.preventDefault();
+              break;
+            case 'y':
+              redo();
+              e.preventDefault();
+              break;
+            case 'b':
+              toggleBold();
+              e.preventDefault();
+              break;
+            case 'i':
+              toggleItalic();
+              e.preventDefault();
+              break;
+            case 'u':
+              toggleUnderline();
+              e.preventDefault();
+              break;
+          }
+        }
+        
+        // Navigation keys
+        if (!editingCell) {
+          switch(e.key) {
+            case 'ArrowUp':
+              if (selectedCell.row > 1) selectCell(selectedCell.row - 1, selectedCell.col);
+              e.preventDefault();
+              break;
+            case 'ArrowDown':
+              selectCell(selectedCell.row + 1, selectedCell.col);
+              e.preventDefault();
+              break;
+            case 'ArrowLeft':
+              if (selectedCell.col > 1) selectCell(selectedCell.row, selectedCell.col - 1);
+              e.preventDefault();
+              break;
+            case 'ArrowRight':
+              selectCell(selectedCell.row, selectedCell.col + 1);
+              e.preventDefault();
+              break;
+            case 'Enter':
+              startEditing(selectedCell.row, selectedCell.col);
+              e.preventDefault();
+              break;
+          }
+        }
+      }
+      
+      // Handle cell keydown for navigation
+      function handleCellKeydown(e, row, col) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          stopEditing(row, col);
+          selectCell(row + 1, col);
+        } else if (e.key === 'Tab') {
+          e.preventDefault();
+          stopEditing(row, col);
+          selectCell(row, col + (e.shiftKey ? -1 : 1));
+        }
+      }
+      
+      // Formatting functions
+      function toggleBold() {
+        applyFormatting('bold', !getCurrentFormatting().bold);
+      }
+      
+      function toggleItalic() {
+        applyFormatting('italic', !getCurrentFormatting().italic);
+      }
+      
+      function toggleUnderline() {
+        applyFormatting('underline', !getCurrentFormatting().underline);
+      }
+      
+      function updateFontSize() {
+        applyFormatting('fontSize', fontSizeSelect.value);
+      }
+      
+      function updateFontFamily() {
+        applyFormatting('fontFamily', fontFamilySelect.value);
+      }
+      
+      function updateAlignment(alignment) {
+        applyFormatting('alignment', alignment);
+      }
+      
+      function getCurrentFormatting() {
+        const cellId = `${selectedCell.row}:${selectedCell.col}`;
+        return currentSheet.data[cellId] || {};
+      }
+      
+      function applyFormatting(property, value) {
+        const cellId = `${selectedCell.row}:${selectedCell.col}`;
+        const oldFormatting = currentSheet.data[cellId] || {};
+        
+        // Save to undo stack
+        undoStack.push({
+          type: 'format',
+          cellId,
+          oldValue: oldFormatting,
+          newValue: { ...oldFormatting, [property]: value }
+        });
+        
+        // Clear redo stack
+        redoStack = [];
+        
+        // Update formatting
+        if (!currentSheet.data[cellId]) {
+          currentSheet.data[cellId] = { value: '', [property]: value };
+        } else {
+          currentSheet.data[cellId][property] = value;
+        }
+        
+        // Update cell display
+        const cell = document.querySelector(`.grid-cell[data-row="${selectedCell.row}"][data-col="${selectedCell.col}"]`);
+        if (cell) {
+          switch(property) {
+            case 'bold':
+              cell.style.fontWeight = value ? 'bold' : 'normal';
+              break;
+            case 'italic':
+              cell.style.fontStyle = value ? 'italic' : 'normal';
+              break;
+            case 'underline':
+              cell.style.textDecoration = value ? 'underline' : 'none';
+              break;
+            case 'fontSize':
+              cell.style.fontSize = `${value}px`;
+              break;
+            case 'fontFamily':
+              cell.style.fontFamily = value;
+              break;
+            case 'alignment':
+              cell.style.textAlign = value;
+              break;
+          }
+        }
+        
+        // Save to Firebase
+        saveToFirebase();
+      }
+      
+      // Undo/Redo functions
+      function undo() {
+        if (undoStack.length === 0) return;
+        
+        const action = undoStack.pop();
+        redoStack.push({
+          ...action,
+          oldValue: currentSheet.data[action.cellId],
+          newValue: action.oldValue
+        });
+        
+        // Apply undo
+        if (action.oldValue === null) {
+          delete currentSheet.data[action.cellId];
+        } else {
+          currentSheet.data[action.cellId] = action.oldValue;
+        }
+        
+        // Update display
+        renderGrid();
+        selectCell(selectedCell.row, selectedCell.col);
+        saveToFirebase();
+      }
+      
+      function redo() {
+        if (redoStack.length === 0) return;
+        
+        const action = redoStack.pop();
+        undoStack.push({
+          ...action,
+          oldValue: currentSheet.data[action.cellId],
+          newValue: action.newValue
+        });
+        
+        // Apply redo
+        currentSheet.data[action.cellId] = action.newValue;
+        
+        // Update display
+        renderGrid();
+        selectCell(selectedCell.row, selectedCell.col);
+        saveToFirebase();
+      }
+      
+      // Update sheet name
+      function updateSheetName() {
+        const newName = sheetNameInput.value.trim();
+        if (newName && newName !== currentSheet.name) {
+          currentSheet.name = newName;
+          document.getElementById('moduleTitle').textContent = `Enterprise Fleet System - ${newName}`;
+          currentSheetInfo.textContent = newName;
+          saveToFirebase();
+        }
+      }
+      
+      // Switch sheet
+      function switchSheet(sheetId) {
+        // Update tabs
+        document.querySelectorAll('.sheet-tab').forEach(tab => {
+          tab.classList.toggle('active', tab.dataset.sheetId === sheetId);
+        });
+        
+        // Save current sheet
+        saveToFirebase();
+        
+        // Switch to new sheet
+        currentSheet.id = sheetId;
+        currentSheet.name = `Sheet ${sheetId.replace('sheet', '')}`;
+        currentSheet.data = {};
+        
+        // Update UI
+        sheetNameInput.value = currentSheet.name;
+        sheetLoaderText.textContent = `Loading ${currentSheet.name}...`;
+        sheetLoader.style.display = 'flex';
+        
+        // Load sheet data from Firebase
+        database.ref(`spreadsheets/${sheetId}/data`).once('value')
+          .then((snapshot) => {
+            currentSheet.data = snapshot.val() || {};
+            renderGrid();
+            sheetLoader.style.display = 'none';
+            
+            // Update realtime listeners
+            setupRealtimeListeners();
+          })
+          .catch((error) => {
+            console.error("Load error:", error);
+            sheetLoader.style.display = 'none';
+          });
+      }
+      
+      // Add new sheet
+      function addNewSheet() {
+        const sheetCount = document.querySelectorAll('.sheet-tab').length;
+        const newSheetId = `sheet${sheetCount + 1}`;
+        
+        // Add tab
+        const newTab = document.createElement('button');
+        newTab.className = 'sheet-tab';
+        newTab.dataset.sheetId = newSheetId;
+        newTab.textContent = `Sheet ${sheetCount + 1}`;
+        
+        // Insert before add button
+        sheetTabs.insertBefore(newTab, addSheetBtn);
+        
+        // Switch to new sheet
+        switchSheet(newSheetId);
+      }
+      
+      // Helper function to get column letter from number
+      function getColumnLetter(col) {
+        let letter = '';
+        while (col > 0) {
+          const remainder = (col - 1) % 26;
+          letter = String.fromCharCode(65 + remainder) + letter;
+          col = Math.floor((col - 1) / 26);
+        }
+        return letter;
+      }
+      
+      // Update clock
       function updateClock() {
         const now = new Date();
         let hours = now.getHours();
@@ -1844,34 +2438,25 @@
         hours = hours ? hours : 12;
         const minutes = now.getMinutes().toString().padStart(2, '0');
         
-        timeElement.textContent = `${hours}:${minutes} ${ampm}`;
+        document.getElementById('time').textContent = `${hours}:${minutes} ${ampm}`;
         
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        dateElement.textContent = now.toLocaleDateString('en-US', options);
+        document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
       }
-
-      function extractSheetId(url) {
-        try {
-          const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-          return match ? match[1] : null;
-        } catch (e) {
-          console.error("Error extracting sheet ID:", e);
-          return null;
-        }
-      }
-
+      
+      // Load initial section
       function loadInitialSection() {
         const activeLink = document.querySelector('.nav-link.active');
         if (activeLink) {
-          handleNavLinkClick(activeLink);
-        } else if (navLinks.length > 0) {
-          navLinks[0].classList.add("active");
-          handleNavLinkClick(navLinks[0]);
+          loadSpreadsheet(activeLink.dataset.section);
+        } else {
+          document.querySelector('.nav-link').classList.add("active");
+          loadSpreadsheet("vehicle-management");
         }
       }
-
+      
       // Initialize the application
-      initApp();
+      initSpreadsheet();
     }
   </script>
 </body>
