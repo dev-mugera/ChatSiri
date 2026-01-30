@@ -613,6 +613,169 @@
             color: var(--text-primary);
         }
 
+        /* ============================================
+           NEW CHAT USER SELECTION MODAL - IMPROVED DESIGN
+           ============================================ */
+        .new-chat-search-container {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .new-chat-search {
+            position: relative;
+            width: 100%;
+        }
+
+        .new-chat-search input {
+            width: 100%;
+            padding: var(--spacing) var(--spacing-md) var(--spacing) var(--spacing-xl);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+            font-family: inherit;
+        }
+
+        .new-chat-search input:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .new-chat-search i {
+            position: absolute;
+            left: var(--spacing);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        /* User list container */
+        .new-chat-users-container {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: var(--spacing-sm);
+        }
+
+        /* User item */
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing);
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing-xs);
+            cursor: pointer;
+            transition: all var(--transition);
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            color: inherit;
+            font-family: inherit;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .user-status {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+        }
+
+        .user-status.online {
+            background: var(--color-success);
+        }
+
+        .user-status.offline {
+            background: var(--text-tertiary);
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        /* Loading and empty states */
+        .users-loading {
+            padding: var(--spacing-2xl);
+            text-align: center;
+            color: var(--text-tertiary);
+        }
+
+        .users-empty {
+            padding: var(--spacing-2xl);
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing);
+            opacity: 0.5;
+        }
+
+        /* Modal footer */
+        .modal-footer {
+            padding: var(--spacing) var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
         /* Status Selector */
         .status-selector {
             position: relative;
@@ -1726,13 +1889,14 @@
                         </div>
                     </div>
                 </div>
-                <div style="padding: var(--spacing) var(--spacing-lg); border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; color: var(--text-tertiary); font-size: 0.75rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);">
+                <div class="modal-footer">
+                    <i class="fas fa-info-circle" style="margin-right: 6px;"></i>
                     Select an option to continue
                 </div>
             </div>
         </div>
 
-        <!-- New Chat Modal (for individual messages) -->
+        <!-- New Chat Modal (for individual messages) - IMPROVED DESIGN -->
         <div class="modal-overlay" id="newChatModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1741,13 +1905,17 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div style="padding: var(--spacing); border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                    <input type="text" id="newChatSearch" placeholder="Search users..." style="width: 100%; padding: var(--spacing) var(--spacing-md); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius); color: var(--text-primary); font-size: 0.95rem; backdrop-filter: blur(10px);">
+                <div class="new-chat-search-container">
+                    <div class="new-chat-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="newChatSearch" placeholder="Search users by name or role...">
+                    </div>
                 </div>
-                <div id="newChatUsers" style="flex: 1; overflow-y: auto; max-height: 400px;">
+                <div id="newChatUsers" class="new-chat-users-container">
                     <!-- Users will be loaded here from Firebase -->
                 </div>
-                <div style="padding: var(--spacing) var(--spacing-lg); border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; color: var(--text-tertiary); font-size: 0.75rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);">
+                <div class="modal-footer">
+                    <i class="fas fa-user-friends" style="margin-right: 6px;"></i>
                     Select a user to start private messaging
                 </div>
             </div>
@@ -2305,11 +2473,20 @@
         }
     }
     
+    // ============================================
+    // IMPROVED USER SELECTION MODAL FUNCTION
+    // ============================================
     async function loadUsersForNewChat() {
         const container = document.getElementById('newChatUsers');
         if (!container) return;
         
-        container.innerHTML = '<div class="p-4 text-center text-muted">Loading users...</div>';
+        // Show loading state
+        container.innerHTML = `
+            <div class="users-loading">
+                <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
+                Loading users...
+            </div>
+        `;
         
         try {
             await loadAllUsers();
@@ -2317,24 +2494,36 @@
             container.innerHTML = '';
             
             if (state.users.size === 0) {
-                container.innerHTML = '<div class="p-4 text-center text-muted">No users found</div>';
+                container.innerHTML = `
+                    <div class="users-empty">
+                        <div class="empty-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 style="margin-bottom: var(--spacing-sm);">No users found</h3>
+                        <p class="text-muted">Add more users to your workspace to start chatting</p>
+                    </div>
+                `;
                 return;
             }
             
-            state.users.forEach(user => {
-                const userElement = document.createElement('div');
-                userElement.className = 'new-chat-user';
+            // Convert users Map to array and sort alphabetically
+            const usersArray = Array.from(state.users.values()).sort((a, b) => 
+                a.name.localeCompare(b.name)
+            );
+            
+            // Create user items
+            usersArray.forEach(user => {
+                const userElement = document.createElement('button');
+                userElement.className = 'user-item';
                 userElement.innerHTML = `
-                    <div class="new-chat-user-avatar" style="background: ${user.color || getRandomColor()}">
+                    <div class="user-avatar" style="background: ${user.color || getRandomColor()}">
                         ${getInitials(user.name)}
+                        <div class="user-status ${state.onlineUsers.has(user.uid) ? 'online' : 'offline'}"></div>
                     </div>
-                    <div class="new-chat-user-info">
-                        <div class="new-chat-user-name">${user.name}</div>
-                        <div class="new-chat-user-role">${user.role || 'User'}</div>
-                    </div>
-                    <div class="new-chat-user-status">
-                        <span class="status-dot-sm ${state.onlineUsers.has(user.uid) ? 'available' : ''}"></span>
-                        <span>${state.onlineUsers.has(user.uid) ? 'Online' : 'Offline'}</span>
+                    <div class="user-info">
+                        <div class="user-name">${user.name}</div>
+                        <div class="user-role">${user.role || 'User'}</div>
+                        <div class="user-email">${user.email || ''}</div>
                     </div>
                 `;
                 
@@ -2346,9 +2535,66 @@
                 container.appendChild(userElement);
             });
             
+            // Add search functionality
+            const searchInput = document.getElementById('newChatSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    const allUserItems = container.querySelectorAll('.user-item');
+                    
+                    if (!searchTerm) {
+                        // Show all users if search is empty
+                        allUserItems.forEach(item => {
+                            item.style.display = 'flex';
+                        });
+                        return;
+                    }
+                    
+                    // Filter users
+                    allUserItems.forEach(item => {
+                        const userName = item.querySelector('.user-name').textContent.toLowerCase();
+                        const userRole = item.querySelector('.user-role').textContent.toLowerCase();
+                        const userEmail = item.querySelector('.user-email').textContent.toLowerCase();
+                        
+                        if (userName.includes(searchTerm) || 
+                            userRole.includes(searchTerm) || 
+                            userEmail.includes(searchTerm)) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                    
+                    // Check if any users are visible
+                    const visibleUsers = Array.from(allUserItems).some(item => 
+                        item.style.display !== 'none'
+                    );
+                    
+                    if (!visibleUsers) {
+                        container.innerHTML = `
+                            <div class="users-empty">
+                                <div class="empty-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <h3 style="margin-bottom: var(--spacing-sm);">No matching users</h3>
+                                <p class="text-muted">Try a different search term</p>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            
         } catch (error) {
             console.error('Error loading users:', error);
-            container.innerHTML = '<div class="p-4 text-center text-muted">Error loading users</div>';
+            container.innerHTML = `
+                <div class="users-empty">
+                    <div class="empty-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 style="margin-bottom: var(--spacing-sm);">Error loading users</h3>
+                    <p class="text-muted">Please try again later</p>
+                </div>
+            `;
         }
     }
     
@@ -2358,7 +2604,12 @@
         
         container.innerHTML = '';
         
-        state.users.forEach(user => {
+        // Convert users Map to array and sort alphabetically
+        const usersArray = Array.from(state.users.values()).sort((a, b) => 
+            a.name.localeCompare(b.name)
+        );
+        
+        usersArray.forEach(user => {
             const memberElement = document.createElement('div');
             memberElement.className = 'member-item';
             memberElement.dataset.userId = user.uid;
@@ -2366,12 +2617,12 @@
                 <div class="member-checkbox">
                     <i class="fas fa-check" style="display: none;"></i>
                 </div>
-                <div class="new-chat-user-avatar" style="background: ${user.color || getRandomColor()}">
+                <div class="user-avatar" style="background: ${user.color || getRandomColor()}">
                     ${getInitials(user.name)}
                 </div>
-                <div class="new-chat-user-info">
-                    <div class="new-chat-user-name">${user.name}</div>
-                    <div class="new-chat-user-role">${user.role || 'User'}</div>
+                <div class="user-info">
+                    <div class="user-name">${user.name}</div>
+                    <div class="user-role">${user.role || 'User'}</div>
                 </div>
             `;
             
