@@ -72,6 +72,103 @@ const ENTERPRISE_APPS = [
 ];
 
 // ============================
+// ENHANCED LOADING ANIMATION
+// ============================
+
+// Initialize loading screen with app icons
+function initializeLoadingScreen() {
+    const loadingGrid = document.getElementById('loadingAppsGrid');
+    if (!loadingGrid) return;
+    
+    // Clear existing content
+    loadingGrid.innerHTML = '';
+    
+    // Create animated app icons for all enterprise apps
+    ENTERPRISE_APPS.forEach((app, index) => {
+        const appIcon = document.createElement('div');
+        appIcon.className = 'loading-app-icon';
+        appIcon.style.animationDelay = `${index * 0.15}s`;
+        
+        const img = document.createElement('img');
+        img.src = app.icon;
+        img.alt = app.name;
+        img.onerror = function() {
+            handleImageError(this, app.color, app.name.charAt(0));
+        };
+        
+        appIcon.appendChild(img);
+        loadingGrid.appendChild(appIcon);
+    });
+    
+    // Add placeholder icons to fill the 5-column grid if needed
+    const remainingIcons = 5 - ENTERPRISE_APPS.length;
+    for (let i = 0; i < remainingIcons; i++) {
+        const placeholderIcon = document.createElement('div');
+        placeholderIcon.className = 'loading-app-icon';
+        placeholderIcon.style.animationDelay = `${(ENTERPRISE_APPS.length + i) * 0.15}s`;
+        placeholderIcon.innerHTML = `
+            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); border-radius: var(--radius); opacity: 0.3;"></div>
+        `;
+        loadingGrid.appendChild(placeholderIcon);
+    }
+}
+
+// Update loading message
+function updateLoadingMessage(message) {
+    const loadingMessage = document.getElementById('loadingMessage');
+    if (loadingMessage) {
+        loadingMessage.textContent = message;
+    }
+}
+
+// Simulate loading progress
+function simulateLoadingProgress() {
+    const progressBar = document.getElementById('loadingProgressBar');
+    if (!progressBar) return;
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+        }
+        progressBar.style.width = `${progress}%`;
+    }, 300);
+    
+    return interval;
+}
+
+// Complete loading animation with fade out
+async function completeLoading() {
+    return new Promise((resolve) => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('loadingProgressBar');
+        
+        // Ensure progress bar is full
+        if (progressBar) {
+            progressBar.style.width = '100%';
+        }
+        
+        // Update final message
+        updateLoadingMessage('Ready to launch');
+        
+        // Fade out loading screen
+        setTimeout(() => {
+            loadingScreen.style.transition = 'opacity 0.5s ease';
+            loadingScreen.style.opacity = '0';
+            
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                loadingScreen.style.opacity = '1';
+                loadingScreen.style.transition = '';
+                resolve();
+            }, 500);
+        }, 800);
+    });
+}
+
+// ============================
 // UTILITY FUNCTIONS
 // ============================
 function showNotification(title, message, type = 'info') {
@@ -262,6 +359,8 @@ async function handleAuthStateChanged(user) {
 
 async function handleUserLogin(user) {
     try {
+        updateLoadingMessage('Loading user profile');
+        
         // Create or update user in database
         const userRef = state.db.ref(`users/${user.uid}`);
         const snapshot = await userRef.once('value');
@@ -286,6 +385,8 @@ async function handleUserLogin(user) {
             });
         }
         
+        updateLoadingMessage('Connecting to workspace');
+        
         // Get user data
         const userData = (await userRef.once('value')).val();
         state.currentUser = userData;
@@ -296,10 +397,14 @@ async function handleUserLogin(user) {
         // Update UI
         updateUserUI();
         
+        updateLoadingMessage('Loading users and conversations');
+        
         // Load users and conversations
         await loadAllUsers();
         await loadConversations();
         await loadChannels();
+        
+        updateLoadingMessage('Setting up real-time features');
         
         // Setup real-time listeners
         setupRealtimeListeners();
@@ -307,15 +412,18 @@ async function handleUserLogin(user) {
         // Show workspace
         document.getElementById('loginContainer').classList.add('hidden');
         document.getElementById('workspace').classList.remove('hidden');
-        document.getElementById('loadingScreen').classList.add('hidden');
         
         // Initialize apps
         initializeApps();
+        
+        // Complete loading animation
+        await completeLoading();
         
         showNotification('Welcome', `Logged in as ${userData.name}`, 'success');
         
     } catch (error) {
         console.error('Login error:', error);
+        updateLoadingMessage('Login failed');
         showNotification('Error', 'Failed to load user data', 'error');
         
         // Sign out on error
@@ -567,7 +675,11 @@ async function loadUsersForNewChat() {
         // Add search functionality
         const searchInput = document.getElementById('newChatSearch');
         if (searchInput) {
-            searchInput.addEventListener('input', function() {
+            // Remove existing listener to avoid duplicates
+            const newSearchInput = searchInput.cloneNode(true);
+            searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+            
+            newSearchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase().trim();
                 const allUserItems = container.querySelectorAll('.user-item');
                 
@@ -911,7 +1023,7 @@ async function startChannelChat(channel) {
 
 function updateChatHeader(data, type) {
     const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
-    const chatHeaderStatus = chatHeaderAvatar.querySelector('.chat-header-status');
+    let chatHeaderStatus = chatHeaderAvatar.querySelector('.chat-header-status');
     const chatTitle = document.getElementById('chatTitle');
     const chatStatus = document.getElementById('chatStatus');
     
@@ -1023,7 +1135,8 @@ async function createChannel() {
         document.getElementById('channelDescription').value = '';
         document.querySelectorAll('.member-item').forEach(item => {
             item.classList.remove('selected');
-            item.querySelector('.member-checkbox i').style.display = 'none';
+            const checkbox = item.querySelector('.member-checkbox i');
+            if (checkbox) checkbox.style.display = 'none';
         });
         updateSelectedCount();
         
@@ -1523,55 +1636,6 @@ function handleImageError(imgElement, color, initial) {
     imgElement.style.objectFit = 'cover';
 }
 
-function filterApps(searchTerm) {
-    if (!searchTerm) {
-        renderAppsGrid();
-        return;
-    }
-    
-    const filteredApps = state.apps.filter(app => 
-        app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    
-    const container = document.getElementById('appsGrid');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    if (filteredApps.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: var(--spacing-2xl);">
-                <i class="fas fa-search" style="font-size: 48px; color: var(--text-tertiary); margin-bottom: var(--spacing);"></i>
-                <h3 style="margin-bottom: var(--spacing-sm);">No apps found</h3>
-                <p class="text-muted">Try a different search term</p>
-            </div>
-        `;
-        return;
-    }
-    
-    filteredApps.forEach(app => {
-        const appElement = document.createElement('div');
-        appElement.className = 'app-item';
-        appElement.dataset.appId = app.id;
-        appElement.innerHTML = `
-            <div class="app-icon">
-                <img src="${app.icon}" alt="${app.name}" onerror="handleImageError(this, '${app.color}', '${app.name.charAt(0)}')">
-            </div>
-            <div class="app-name">${app.name}</div>
-        `;
-        
-        appElement.addEventListener('click', () => {
-            window.open(app.link, '_blank');
-            hideModal('appsPopup');
-            showNotification('App Launched', `${app.name} opened in new tab`, 'success');
-        });
-        
-        container.appendChild(appElement);
-    });
-}
-
 // ============================
 // THEME MANAGEMENT
 // ============================
@@ -1649,6 +1713,15 @@ function setupEventListeners() {
         btn.addEventListener('click', (e) => {
             const modal = e.target.closest('.modal-overlay');
             if (modal) modal.classList.remove('active');
+        });
+    });
+    
+    // Close modals when clicking outside
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
         });
     });
     
@@ -1755,6 +1828,30 @@ function setupEventListeners() {
         backToHomeBtn.addEventListener('click', showHomepage);
     }
     
+    // Clear chat button
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    if (clearChatBtn) {
+        clearChatBtn.addEventListener('click', async () => {
+            if (!state.currentChat) return;
+            
+            if (confirm('Are you sure you want to clear this chat?')) {
+                try {
+                    await state.db.ref(`messages/${state.currentChat.id}`).remove();
+                    await state.db.ref(`conversations/${state.currentChat.id}`).update({
+                        lastMessage: 'Chat cleared',
+                        lastMessageTime: Date.now()
+                    });
+                    
+                    document.getElementById('messagesContainer').innerHTML = '';
+                    showNotification('Success', 'Chat cleared', 'success');
+                } catch (error) {
+                    console.error('Error clearing chat:', error);
+                    showNotification('Error', 'Failed to clear chat', 'error');
+                }
+            }
+        });
+    }
+    
     // Clear all chats button
     const clearAllChatsBtn = document.getElementById('clearAllChatsBtn');
     if (clearAllChatsBtn) {
@@ -1858,11 +1955,68 @@ function setupEventListeners() {
     });
 }
 
+function filterApps(searchTerm) {
+    if (!searchTerm) {
+        renderAppsGrid();
+        return;
+    }
+    
+    const filteredApps = state.apps.filter(app => 
+        app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        app.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    const container = document.getElementById('appsGrid');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (filteredApps.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: var(--spacing-2xl);">
+                <i class="fas fa-search" style="font-size: 48px; color: var(--text-tertiary); margin-bottom: var(--spacing);"></i>
+                <h3 style="margin-bottom: var(--spacing-sm);">No apps found</h3>
+                <p class="text-muted">Try a different search term</p>
+            </div>
+        `;
+        return;
+    }
+    
+    filteredApps.forEach(app => {
+        const appElement = document.createElement('div');
+        appElement.className = 'app-item';
+        appElement.dataset.appId = app.id;
+        appElement.innerHTML = `
+            <div class="app-icon">
+                <img src="${app.icon}" alt="${app.name}" onerror="handleImageError(this, '${app.color}', '${app.name.charAt(0)}')">
+            </div>
+            <div class="app-name">${app.name}</div>
+        `;
+        
+        appElement.addEventListener('click', () => {
+            window.open(app.link, '_blank');
+            hideModal('appsPopup');
+            showNotification('App Launched', `${app.name} opened in new tab`, 'success');
+        });
+        
+        container.appendChild(appElement);
+    });
+}
+
 // ============================
 // INITIALIZATION
 // ============================
 document.addEventListener('DOMContentLoaded', async () => {
-    // Initialize theme first
+    // Initialize loading animation
+    initializeLoadingScreen();
+    const progressInterval = simulateLoadingProgress();
+    
+    // Update loading messages
+    setTimeout(() => updateLoadingMessage('Initializing Enterprise Workspace'), 100);
+    setTimeout(() => updateLoadingMessage('Loading Firebase'), 500);
+    
+    // Initialize theme
     initializeTheme();
     
     // Setup event listeners
@@ -1870,12 +2024,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Initialize Firebase with error handling
     try {
+        updateLoadingMessage('Connecting to workspace');
+        
         const firebaseInitialized = await initializeFirebase();
         
         if (!firebaseInitialized) {
+            updateLoadingMessage('Connection failed');
+            clearInterval(progressInterval);
+            
             // Show error state
-            document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('loginContainer').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('loginContainer').classList.remove('hidden');
+            }, 1000);
             
             // Add retry button
             const loginCard = document.querySelector('.login-card');
@@ -1888,11 +2049,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
                 loginCard.appendChild(retryBtn);
             }
+        } else {
+            // If user is already authenticated, handleUserLogin will complete the loading
+            // Otherwise, we wait for auth state change
+            if (!state.auth.currentUser) {
+                updateLoadingMessage('Ready to sign in');
+                
+                // If no user is signed in, show login after a delay
+                setTimeout(() => {
+                    clearInterval(progressInterval);
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                    document.getElementById('loginContainer').classList.remove('hidden');
+                }, 1500);
+            }
         }
     } catch (error) {
         console.error('Initialization error:', error);
-        document.getElementById('loadingScreen').classList.add('hidden');
-        document.getElementById('loginContainer').classList.remove('hidden');
+        updateLoadingMessage('Error loading workspace');
+        clearInterval(progressInterval);
+        
+        setTimeout(() => {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+        }, 1000);
     }
 });
 
