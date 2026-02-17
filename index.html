@@ -19,10 +19,34 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Loading Screen -->
+    <!-- Enhanced Loading Screen -->
     <div class="loading-overlay" id="loadingScreen">
-        <div class="spinner"></div>
-        <div class="text-muted">Loading Enterprise Workspace...</div>
+        <!-- Background Orbs -->
+        <div class="loading-orbs">
+            <div class="loading-orb"></div>
+            <div class="loading-orb"></div>
+            <div class="loading-orb"></div>
+        </div>
+        
+        <!-- Apps Grid Animation -->
+        <div class="loading-apps-grid" id="loadingAppsGrid">
+            <!-- Apps will be loaded dynamically via JavaScript -->
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="loading-progress">
+            <div class="loading-progress-bar" id="loadingProgressBar"></div>
+        </div>
+        
+        <!-- Loading Text with Animated Dots -->
+        <div class="loading-text">
+            <span id="loadingMessage">Initializing Enterprise Workspace</span>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
     </div>
 
     <!-- Login Page -->
@@ -403,7 +427,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
-    <!-- Configuration (hidden from client) - This should be loaded from server -->
+    <!-- Configuration -->
     <script src="js/config.js"></script>
     
     <!-- Application JavaScript -->
