@@ -17,7 +17,8 @@ const state = {
     isConnectedRef: null,
     lastOnlineRef: null,
     userConnectionsRef: null,
-    userOnlineStatus: {}
+    userOnlineStatus: {},
+    firebaseInitialized: false
 };
 
 // ============================
@@ -124,13 +125,13 @@ function updateLoadingMessage(message) {
 // Simulate loading progress
 function simulateLoadingProgress() {
     const progressBar = document.getElementById('loadingProgressBar');
-    if (!progressBar) return;
+    if (!progressBar) return null;
     
     let progress = 0;
     const interval = setInterval(() => {
-        progress += Math.random() * 15;
-        if (progress >= 100) {
-            progress = 100;
+        progress += Math.random() * 10;
+        if (progress >= 90) {
+            progress = 90; // Stop at 90% until actual completion
             clearInterval(interval);
         }
         progressBar.style.width = `${progress}%`;
@@ -168,11 +169,36 @@ async function completeLoading() {
     });
 }
 
+// Show error and fallback to login
+function showLoadingError(errorMessage) {
+    updateLoadingMessage(errorMessage || 'Connection failed');
+    
+    setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('loginContainer').classList.remove('hidden');
+        
+        // Add retry button
+        const loginCard = document.querySelector('.login-card');
+        if (loginCard && !document.getElementById('retryBtn')) {
+            const retryBtn = document.createElement('button');
+            retryBtn.id = 'retryBtn';
+            retryBtn.className = 'login-btn mt-2';
+            retryBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Connection';
+            retryBtn.addEventListener('click', () => {
+                location.reload();
+            });
+            loginCard.appendChild(retryBtn);
+        }
+    }, 1500);
+}
+
 // ============================
 // UTILITY FUNCTIONS
 // ============================
 function showNotification(title, message, type = 'info') {
     const container = document.getElementById('notificationContainer');
+    if (!container) return;
+    
     const notification = document.createElement('div');
     notification.className = 'notification';
     
@@ -222,11 +248,11 @@ function getRandomColor() {
 }
 
 function showModal(id) {
-    document.getElementById(id).classList.add('active');
+    document.getElementById(id)?.classList.add('active');
 }
 
 function hideModal(id) {
-    document.getElementById(id).classList.remove('active');
+    document.getElementById(id)?.classList.remove('active');
 }
 
 function showHomepage() {
@@ -315,15 +341,36 @@ function updateUserStatusDisplay(userId) {
 // FIREBASE INITIALIZATION
 // ============================
 async function initializeFirebase() {
+    // Set a timeout for Firebase initialization
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Firebase initialization timeout')), 10000);
+    });
+    
     try {
-        // Initialize Firebase with config from window object
+        updateLoadingMessage('Loading Firebase SDK');
+        
+        // Check if Firebase is loaded
+        if (typeof firebase === 'undefined') {
+            throw new Error('Firebase SDK not loaded');
+        }
+        
+        // Check if config exists
         if (!window.FIREBASE_CONFIG) {
             throw new Error('Firebase configuration not found');
         }
         
-        state.firebase = firebase.initializeApp(window.FIREBASE_CONFIG);
-        state.auth = firebase.auth();
-        state.db = firebase.database();
+        // Initialize Firebase with race against timeout
+        await Promise.race([
+            new Promise((resolve) => {
+                state.firebase = firebase.initializeApp(window.FIREBASE_CONFIG);
+                state.auth = firebase.auth();
+                state.db = firebase.database();
+                resolve();
+            }),
+            timeoutPromise
+        ]);
+        
+        state.firebaseInitialized = true;
         
         // Check auth state
         state.auth.onAuthStateChanged(handleAuthStateChanged);
@@ -331,14 +378,18 @@ async function initializeFirebase() {
         return true;
     } catch (error) {
         console.error('Firebase initialization failed:', error);
+        state.firebaseInitialized = false;
         
-        // Show error notification
-        showNotification('Error', 'Failed to initialize Firebase. Please check your connection.', 'error');
+        let errorMessage = 'Failed to initialize Firebase';
+        if (error.message.includes('timeout')) {
+            errorMessage = 'Connection timeout - check your internet';
+        } else if (error.message.includes('not found')) {
+            errorMessage = 'Configuration error';
+        } else if (error.message.includes('not loaded')) {
+            errorMessage = 'Firebase SDK failed to load';
+        }
         
-        // Hide loading screen and show login
-        document.getElementById('loadingScreen').classList.add('hidden');
-        document.getElementById('loginContainer').classList.remove('hidden');
-        
+        showLoadingError(errorMessage);
         return false;
     }
 }
@@ -350,10 +401,13 @@ async function handleAuthStateChanged(user) {
     if (user) {
         await handleUserLogin(user);
     } else {
-        // Show login screen
-        document.getElementById('loginContainer').classList.remove('hidden');
-        document.getElementById('workspace').classList.add('hidden');
-        document.getElementById('loadingScreen').classList.add('hidden');
+        // Show login screen after a brief delay
+        setTimeout(() => {
+            if (!state.firebaseInitialized) return;
+            
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+        }, 1000);
     }
 }
 
@@ -2008,70 +2062,62 @@ function filterApps(searchTerm) {
 // INITIALIZATION
 // ============================
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM loaded, initializing...');
+    
     // Initialize loading animation
     initializeLoadingScreen();
     const progressInterval = simulateLoadingProgress();
     
-    // Update loading messages
-    setTimeout(() => updateLoadingMessage('Initializing Enterprise Workspace'), 100);
-    setTimeout(() => updateLoadingMessage('Loading Firebase'), 500);
+    // Set a fallback timeout to show login if everything fails
+    const fallbackTimeout = setTimeout(() => {
+        console.log('Fallback timeout triggered');
+        clearInterval(progressInterval);
+        showLoadingError('Connection timeout');
+    }, 15000); // 15 second fallback
     
-    // Initialize theme
-    initializeTheme();
-    
-    // Setup event listeners
-    setupEventListeners();
-    
-    // Initialize Firebase with error handling
     try {
-        updateLoadingMessage('Connecting to workspace');
+        // Update loading messages
+        updateLoadingMessage('Initializing...');
         
+        // Initialize theme
+        initializeTheme();
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        updateLoadingMessage('Loading Firebase...');
+        
+        // Initialize Firebase with error handling
         const firebaseInitialized = await initializeFirebase();
         
-        if (!firebaseInitialized) {
-            updateLoadingMessage('Connection failed');
-            clearInterval(progressInterval);
+        if (firebaseInitialized) {
+            clearTimeout(fallbackTimeout);
             
-            // Show error state
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hidden');
-                document.getElementById('loginContainer').classList.remove('hidden');
-            }, 1000);
+            // If Firebase initialized successfully, wait for auth state
+            updateLoadingMessage('Connecting...');
             
-            // Add retry button
-            const loginCard = document.querySelector('.login-card');
-            if (loginCard) {
-                const retryBtn = document.createElement('button');
-                retryBtn.className = 'login-btn mt-2';
-                retryBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Connection';
-                retryBtn.addEventListener('click', () => {
-                    location.reload();
-                });
-                loginCard.appendChild(retryBtn);
-            }
-        } else {
-            // If user is already authenticated, handleUserLogin will complete the loading
-            // Otherwise, we wait for auth state change
-            if (!state.auth.currentUser) {
-                updateLoadingMessage('Ready to sign in');
-                
-                // If no user is signed in, show login after a delay
+            // Check if already authenticated
+            if (state.auth?.currentUser) {
+                // handleUserLogin will be called by onAuthStateChanged
+                console.log('User already authenticated');
+            } else {
+                // Not authenticated, show login after a delay
                 setTimeout(() => {
-                    clearInterval(progressInterval);
-                    document.getElementById('loadingScreen').classList.add('hidden');
-                    document.getElementById('loginContainer').classList.remove('hidden');
-                }, 1500);
+                    if (document.getElementById('loadingScreen') && !document.getElementById('loadingScreen').classList.contains('hidden')) {
+                        clearInterval(progressInterval);
+                        document.getElementById('loadingScreen').classList.add('hidden');
+                        document.getElementById('loginContainer').classList.remove('hidden');
+                    }
+                }, 2000);
             }
         }
+        // If not initialized, showLoadingError is called by initializeFirebase
+        
     } catch (error) {
         console.error('Initialization error:', error);
-        updateLoadingMessage('Error loading workspace');
+        clearTimeout(fallbackTimeout);
         clearInterval(progressInterval);
-        
-        setTimeout(() => {
-            document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('loginContainer').classList.remove('hidden');
-        }, 1000);
+        showLoadingError('Failed to initialize');
     }
 });
 
